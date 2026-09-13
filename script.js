@@ -1,0 +1,1 @@
+document.querySelectorAll('[data-target]').forEach(el=>{let t=+el.dataset.target,c=0,s=Math.max(1,Math.ceil(t/60));let i=setInterval(()=>{c+=s;if(c>=t){c=t;clearInterval(i)}el.textContent=(t==500?'₹':'')+c.toLocaleString()+(t==500?'Cr+':'+')},30)});
