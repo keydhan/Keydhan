@@ -1,0 +1,1 @@
+document.querySelectorAll('.card').forEach(c=>c.addEventListener('click',()=>c.style.boxShadow='0 0 24px rgba(212,175,55,.45)'));
