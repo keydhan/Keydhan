@@ -1,0 +1,1 @@
+function calc(){let p=+loan.value,r=+rate.value/1200,n=+years.value*12,e=p*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);lv.textContent='₹'+p.toLocaleString('en-IN');rv.textContent=rate.value+'%';yv.textContent=years.value+' Years';emi.textContent='Estimated EMI: ₹'+Math.round(e).toLocaleString('en-IN')+'/month'}loan.oninput=rate.oninput=years.oninput=calc;calc()

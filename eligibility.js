@@ -1,0 +1,1 @@
+function eligibility(){let a=Math.max(0,(+income.value*.5)-(+existing.value))*180;elig.textContent='Estimated Eligibility: ₹'+Math.round(a).toLocaleString('en-IN')}
