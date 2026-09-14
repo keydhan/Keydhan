@@ -1,0 +1,1 @@
+function lead(e){e.preventDefault();alert('Demo form ready. Connect EmailJS or Google Apps Script later.')}
