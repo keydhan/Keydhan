@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KeyDhan V7 Ultra</title>
+<meta name="description" content="Premium Finance Partner">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Arial,sans-serif;background:#05070d;color:#fff;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;background:radial-gradient(circle at 30% 20%,rgba(212,175,55,.18),transparent 40%),radial-gradient(circle at 80% 70%,rgba(212,175,55,.08),transparent 35%);pointer-events:none}
+header{position:fixed;top:0;width:100%;display:flex;justify-content:space-between;align-items:center;padding:18px 22px;background:rgba(5,7,13,.75);backdrop-filter:blur(12px);z-index:10;border-bottom:1px solid rgba(255,255,255,.05)}
+.logo{font-size:36px;font-weight:900}.logo span{color:#D4AF37}
+.btn{padding:14px 26px;border-radius:999px;text-decoration:none;font-weight:700;display:inline-block;transition:.25s}
+.gold{background:#D4AF37;color:#111}.dark{background:#161c29;color:#fff;border:1px solid rgba(255,255,255,.08)}
+.btn:hover{transform:translateY(-3px)}
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:120px 22px}
+.badge{padding:10px 20px;border:1px solid rgba(212,175,55,.45);border-radius:999px;color:#D4AF37;margin-bottom:22px}
+h1{font-size:clamp(46px,10vw,88px);line-height:1}.goldtxt{color:#D4AF37}
+.sub{max-width:760px;font-size:clamp(18px,3vw,24px);color:#c9d1d9;margin:22px auto 30px}
+.actions{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.sec{max-width:1180px;margin:auto;padding:70px 22px}
+.sec h2{text-align:center;font-size:42px;margin-bottom:34px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
+.card{background:#111827;border:1px solid rgba(255,255,255,.08);border-radius:22px;padding:28px;transition:.3s}
+.card:hover{transform:translateY(-8px);border-color:#D4AF37}
+.card h3{margin:12px 0}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-top:30px}
+.stat{background:#111827;border-radius:18px;padding:22px;text-align:center}.stat b{display:block;color:#D4AF37;font-size:30px}
+.calc,.elig{background:#111827;border-radius:24px;padding:24px;max-width:820px;margin:28px auto}
+label{display:block;margin-top:18px;margin-bottom:8px;color:#d6d6d6}
+input[type=range]{width:100%}
+.output{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-top:20px}
+.box{background:#0b1220;border-radius:16px;padding:18px;text-align:center}
+.box b{display:block;color:#D4AF37;font-size:24px}
+.testimonial{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.faq details{background:#111827;border-radius:16px;padding:18px;margin:12px 0}
+.contact{max-width:760px;margin:auto;background:#111827;border-radius:22px;padding:28px}
+.contact input,.contact textarea{width:100%;margin:10px 0;padding:14px;border-radius:12px;border:1px solid #333;background:#0b1220;color:#fff}
+footer{text-align:center;padding:40px 20px;border-top:1px solid rgba(255,255,255,.08);color:#9ca3af}
+.float{position:fixed;right:22px;bottom:22px;width:64px;height:64px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;font-size:30px;text-decoration:none}
+@media(max-width:600px){.logo{font-size:30px}header{padding:14px 16px}}
+</style></head>
+<body>
+<header><div class="logo">Key<span>Dhan</span></div><a href="#contact" class="btn gold">Contact</a></header>
+
+<section class="hero">
+<div class="badge">Trusted Finance Partner</div>
+<h1>Unlock Your <span class="goldtxt">Financial Key</span></h1>
+<p class="sub">Premium Home Loans, Business Loans, Loan Against Property & Real Estate Solutions with a luxury digital experience.</p>
+<div class="actions">
+<a href="#emi" class="btn gold">Calculate EMI</a>
+<a href="#contact" class="btn dark">Get Started</a>
+</div>
+</section>
+
+<section class="sec">
+<h2>Our Services</h2>
+<div class="grid">
+<div class="card"><h3>🏡 Home Loan</h3><p>Fast approvals and expert guidance.</p></div>
+<div class="card"><h3>💼 Business Loan</h3><p>MSME & Working Capital support.</p></div>
+<div class="card"><h3>🏢 Loan Against Property</h3><p>Unlock property value with flexible terms.</p></div>
+<div class="card"><h3>🏠 Real Estate</h3><p>Investment advisory & premium deals.</p></div>
+</div>
+<div class="stats">
+<div class="stat"><b>14+</b>Years</div>
+<div class="stat"><b>24×7</b>Support</div>
+<div class="stat"><b>Premium</b>Service</div>
+<div class="stat"><b>Fast</b>Approvals</div>
+</div>
+</section>
+
+<section id="emi" class="sec">
+<h2>Live EMI Calculator</h2>
+<div class="calc">
+<label>Loan Amount: ₹<span id="aVal">1000000</span></label>
+<input id="amount" type="range" min="100000" max="10000000" step="50000" value="1000000">
+<label>Interest Rate: <span id="rVal">9</span>%</label>
+<input id="rate" type="range" min="5" max="24" step="0.25" value="9">
+<label>Tenure: <span id="yVal">10</span> Years</label>
+<input id="years" type="range" min="1" max="30" value="10">
+<div class="output">
+<div class="box"><span>Monthly EMI</span><b id="emiOut">₹0</b></div>
+<div class="box"><span>Total Interest</span><b id="intOut">₹0</b></div>
+<div class="box"><span>Total Payment</span><b id="payOut">₹0</b></div>
+</div>
+</div>
+</section>
+
+<section class="sec">
+<h2>Eligibility Checker</h2>
+<div class="elig">
+<label>Monthly Income: ₹<span id="iVal">50000</span></label>
+<input id="income" type="range" min="15000" max="500000" step="5000" value="50000">
+<div class="output"><div class="box"><span>Estimated Eligible Loan</span><b id="eligOut">₹0</b></div></div>
+</div>
+</section>
+
+<section class="sec">
+<h2>Why KeyDhan?</h2>
+<div class="testimonial">
+<div class="card"><h3>Premium Experience</h3><p>Luxury black-gold interface inspired by Apple & CRED.</p></div>
+<div class="card"><h3>Expert Support</h3><p>Personal guidance throughout your loan journey.</p></div>
+<div class="card"><h3>Fast Process</h3><p>Quick approvals and transparent communication.</p></div>
+</div>
+</section>
+
+<section class="sec faq">
+<h2>FAQs</h2>
+<details><summary>How fast can I get a loan?</summary><p>Timelines depend on profile and documentation.</p></details>
+<details><summary>Do you support business loans?</summary><p>Yes, MSME and working capital solutions.</p></details>
+<details><summary>Is LAP available?</summary><p>Yes, against eligible residential or commercial property.</p></details>
+</section>
+
+<section id="contact" class="sec">
+<h2>Contact</h2>
+<div class="contact">
+<input placeholder="Your Name"><input placeholder="Email"><textarea rows="4" placeholder="Tell us about your requirement"></textarea>
+<a class="btn gold" href="mailto:hello@keydhan.com">Send Email</a>
+</div>
+</section>
+
+<footer><p><b>KeyDhan</b></p><p>hello@keydhan.com • keydhan.com</p></footer>
+<a class="float" href="https://wa.me/919899161425">💬</a>
+
+<script>
+const amount=document.getElementById('amount'),rate=document.getElementById('rate'),years=document.getElementById('years');
+const emiOut=document.getElementById('emiOut'),intOut=document.getElementById('intOut'),payOut=document.getElementById('payOut');
+function fmt(n){return '₹'+Math.round(n).toLocaleString('en-IN')}
+function calc(){
+ let P=+amount.value,r=+rate.value/1200,n=+years.value*12;
+ let emi=P*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);
+ let total=emi*n,interest=total-P;
+ aVal.textContent=P.toLocaleString('en-IN');rVal.textContent=rate.value;yVal.textContent=years.value;
+ emiOut.textContent=fmt(emi);intOut.textContent=fmt(interest);payOut.textContent=fmt(total);
+}
+[amount,rate,years].forEach(x=>x.oninput=calc);calc();
+const income=document.getElementById('income');
+income.oninput=()=>{iVal.textContent=(+income.value).toLocaleString('en-IN');eligOut.textContent=fmt(income.value*60);}
+income.oninput();
+</script>
+</body></html>
