@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KeyDhan V13 Ultimate</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#040812;color:#fff}
+:root{--g:#d4af37}
+header{position:sticky;top:0;background:#06111f;border-bottom:1px solid #3a2d05;padding:14px 20px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:32px;font-weight:800}.logo span{color:var(--g)}
+.btn{background:var(--g);color:#111;padding:12px 22px;border-radius:999px;font-weight:700;text-decoration:none}
+.hero{padding:70px 20px;text-align:center;background:radial-gradient(circle at 30% 20%,rgba(212,175,55,.18),transparent 45%)}
+.hero h1{font-size:54px;line-height:1.05;margin:20px auto;max-width:700px}.hero h1 span{color:var(--g)}
+.hero p{max-width:700px;margin:auto;font-size:22px;color:#c9ced6}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;padding:0 20px 50px}
+.card{background:#0b1423;border:1px solid #2b2b2b;border-radius:22px;padding:22px}
+.calc{max-width:980px;margin:20px auto;padding:22px;background:#091423;border:1px solid #3a2d05;border-radius:24px}
+label{display:block;margin:12px 0 6px}input,select{width:100%;padding:12px;border-radius:10px;border:1px solid #444;background:#111827;color:#fff}
+.result{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:18px}
+.r{background:#0b1423;border:1px solid #2b2b2b;border-radius:18px;padding:18px}.big{font-size:32px;color:var(--g);font-weight:800}
+table{width:100%;border-collapse:collapse;margin-top:18px}th,td{padding:10px;border-bottom:1px solid #263244;text-align:right}th:first-child,td:first-child{text-align:left}
+footer{padding:30px;text-align:center;color:#aaa}
+@media(max-width:700px){.hero h1{font-size:40px}}
+</style></head><body>
+<header><div class="logo">Key<span>Dhan</span></div><a class="btn" href="#calculator">Calculate EMI</a></header>
+<section class="hero"><div style="display:inline-block;border:1px solid #5b4b11;color:var(--g);padding:10px 22px;border-radius:999px">Trusted Finance Partner</div>
+<h1>Unlock Your <span>Financial Key</span></h1><p>Premium Home Loans, Business Loans, Loan Against Property & Real Estate Solutions.</p></section>
+
+<section class="grid">
+<div class="card"><h3>🏠 Home Loan</h3><p>Best bank offers.</p></div>
+<div class="card"><h3>💼 Business Loan</h3><p>Fast approval.</p></div>
+<div class="card"><h3>🏢 LAP</h3><p>Flexible tenure.</p></div>
+<div class="card"><h3>📈 Real Estate</h3><p>Investment guidance.</p></div>
+</section>
+
+<section id="calculator" class="calc">
+<h2 style="color:var(--g)">EMI Calculator V13</h2>
+<div class="grid">
+<div><label>Loan Amount (₹)</label><input id="loan" type="number" value="500000"></div>
+<div><label>Interest (% p.a.)</label><input id="rate" type="number" step="0.01" value="21"></div>
+<div><label>Tenure</label><input id="tenure" type="number" value="36"></div>
+<div><label>Type</label><select id="type"><option value="months">Months</option><option value="years">Years</option></select></div>
+</div>
+<p><button class="btn" onclick="calc()">Calculate EMI</button></p>
+<div class="result">
+<div class="r"><div>Monthly EMI</div><div class="big" id="emi">₹0</div></div>
+<div class="r"><div>Total Interest</div><div class="big" id="interest">₹0</div></div>
+<div class="r"><div>Total Payment</div><div class="big" id="total">₹0</div></div>
+<div class="r"><div>Flat Monthly</div><div class="big" id="flatm">0%</div></div>
+<div class="r"><div>Flat Yearly</div><div class="big" id="flaty">0%</div></div>
+</div>
+<table><thead><tr><th>Month</th><th>Principal</th><th>Interest</th><th>Balance</th></tr></thead><tbody id="tbody"></tbody></table>
+</section>
+
+<footer>KeyDhan V13 • Single File • GitHub Pages Ready</footer>
+<script>
+function money(v){return "₹"+Number(v).toLocaleString("en-IN",{maximumFractionDigits:2})}
+function calc(){
+ let P=+loan.value,R=+rate.value,n=+tenure.value;if(type.value==="years")n*=12;
+ let r=R/1200;
+ let emi=r===0?P/n:P*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);
+ let total=emi*n,int=total-P;
+ let flatm=(int/P/n)*100,flaty=flatm*12;
+ emi&& (emi=+emi.toFixed(2));
+ document.getElementById("emi").innerText=money(emi);
+ document.getElementById("interest").innerText=money(int);
+ document.getElementById("total").innerText=money(total);
+ document.getElementById("flatm").innerText=flatm.toFixed(2)+"%";
+ document.getElementById("flaty").innerText=flaty.toFixed(2)+"%";
+ let bal=P,t=""; for(let i=1;i<=Math.min(n,120);i++){let intr=bal*r;let prin=emi-intr;bal=Math.max(0,bal-prin);t+=`<tr><td>${i}</td><td>${money(prin)}</td><td>${money(intr)}</td><td>${money(bal)}</td></tr>`}
+ tbody.innerHTML=t;
+}
+calc();
+</script></body></html>
