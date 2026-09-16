@@ -1,16 +1,28 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KeyDhan | Premium Finance</title>
+
+<title>KeyDhan™ | Premium Finance</title>
+
+<meta name="description" content="KeyDhan™ - Home Loan, Business Loan, Loan Against Property, Real Estate & EMI Calculator.">
+<meta name="theme-color" content="#020814">
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+html{
+scroll-behavior:smooth;
+}
+
 body{
 font-family:Poppins,sans-serif;
 background:#020814;
@@ -42,6 +54,27 @@ font-weight:800;
 color:var(--gold);
 }
 
+.key-logo{
+font-size:78px;
+display:flex;
+align-items:center;
+justify-content:center;
+width:120px;
+height:120px;
+margin:auto;
+border-radius:30px;
+background:radial-gradient(circle,#F8E58C,#D4AF37);
+color:#111;
+box-shadow:0 0 35px rgba(212,175,55,.45);
+animation:keyFloat 3s infinite ease-in-out;
+}
+
+@keyframes keyFloat{
+50%{
+transform:translateY(-8px) rotate(-6deg);
+}
+}
+
 .btn{
 background:var(--gold);
 color:#111;
@@ -66,6 +99,7 @@ radial-gradient(circle at 50% 25%, rgba(212,175,55,.22), transparent 35%);
 .hero h1{
 font-size:58px;
 line-height:1.1;
+margin-top:22px;
 }
 
 .hero h1 span{
@@ -106,8 +140,12 @@ border-radius:24px;
 padding:22px;
 }
 
-.card h3{
-margin:10px 0;
+.card img{
+width:100%;
+height:180px;
+object-fit:cover;
+border-radius:16px;
+margin-bottom:15px;
 }
 
 .icon{
@@ -239,6 +277,7 @@ font-size:30px;
 }
 
 }
+
 </style>
 
 </head>
@@ -248,7 +287,7 @@ font-size:30px;
 <header>
 
 <div class="logo">
-Key<span>Dhan</span>
+Key<span>Dhan</span><sup style="font-size:12px;color:#D4AF37;">™</sup>
 </div>
 
 <a href="#calculator" class="btn">
@@ -261,7 +300,7 @@ Calculate EMI
 
 <div>
 
-<div style="font-size:72px;">🔑</div>
+<div class="key-logo">🔑</div>
 
 <h1>
 Unlock Your <span>Financial Key</span>
@@ -417,23 +456,38 @@ Featured Properties
 <div class="grid">
 
 <div class="card">
+
+<AsyncImage query="luxury apartment building night exterior" aspectRatio="5:4" width="100%" maxHeight=220/>
+
 <h3>Luxury Apartment</h3>
 <p>📍 Faridabad</p>
 <p>₹55 Lakh • 3 BHK</p>
-<a href="#enquiry" class="btn">Enquire Now</a>
+
+<a href="javascript:void(0)" onclick="enquire('Luxury Apartment','5500000')" class="btn">
+Enquire Now
+</a>
+
 </div>
 
 <div class="card">
+
+<AsyncImage query="modern luxury villa with pool night" aspectRatio="5:4" width="100%" maxHeight=220/>
+
 <h3>Premium Villa</h3>
 <p>📍 Gurugram</p>
 <p>₹1.25 Crore • 4 BHK</p>
-<a href="#enquiry" class="btn">Enquire Now</a>
+
+<a href="javascript:void(0)" onclick="enquire('Premium Villa','12500000')" class="btn">
+Enquire Now
+</a>
+
 </div>
 
 </div>
 
 </section>
 
+<!-- PART 2 START -->
 <section class="wrap" id="enquiry">
 
 <h2 class="section-title">
@@ -442,25 +496,30 @@ Property & Loan Enquiry
 
 <div class="card">
 
+<p style="color:#cbd5e1;margin-bottom:20px;">
+Fill this form and submit. Enquiry directly
+<strong>hello@keydhan.com</strong>
+par receive hogi.
+</p>
+
 <form
 action="https://formsubmit.co/hello@keydhan.com"
 method="POST">
 
-<input type="hidden" name="_subject" value="New KeyDhan Lead">
+<input type="hidden" name="_subject" value="🏡 New KeyDhan™ Lead">
 <input type="hidden" name="_template" value="table">
 <input type="hidden" name="_captcha" value="false">
 
 <label>Full Name</label>
-<input type="text" name="Name" required placeholder="Enter your name">
+<input type="text" name="Name" required placeholder="Enter your full name">
 
 <label>Mobile Number</label>
 <input type="tel" name="Mobile" required placeholder="Enter mobile number">
 
-<label>Email</label>
+<label>Email (Optional)</label>
 <input type="email" name="Email" placeholder="Enter email">
 
 <label>Loan Type</label>
-
 <select name="Loan Type">
 <option>Home Loan</option>
 <option>Business Loan</option>
@@ -468,15 +527,29 @@ method="POST">
 <option>Real Estate</option>
 </select>
 
-<label>Loan Amount</label>
-<input type="number" name="Loan Amount" placeholder="Enter amount">
+<label>Property Name</label>
+<input id="propertyName" type="text" name="Property Name" placeholder="Property name">
+
+<label>Loan Amount (₹)</label>
+<input id="budget" type="number" name="Loan Amount" placeholder="Required amount">
+
+<label>Preferred Call Time</label>
+<select name="Call Time">
+<option>Morning (9-12)</option>
+<option>Afternoon (12-4)</option>
+<option>Evening (4-8)</option>
+</select>
 
 <label>City</label>
 <input type="text" name="City" placeholder="Enter city">
 
 <label>Message</label>
+<textarea name="Message" id="message" placeholder="Tell us your requirement"></textarea>
 
-<textarea name="Message" placeholder="Tell us your requirement"></textarea>
+<label style="display:flex;gap:10px;align-items:center;margin-top:15px;">
+<input type="checkbox" required style="width:auto;">
+I agree to be contacted by KeyDhan™.
+</label>
 
 <button type="submit">
 Submit Enquiry
@@ -484,8 +557,11 @@ Submit Enquiry
 
 </form>
 
-<p style="margin-top:15px;color:#9ca3af;font-size:14px;">
-
+<p style="margin-top:18px;color:#9ca3af;font-size:14px;line-height:1.7;">
+First submission ke baad
+<strong>hello@keydhan.com</strong>
+par FormSubmit verification email aayegi.
+Ek baar verify karne ke baad future ki saari enquiries direct inbox me aayengi.
 </p>
 
 </div>
@@ -495,18 +571,20 @@ Submit Enquiry
 <footer>
 
 <h3 class="logo">
-Key<span>Dhan</span>
+Key<span>Dhan</span><sup style="font-size:12px;color:#D4AF37;">™</sup>
 </h3>
 
 <br>
 
 <p>hello@keydhan.com</p>
 
-<p>© 2026 KeyDhan. All Rights Reserved.</p>
+<p style="margin-top:16px;">
+© 2026 KeyDhan™. All Rights Reserved.
+</p>
 
 </footer>
 
-<a href="https://wa.me/" class="whatsapp">
+<a href="https://wa.me/" class="whatsapp" title="Chat with KeyDhan™">
 💬
 </a>
 
@@ -517,17 +595,14 @@ const f=n=>"₹"+Number(n).toLocaleString("en-IN",{maximumFractionDigits:2});
 function calc(){
 
 let P=+loan.value;
-
 let R=+rate.value;
-
 let n=+tenure.value;
 
-if(type.value=="y") n*=12;
+if(type.value==="y") n*=12;
 
 if(!P||!R||!n){
 
-alert("Please fill all fields");
-
+alert("Please fill all fields.");
 return;
 
 }
@@ -540,19 +615,15 @@ let totalPay=EMI*n;
 
 let intr=totalPay-P;
 
-let fy=(intr/P)/(n/12)*100;
+let flatYear=((intr/P)/(n/12))*100;
 
-let fm=fy/12;
+let flatMonth=flatYear/12;
 
 emi.innerText=f(EMI);
-
 interest.innerText=f(intr);
-
 total.innerText=f(totalPay);
-
-flatM.innerText=fm.toFixed(2)+"%";
-
-flatY.innerText=fy.toFixed(2)+"%";
+flatM.innerText=flatMonth.toFixed(2)+"%";
+flatY.innerText=flatYear.toFixed(2)+"%";
 
 results.style.display="block";
 
@@ -560,22 +631,22 @@ amort.style.display="none";
 
 rows.innerHTML="";
 
-let bal=P;
+let balance=P;
 
 for(let i=1;i<=Math.min(n,240);i++){
 
-let ip=bal*r;
+let intPart=balance*r;
 
-let pp=EMI-ip;
+let prinPart=EMI-intPart;
 
-bal=Math.max(0,bal-pp);
+balance=Math.max(0,balance-prinPart);
 
 rows.innerHTML+=`
 <tr>
 <td>${i}</td>
-<td>${f(pp)}</td>
-<td>${f(ip)}</td>
-<td>${f(bal)}</td>
+<td>${f(prinPart)}</td>
+<td>${f(intPart)}</td>
+<td>${f(balance)}</td>
 </tr>`;
 
 }
@@ -585,8 +656,23 @@ rows.innerHTML+=`
 function toggleChart(){
 
 amort.style.display=
-amort.style.display=="block"
+amort.style.display==="block"
 ?"none":"block";
+
+}
+
+function enquire(property,budget){
+
+document.getElementById("enquiry").scrollIntoView({
+behavior:"smooth"
+});
+
+document.getElementById("propertyName").value=property;
+
+document.getElementById("budget").value=budget;
+
+document.getElementById("message").value=
+"I'm interested in "+property+".";
 
 }
 
