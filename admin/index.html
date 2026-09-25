@@ -1,180 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KeyDhan™ Secure Admin Portal</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KeyDhan™ Secure Admin</title>
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{
-font-family:Arial,sans-serif;
-background:#06142b;
-display:flex;
-justify-content:center;
-align-items:center;
-min-height:100vh;
-padding:20px;
-}
-.card{
-width:100%;
-max-width:420px;
-background:#0d1f3d;
-border:1px solid rgba(255,255,255,.12);
-border-radius:22px;
-padding:30px;
-box-shadow:0 25px 60px rgba(0,0,0,.45);
-}
-.logo{
-font-size:52px;
-font-weight:900;
-text-align:center;
-margin-bottom:6px;
-}
-.logo span:first-child{color:#fff}
-.logo span:last-child{color:#f7c62f}
-.sub{
-text-align:center;
-color:#d6dbe7;
-margin-bottom:28px;
-font-size:18px;
-}
-.lock{
-font-size:64px;
-text-align:center;
-margin-bottom:20px;
-}
-label{
-display:block;
-color:#fff;
-margin:12px 0 6px;
-font-weight:700;
-}
-input{
-width:100%;
-padding:16px;
-border-radius:14px;
-border:1px solid rgba(255,255,255,.2);
-background:#11284b;
-color:#fff;
-font-size:16px;
-}
-button{
-width:100%;
-margin-top:20px;
-padding:16px;
-border:none;
-border-radius:14px;
-background:#f7c62f;
-font-size:20px;
-font-weight:800;
-cursor:pointer;
-}
-#msg{
-margin-top:14px;
-padding:12px;
-border-radius:12px;
-text-align:center;
-display:none;
-font-weight:700;
-}
-.ok{background:#1b5e20;color:#fff}
-.err{background:#7f1d1d;color:#fff}
-.footer{
-margin-top:20px;
-text-align:center;
-font-size:13px;
-color:#d6dbe7;
-}
-.footer a{
-color:#fff;
-text-decoration:none;
-}
-</style>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+      background:#0b1220;
+      color:#fff;
+      font-family:Arial,Helvetica,sans-serif;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
+      text-align:center;
+    }
+    .box{
+      background:#111827;
+      padding:40px;
+      border-radius:18px;
+      width:420px;
+      box-shadow:0 0 30px rgba(255,196,0,.25);
+    }
+    h1{
+      color:#FFC400;
+      margin-bottom:10px;
+      font-size:42px;
+    }
+    p{
+      color:#cbd5e1;
+      margin:18px 0;
+    }
+    .loader{
+      width:44px;
+      height:44px;
+      border:4px solid rgba(255,255,255,.15);
+      border-top:4px solid #FFC400;
+      border-radius:50%;
+      margin:25px auto;
+      animation:spin 1s linear infinite;
+    }
+    @keyframes spin{
+      to{transform:rotate(360deg)}
+    }
+  </style>
+
+  <script>
+    // Direct protected page
+    window.location.replace("/admin/dashboard.html");
+  </script>
 </head>
 <body>
-
-<div class="card">
-
-<div class="logo"><span>Key</span><span>Dhan™</span></div>
-<div class="sub">Enterprise Secure Admin Portal</div>
-
-<div class="lock">🔐</div>
-
-<form id="loginForm">
-
-<label>Email</label>
-<input id="email" type="email" value="keydhan2@gmail.com" required>
-
-<label>Password</label>
-<input id="password" type="password" required>
-
-<button type="submit">Secure Login</button>
-
-<div id="msg"></div>
-
-</form>
-
-<div class="footer">
-Cloudflare Access + Google Authenticator (TOTP) protects this admin portal.
-<br><br>
-<a href="/">← Back to Website</a>
-</div>
-
-</div>
-
-<script>
-const API="https://api.keydhan.com";
-
-const form=document.getElementById("loginForm");
-const msg=document.getElementById("msg");
-
-form.addEventListener("submit",async(e)=>{
-
-e.preventDefault();
-
-msg.style.display="block";
-msg.className="";
-msg.innerText="Verifying...";
-
-try{
-
-const r=await fetch(API,{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-email:email.value.trim(),
-password:password.value
-})
-});
-
-const data=await r.json();
-
-if(data.success){
-
-msg.className="ok";
-msg.innerText="Verified. Redirecting...";
-
-setTimeout(()=>{
-window.location.href="/admin/dashboard";
-},800);
-
-}else{
-
-msg.className="err";
-msg.innerText="Invalid email or password.";
-
-}
-
-}catch(err){
-
-msg.className="err";
-msg.innerText="Server connection failed.";
-
-}
-
-});
-</script>
-
+  <div class="box">
+    <h1>KeyDhan™</h1>
+    <p>Enterprise Secure Admin Portal</p>
+    <div class="loader"></div>
+    <p>Redirecting to Cloudflare Protected Dashboard...</p>
+  </div>
 </body>
 </html>
