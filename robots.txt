@@ -1,3 +1,39 @@
+# ==============================
+# KeyDhan™ V20.5
+# robots.txt
+# ==============================
+
 User-agent: *
 Allow: /
+
+# Block Admin Area
+Disallow: /admin/
+
+# Block Internal Files
+Disallow: /api/
+
+# Sitemap
 Sitemap: https://keydhan.com/sitemap.xml
+
+# Google
+User-agent: Googlebot
+Allow: /
+
+# Bing
+User-agent: Bingbot
+Allow: /
+
+# OpenAI
+User-agent: GPTBot
+Allow: /
+
+# Claude
+User-agent: ClaudeBot
+Allow: /
+
+# Common AI Crawlers
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
