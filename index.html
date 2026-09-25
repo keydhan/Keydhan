@@ -1,284 +1,17 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>KeyDhan™ | Premium Finance</title>
+<title>KeyDhan™ | Premium Finance & Real Estate</title>
 
-<meta name="description" content="KeyDhan™ - Home Loan, Business Loan, Loan Against Property, Real Estate & EMI Calculator.">
-<meta name="theme-color" content="#020814">
+<meta name="description" content="Home Loan, Business Loan, LAP & Real Estate">
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
-
-<style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
-
-html{
-scroll-behavior:smooth;
-}
-
-body{
-font-family:Poppins,sans-serif;
-background:#020814;
-color:white;
-}
-
-:root{
---gold:#D4AF37;
-}
-
-header{
-position:sticky;
-top:0;
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:18px 22px;
-background:rgba(2,8,20,.95);
-border-bottom:1px solid rgba(212,175,55,.15);
-z-index:999;
-}
-
-.logo{
-font-size:34px;
-font-weight:800;
-}
-
-.logo span{
-color:var(--gold);
-}
-
-.key-logo{
-font-size:78px;
-display:flex;
-align-items:center;
-justify-content:center;
-width:120px;
-height:120px;
-margin:auto;
-border-radius:30px;
-background:radial-gradient(circle,#F8E58C,#D4AF37);
-color:#111;
-box-shadow:0 0 35px rgba(212,175,55,.45);
-animation:keyFloat 3s infinite ease-in-out;
-}
-
-@keyframes keyFloat{
-50%{
-transform:translateY(-8px) rotate(-6deg);
-}
-}
-
-.btn{
-background:var(--gold);
-color:#111;
-padding:12px 24px;
-border-radius:999px;
-text-decoration:none;
-font-weight:700;
-display:inline-block;
-}
-
-.hero{
-min-height:90vh;
-display:flex;
-align-items:center;
-justify-content:center;
-text-align:center;
-padding:120px 24px 60px;
-background:
-radial-gradient(circle at 50% 25%, rgba(212,175,55,.22), transparent 35%);
-}
-
-.hero h1{
-font-size:58px;
-line-height:1.1;
-margin-top:22px;
-}
-
-.hero h1 span{
-color:var(--gold);
-}
-
-.hero p{
-margin-top:18px;
-max-width:720px;
-color:#cbd5e1;
-line-height:1.8;
-font-size:19px;
-}
-
-.wrap{
-max-width:1100px;
-margin:auto;
-padding:60px 20px;
-}
-
-.section-title{
-text-align:center;
-font-size:38px;
-color:var(--gold);
-margin-bottom:35px;
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-gap:20px;
-}
-
-.card{
-background:#071323;
-border:1px solid rgba(212,175,55,.18);
-border-radius:24px;
-padding:22px;
-}
-
-.card img{
-width:100%;
-height:180px;
-object-fit:cover;
-border-radius:16px;
-margin-bottom:15px;
-}
-
-.icon{
-font-size:38px;
-}
-
-label{
-display:block;
-margin:16px 0 8px;
-font-weight:600;
-}
-
-input,
-select,
-textarea{
-width:100%;
-padding:15px;
-border-radius:14px;
-border:1px solid #334;
-background:#0b1627;
-color:white;
-font-size:16px;
-}
-
-textarea{
-min-height:120px;
-resize:vertical;
-}
-
-button{
-width:100%;
-padding:15px;
-border:none;
-border-radius:14px;
-background:var(--gold);
-color:#111;
-font-size:18px;
-font-weight:700;
-margin-top:18px;
-cursor:pointer;
-}
-
-#results,
-#amort{
-display:none;
-margin-top:22px;
-}
-
-.metrics{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
-gap:16px;
-}
-
-.metric{
-background:#0b1627;
-border-radius:18px;
-padding:16px;
-}
-
-.metric b{
-display:block;
-font-size:13px;
-color:#9ca3af;
-margin-bottom:8px;
-}
-
-.metric span{
-font-size:28px;
-font-weight:800;
-color:var(--gold);
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-margin-top:18px;
-}
-
-th{
-background:#091325;
-color:var(--gold);
-padding:10px;
-}
-
-td{
-padding:10px;
-border-bottom:1px solid rgba(255,255,255,.08);
-text-align:center;
-}
-
-.whatsapp{
-position:fixed;
-right:20px;
-bottom:20px;
-width:62px;
-height:62px;
-background:#25D366;
-color:white;
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:30px;
-text-decoration:none;
-box-shadow:0 10px 25px rgba(0,0,0,.35);
-}
-
-footer{
-text-align:center;
-padding:40px 20px;
-color:#9ca3af;
-border-top:1px solid rgba(212,175,55,.12);
-margin-top:40px;
-}
-
-@media(max-width:768px){
-
-.hero h1{
-font-size:42px;
-}
-
-.logo{
-font-size:28px;
-}
-
-.section-title{
-font-size:30px;
-}
-
-}
-
-</style>
+<link rel="stylesheet" href="style.css">
 
 </head>
 
@@ -286,99 +19,88 @@ font-size:30px;
 
 <header>
 
-<div class="logo">
-Key<span>Dhan</span><sup style="font-size:12px;color:#D4AF37;">™</sup>
+<div class="logo" id="adminLogo">
+Key<span>Dhan</span><sup>™</sup>
 </div>
 
-<a href="#calculator" class="btn">
-Calculate EMI
-</a>
+<button class="menu-btn" id="menuBtn">☰</button>
+
+<nav id="menu">
+
+<a href="#home">Home</a>
+
+<a href="#services">Services</a>
+
+<a href="#calculator">Calculator</a>
+
+<a href="#properties">Properties</a>
+
+<a href="#contact">Contact</a>
+
+</nav>
 
 </header>
 
-<section class="hero">
+<section id="home" class="hero">
 
-<div>
+<div class="key3d">🔑</div>
 
-<div class="key-logo">🔑</div>
-
-<h1>
-Unlock Your <span>Financial Key</span>
-</h1>
+<h1>Unlock Your <span>Financial Key</span></h1>
 
 <p>
-Premium Home Loans, Business Loans,
-Loan Against Property and Real Estate
-solutions with instant EMI calculation.
+Premium Loan & Real Estate Platform
 </p>
 
-<br>
-
-<a href="#enquiry" class="btn">
+<a href="#contact" class="btn">
 Get Started
 </a>
 
-</div>
-
 </section>
 
-<section class="wrap">
+<section id="services" class="section">
 
-<h2 class="section-title">
-Our Services
-</h2>
+<h2>Our Services</h2>
 
 <div class="grid">
 
 <div class="card">
-<div class="icon">🏠</div>
-<h3>Home Loan</h3>
-<p>Lowest interest rate with fast approval.</p>
+🏠 Home Loan
 </div>
 
 <div class="card">
-<div class="icon">💼</div>
-<h3>Business Loan</h3>
-<p>Working capital and MSME funding.</p>
+💼 Business Loan
 </div>
 
 <div class="card">
-<div class="icon">🏢</div>
-<h3>Loan Against Property</h3>
-<p>Unlock funds against your property.</p>
+🏢 Loan Against Property
 </div>
 
 <div class="card">
-<div class="icon">🏘️</div>
-<h3>Real Estate</h3>
-<p>Buy • Sell • Invest with confidence.</p>
+🏘 Real Estate
 </div>
 
 </div>
 
 </section>
 
-<section class="wrap" id="calculator">
+<section id="calculator" class="section">
 
-<h2 class="section-title">
-EMI Calculator
-</h2>
+<h2>EMI Calculator</h2>
 
 <div class="card">
 
-<label>Loan Amount (₹)</label>
-<input id="loan" type="number" placeholder="Enter loan amount">
+<input id="loan" placeholder="Loan Amount">
 
-<label>Interest Rate (% p.a.)</label>
-<input id="rate" type="number" step="0.01" placeholder="Enter interest rate">
+<input id="rate" placeholder="Interest Rate">
 
-<label>Tenure</label>
-<input id="tenure" type="number" placeholder="Enter tenure">
+<input id="tenure" placeholder="Tenure">
 
-<label>Tenure Type</label>
 <select id="type">
+
 <option value="m">Months</option>
+
 <option value="y">Years</option>
+
 </select>
 
 <button onclick="calc()">
@@ -387,41 +109,21 @@ Calculate EMI
 
 <div id="results">
 
-<div class="metrics">
+<p><strong>Monthly EMI:</strong> <span id="emi"></span></p>
 
-<div class="metric">
-<b>Monthly EMI</b>
-<span id="emi">₹0</span>
-</div>
+<p><strong>Total Interest:</strong> <span id="interest"></span></p>
 
-<div class="metric">
-<b>Total Interest</b>
-<span id="interest">₹0</span>
-</div>
+<p><strong>Total Payment:</strong> <span id="total"></span></p>
 
-<div class="metric">
-<b>Total Payment</b>
-<span id="total">₹0</span>
-</div>
+<p><strong>Flat Monthly:</strong> <span id="flatM"></span></p>
 
-<div class="metric">
-<b>Flat Monthly</b>
-<span id="flatM">0%</span>
-</div>
-
-<div class="metric">
-<b>Flat Yearly</b>
-<span id="flatY">0%</span>
-</div>
-
-</div>
+<p><strong>Flat Yearly:</strong> <span id="flatY"></span></p>
 
 <button onclick="toggleChart()">
-Create Amortisation Chart
+Amortisation Chart
 </button>
 
-<div id="amort">
-
+<div id="chart">
 <table>
 
 <thead>
@@ -447,11 +149,9 @@ Create Amortisation Chart
 
 </section>
 
-<section class="wrap">
+<section id="properties" class="section">
 
-<h2 class="section-title">
-Featured Properties
-</h2>
+<h2>Featured Properties</h2>
 
 <div class="grid">
 
@@ -460,12 +160,8 @@ Featured Properties
 <AsyncImage query="luxury apartment building night exterior" aspectRatio="5:4" width="100%" maxHeight=220/>
 
 <h3>Luxury Apartment</h3>
-<p>📍 Faridabad</p>
-<p>₹55 Lakh • 3 BHK</p>
 
-<a href="javascript:void(0)" onclick="enquire('Luxury Apartment','5500000')" class="btn">
-Enquire Now
-</a>
+<p>₹55 Lakh</p>
 
 </div>
 
@@ -474,12 +170,8 @@ Enquire Now
 <AsyncImage query="modern luxury villa with pool night" aspectRatio="5:4" width="100%" maxHeight=220/>
 
 <h3>Premium Villa</h3>
-<p>📍 Gurugram</p>
-<p>₹1.25 Crore • 4 BHK</p>
 
-<a href="javascript:void(0)" onclick="enquire('Premium Villa','12500000')" class="btn">
-Enquire Now
-</a>
+<p>₹1.25 Crore</p>
 
 </div>
 
@@ -487,196 +179,33 @@ Enquire Now
 
 </section>
 
-<!-- PART 2 START -->
-<section class="wrap" id="enquiry">
+<section id="contact" class="section">
 
-<h2 class="section-title">
-Property & Loan Enquiry
-</h2>
+<h2>Loan Enquiry</h2>
 
-<div class="card">
+<form>
 
-<p style="color:#cbd5e1;margin-bottom:20px;">
-Fill this form and submit. Enquiry directly
-<strong>hello@keydhan.com</strong>
-par receive hogi.
-</p>
+<input placeholder="Full Name">
 
-<form
-action="https://formsubmit.co/hello@keydhan.com"
-method="POST">
+<input placeholder="Mobile">
 
-<input type="hidden" name="_subject" value="🏡 New KeyDhan™ Lead">
-<input type="hidden" name="_template" value="table">
-<input type="hidden" name="_captcha" value="false">
+<input placeholder="Email">
 
-<label>Full Name</label>
-<input type="text" name="Name" required placeholder="Enter your full name">
-
-<label>Mobile Number</label>
-<input type="tel" name="Mobile" required placeholder="Enter mobile number">
-
-<label>Email (Optional)</label>
-<input type="email" name="Email" placeholder="Enter email">
-
-<label>Loan Type</label>
-<select name="Loan Type">
-<option>Home Loan</option>
-<option>Business Loan</option>
-<option>Loan Against Property</option>
-<option>Real Estate</option>
-</select>
-
-<label>Property Name</label>
-<input id="propertyName" type="text" name="Property Name" placeholder="Property name">
-
-<label>Loan Amount (₹)</label>
-<input id="budget" type="number" name="Loan Amount" placeholder="Required amount">
-
-<label>Preferred Call Time</label>
-<select name="Call Time">
-<option>Morning (9-12)</option>
-<option>Afternoon (12-4)</option>
-<option>Evening (4-8)</option>
-</select>
-
-<label>City</label>
-<input type="text" name="City" placeholder="Enter city">
-
-<label>Message</label>
-<textarea name="Message" id="message" placeholder="Tell us your requirement"></textarea>
-
-<label style="display:flex;gap:10px;align-items:center;margin-top:15px;">
-<input type="checkbox" required style="width:auto;">
-I agree to be contacted by KeyDhan™.
-</label>
-
-<button type="submit">
-Submit Enquiry
+<button>
+Submit
 </button>
 
 </form>
-
-<p style="margin-top:18px;color:#9ca3af;font-size:14px;line-height:1.7;">
-First submission ke baad
-<strong>hello@keydhan.com</strong>
-par FormSubmit verification email aayegi.
-Ek baar verify karne ke baad future ki saari enquiries direct inbox me aayengi.
-</p>
-
-</div>
 
 </section>
 
 <footer>
 
-<h3 class="logo">
-Key<span>Dhan</span><sup style="font-size:12px;color:#D4AF37;">™</sup>
-</h3>
-
-<br>
-
-<p>hello@keydhan.com</p>
-
-<p style="margin-top:16px;">
-© 2026 KeyDhan™. All Rights Reserved.
-</p>
+KeyDhan™ © 2026
 
 </footer>
 
-<a href="https://wa.me/" class="whatsapp" title="Chat with KeyDhan™">
-💬
-</a>
-
-<script>
-
-const f=n=>"₹"+Number(n).toLocaleString("en-IN",{maximumFractionDigits:2});
-
-function calc(){
-
-let P=+loan.value;
-let R=+rate.value;
-let n=+tenure.value;
-
-if(type.value==="y") n*=12;
-
-if(!P||!R||!n){
-
-alert("Please fill all fields.");
-return;
-
-}
-
-let r=R/1200;
-
-let EMI=P*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);
-
-let totalPay=EMI*n;
-
-let intr=totalPay-P;
-
-let flatYear=((intr/P)/(n/12))*100;
-
-let flatMonth=flatYear/12;
-
-emi.innerText=f(EMI);
-interest.innerText=f(intr);
-total.innerText=f(totalPay);
-flatM.innerText=flatMonth.toFixed(2)+"%";
-flatY.innerText=flatYear.toFixed(2)+"%";
-
-results.style.display="block";
-
-amort.style.display="none";
-
-rows.innerHTML="";
-
-let balance=P;
-
-for(let i=1;i<=Math.min(n,240);i++){
-
-let intPart=balance*r;
-
-let prinPart=EMI-intPart;
-
-balance=Math.max(0,balance-prinPart);
-
-rows.innerHTML+=`
-<tr>
-<td>${i}</td>
-<td>${f(prinPart)}</td>
-<td>${f(intPart)}</td>
-<td>${f(balance)}</td>
-</tr>`;
-
-}
-
-}
-
-function toggleChart(){
-
-amort.style.display=
-amort.style.display==="block"
-?"none":"block";
-
-}
-
-function enquire(property,budget){
-
-document.getElementById("enquiry").scrollIntoView({
-behavior:"smooth"
-});
-
-document.getElementById("propertyName").value=property;
-
-document.getElementById("budget").value=budget;
-
-document.getElementById("message").value=
-"I'm interested in "+property+".";
-
-}
-
-</script>
+<script src="app.js"></script>
 
 </body>
 </html>
