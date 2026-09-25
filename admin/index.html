@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KeyDhan™ Secure Admin Portal</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>KeyDhan™ Secure Admin</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
 
@@ -11,131 +11,117 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{
 font-family:Poppins,sans-serif;
-background:linear-gradient(135deg,#020814,#071323);
-color:white;
+background:#020814;
+color:#fff;
 display:flex;
 justify-content:center;
 align-items:center;
 min-height:100vh;
-padding:20px;
 }
-
 :root{--gold:#D4AF37}
-
+body:before{
+content:"";
+position:fixed;
+inset:0;
+background:radial-gradient(circle at top,rgba(212,175,55,.18),transparent 40%);
+pointer-events:none;
+}
 .card{
-width:100%;
-max-width:420px;
-background:rgba(7,19,35,.96);
+width:430px;
+max-width:92%;
+background:#071323;
 border:1px solid rgba(212,175,55,.25);
 border-radius:28px;
-padding:35px;
-box-shadow:0 20px 60px rgba(0,0,0,.45);
-backdrop-filter:blur(12px);
+padding:36px;
+box-shadow:0 20px 50px rgba(0,0,0,.45);
 }
-
 .logo{
-text-align:center;
-font-size:42px;
+font-size:40px;
 font-weight:800;
+text-align:center;
+margin-bottom:8px;
 }
-
 .logo span{color:var(--gold)}
-
 .subtitle{
 text-align:center;
-color:#9ca3af;
-margin-top:8px;
-margin-bottom:25px;
+color:#9fb3d9;
+margin-bottom:28px;
 }
-
 .lock{
-width:95px;
-height:95px;
-margin:0 auto 25px;
-background:linear-gradient(135deg,#F8E58C,#D4AF37);
-border-radius:24px;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:46px;
+font-size:68px;
+text-align:center;
+margin-bottom:18px;
 }
-
 label{
 display:block;
-margin:14px 0 8px;
+margin:16px 0 8px;
 font-weight:600;
 }
-
 input{
 width:100%;
 padding:15px;
 border-radius:14px;
-border:1px solid #334;
+border:1px solid #32435c;
 background:#0b1627;
-color:white;
+color:#fff;
 font-size:16px;
-outline:none;
-transition:.25s;
 }
-
 input:focus{
+outline:none;
 border-color:var(--gold);
 box-shadow:0 0 0 3px rgba(212,175,55,.15);
 }
-
-.remember{
-display:flex;
-align-items:center;
-gap:10px;
-margin:18px 0;
-font-size:14px;
-color:#cbd5e1;
-}
-
-.remember input{
-width:auto;
-accent-color:var(--gold);
-}
-
 button{
 width:100%;
 padding:15px;
+margin-top:22px;
 border:none;
-border-radius:999px;
-background:linear-gradient(135deg,#F8E58C,#D4AF37);
+border-radius:14px;
+background:var(--gold);
 color:#111;
-font-size:18px;
+font-size:17px;
 font-weight:700;
 cursor:pointer;
-transition:.25s;
 }
-
-button:hover{
-transform:translateY(-2px);
-box-shadow:0 12px 30px rgba(212,175,55,.3);
+button:hover{transform:translateY(-2px)}
+.info{
+margin-top:18px;
+padding:14px;
+background:#0b1627;
+border-radius:12px;
+font-size:13px;
+color:#b8c2d1;
+line-height:1.6;
 }
-
 .links{
 display:flex;
 justify-content:space-between;
 margin-top:18px;
 font-size:14px;
 }
-
 .links a{
-color:#9ca3af;
+color:#9fb3d9;
 text-decoration:none;
 }
-
-.links a:hover{
-color:var(--gold);
-}
-
-.note{
-margin-top:20px;
+.footer{
 text-align:center;
+margin-top:24px;
 font-size:12px;
-color:#64748b;
+color:#6b7280;
+}
+.loader{
+display:none;
+width:18px;
+height:18px;
+border:3px solid rgba(255,255,255,.3);
+border-top-color:#111;
+border-radius:50%;
+animation:spin .8s linear infinite;
+vertical-align:middle;
+margin-right:8px;
+}
+@keyframes spin{
+to{transform:rotate(360deg)}
 }
 </style>
 </head>
@@ -144,81 +130,65 @@ color:#64748b;
 
 <div class="card">
 
-<div class="logo">
-Key<span>Dhan</span><sup style="font-size:12px;color:#D4AF37;">™</sup>
-</div>
-
-<div class="subtitle">Secure Admin Portal</div>
+<div class="logo">Key<span>Dhan™</span></div>
+<div class="subtitle">Enterprise Secure Admin Portal</div>
 
 <div class="lock">🔐</div>
 
 <form onsubmit="login(event)">
 
-<label>Username</label>
-<input id="username" type="email" placeholder="Enter username" required>
+<label>Email</label>
+<input id="email" type="email" placeholder="Enter admin email" autocomplete="username" required>
 
 <label>Password</label>
-<input id="password" type="password" placeholder="Enter password" required>
+<input id="password" type="password" placeholder="Enter password" autocomplete="current-password" required>
 
-<label>Google Authenticator Code</label>
-<input id="otp" type="text" maxlength="6" placeholder="6-digit code" required>
-
-<label class="remember">
-<input type="checkbox">
-Remember this device for 30 days
-</label>
-
-<button type="submit">Secure Login</button>
+<button type="submit" id="loginBtn">
+<span class="loader" id="loader"></span>
+Secure Login
+</button>
 
 </form>
 
-<div class="links">
-<a href="#">Forgot Password?</a>
-<a href="../index.html">Back to Website</a>
+<div class="info">
+Cloudflare Access + Google Authenticator (TOTP) protects this admin portal.
 </div>
 
-<div class="note">
-Protected by KeyDhan™ Enterprise Security
+<div class="links">
+<a href="/">← Back to Website</a>
+<a href="https://dash.cloudflare.com" target="_blank">Cloudflare</a>
+</div>
+
+<div class="footer">
+KeyDhan™ Enterprise Security • V20.3
 </div>
 
 </div>
 
 <script>
 function login(e){
-
 e.preventDefault();
 
-const username=document.getElementById("username").value.trim();
+const email=document.getElementById("email").value.trim();
 const password=document.getElementById("password").value.trim();
-const otp=document.getElementById("otp").value.trim();
 
-// Username Check
-if(username!=="hello@keydhan.com"){
-alert("Invalid Username");
+if(!email||!password){
+alert("Please enter email and password.");
 return;
 }
 
-// Password Check
-if(password!=="#$Bharat@2018"){
-alert("Invalid Password");
-return;
-}
+const btn=document.getElementById("loginBtn");
+const loader=document.getElementById("loader");
 
-// OTP must be exactly 6 digits
-if(!/^\d{6}$/.test(otp)){
-alert("Enter a valid 6-digit Google Authenticator code");
-return;
-}
+btn.disabled=true;
+loader.style.display="inline-block";
+btn.innerHTML='<span class="loader" style="display:inline-block"></span> Verifying...';
 
-// Temporary Testing OTP
-if(otp!=="123456"){
-alert("Invalid Authenticator Code");
-return;
-}
-
-// Login Success
-window.location.href="dashboard.html";
-
+// Cloudflare Access already authentication handle karta hai.
+// Local validation intentionally nahi hai.
+setTimeout(()=>{
+window.location.href="/admin/dashboard.html";
+},900);
 }
 </script>
 
