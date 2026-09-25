@@ -3,232 +3,110 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KeyDhan™ Admin Dashboard</title>
+
+<title>KeyDhan™ Secure Admin</title>
 
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
 body{
-  background:#07111f;
-  color:#fff;
-  font-family:Arial,Helvetica,sans-serif;
+background:#07111f;
+font-family:Arial,Helvetica,sans-serif;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+color:white;
+overflow:hidden;
 }
-.wrapper{display:flex;min-height:100vh}
-.sidebar{
-  width:230px;
-  background:#08111d;
-  border-right:1px solid rgba(255,255,255,.08);
-  padding:25px 18px;
-}
-.logo{
-  font-size:40px;
-  font-weight:900;
-  color:#FFC400;
-  margin-bottom:35px;
-}
-.menu a{
-  display:block;
-  color:#cbd5e1;
-  text-decoration:none;
-  padding:12px 14px;
-  border-radius:10px;
-  margin-bottom:8px;
-}
-.menu a:hover,.menu .active{
-  background:#142338;
-  color:#FFC400;
-}
-.main{flex:1;padding:28px}
-.top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-.profile{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-.avatar{
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  background:#FFC400;
-  color:#111;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:bold;
-}
-.logout{
-  background:#ff4d4d;
-  border:none;
-  color:#fff;
-  padding:10px 18px;
-  border-radius:10px;
-  cursor:pointer;
-  font-weight:bold;
-}
-.cards{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:18px;
-  margin-top:25px;
-}
+
 .card{
-  background:#0f1b2b;
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:18px;
-  padding:20px;
+width:420px;
+background:#0f1b2b;
+border:1px solid rgba(255,255,255,.08);
+border-radius:22px;
+padding:42px;
+text-align:center;
+box-shadow:0 0 35px rgba(255,196,0,.18);
 }
-.card h3{font-size:14px;color:#b8c5d6}
-.card .num{
-  color:#FFC400;
-  font-size:34px;
-  font-weight:800;
-  margin-top:8px;
+
+.logo{
+font-size:52px;
+font-weight:900;
+color:#FFC400;
+margin-bottom:12px;
 }
-.tablebox{
-  background:#0f1b2b;
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:18px;
-  margin-top:25px;
-  overflow:hidden;
+
+.subtitle{
+color:#cbd5e1;
+margin-bottom:30px;
+font-size:18px;
 }
-.tablebox h2{
-  padding:20px;
-  color:#FFC400;
+
+.loader{
+width:52px;
+height:52px;
+margin:0 auto 28px;
+border:5px solid rgba(255,255,255,.15);
+border-top:5px solid #FFC400;
+border-radius:50%;
+animation:spin 1s linear infinite;
 }
-table{
-  width:100%;
-  border-collapse:collapse;
+
+@keyframes spin{
+100%{transform:rotate(360deg);}
 }
-th,td{
-  padding:16px;
-  border-top:1px solid rgba(255,255,255,.06);
+
+.status{
+color:#FFC400;
+font-weight:bold;
+margin-bottom:10px;
 }
-th{color:#FFC400;text-align:left}
-.badge{
-  padding:6px 12px;
-  border-radius:999px;
-  font-size:12px;
+
+.note{
+color:#94a3b8;
+font-size:14px;
+line-height:1.6;
 }
-.new{background:#2563eb}
-.follow{background:#d97706}
-.approved{background:#16a34a}
 </style>
-</head>
-<body>
-
-<div class="wrapper">
-
-<div class="sidebar">
-<div class="logo">KeyDhan™</div>
-
-<div class="menu">
-<a class="active" href="#">Dashboard</a>
-<a href="#">Properties</a>
-<a href="#">Leads</a>
-<a href="#">Loan Offers</a>
-<a href="#">Analytics</a>
-<a href="#">Settings</a>
-<a href="https://keydhan.com">Website</a>
-</div>
-</div>
-
-<div class="main">
-
-<div class="top">
-<div class="profile">
-<div class="avatar">KD</div>
-<div>
-<b>Welcome, Dev</b><br>
-<small>KeyDhan™ Admin</small>
-</div>
-</div>
-
-<button class="logout" onclick="logout()">Logout</button>
-</div>
-
-<div class="cards">
-<div class="card"><h3>Total Leads</h3><div class="num">249</div></div>
-<div class="card"><h3>Properties</h3><div class="num">32</div></div>
-<div class="card"><h3>Loan Disbursal</h3><div class="num">₹2.8 Cr</div></div>
-<div class="card"><h3>Conversion</h3><div class="num">28%</div></div>
-</div>
-
-<div class="tablebox">
-<h2>Recent Leads</h2>
-
-<table>
-<tr>
-<th>Name</th>
-<th>Loan</th>
-<th>Budget</th>
-<th>Status</th>
-</tr>
-
-<tr>
-<td>Rahul Sharma</td>
-<td>Home Loan</td>
-<td>₹45L</td>
-<td><span class="badge new">New</span></td>
-</tr>
-
-<tr>
-<td>Aman Verma</td>
-<td>LAP</td>
-<td>₹25L</td>
-<td><span class="badge follow">Follow-up</span></td>
-</tr>
-
-<tr>
-<td>Priya Singh</td>
-<td>Business Loan</td>
-<td>₹18L</td>
-<td><span class="badge approved">Approved</span></td>
-</tr>
-
-</table>
-</div>
-
-</div>
-</div>
 
 <script>
-// ===== Activity Timer =====
-let idleTimer;
-const TIMEOUT = 15 * 60 * 1000; // 15 minutes
-
-function resetTimer(){
-  clearTimeout(idleTimer);
-  idleTimer = setTimeout(logout, TIMEOUT);
-}
-
-["mousemove","mousedown","keydown","scroll","touchstart"].forEach(e=>{
-  document.addEventListener(e,resetTimer);
-});
-
-resetTimer();
-
-// ===== Logout (Cloudflare Access + Local Session) =====
-function logout(){
-
-  localStorage.clear();
-  sessionStorage.clear();
-
-  document.cookie.split(";").forEach(function(c){
-    document.cookie = c.replace(/^ +/,"")
-      .replace(/=.*/,"=;expires="+new Date().toUTCString()+";path=/");
-  });
-
-  // Cloudflare Access logout
-  window.location.replace("https://keydhan.com/cdn-cgi/access/logout");
-}
+// Redirect to Cloudflare-protected dashboard
+window.location.replace("/admin/dashboard.html");
 </script>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<div class="logo">KeyDhan™</div>
+
+<div class="subtitle">
+Enterprise Secure Admin Portal
+</div>
+
+<div class="loader"></div>
+
+<div class="status">
+Verifying Secure Access...
+</div>
+
+<div class="note">
+Cloudflare Access + Google Authenticator (TOTP)<br>
+protect this admin portal.
+</div>
+
+</div>
 
 </body>
 </html>
