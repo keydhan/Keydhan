@@ -25,12 +25,12 @@ padding:20px;
 .card{
 width:100%;
 max-width:420px;
-background:rgba(7,19,35,.95);
-border:1px solid rgba(212,175,55,.2);
+background:rgba(7,19,35,.96);
+border:1px solid rgba(212,175,55,.25);
 border-radius:28px;
 padding:35px;
 box-shadow:0 20px 60px rgba(0,0,0,.45);
-backdrop-filter:blur(14px);
+backdrop-filter:blur(12px);
 }
 
 .logo{
@@ -58,7 +58,6 @@ display:flex;
 align-items:center;
 justify-content:center;
 font-size:46px;
-color:#111;
 }
 
 label{
@@ -81,7 +80,7 @@ transition:.25s;
 
 input:focus{
 border-color:var(--gold);
-box-shadow:0 0 0 3px rgba(212,175,55,.18);
+box-shadow:0 0 0 3px rgba(212,175,55,.15);
 }
 
 .remember{
@@ -113,7 +112,7 @@ transition:.25s;
 
 button:hover{
 transform:translateY(-2px);
-box-shadow:0 12px 28px rgba(212,175,55,.28);
+box-shadow:0 12px 30px rgba(212,175,55,.3);
 }
 
 .links{
@@ -133,7 +132,7 @@ color:var(--gold);
 }
 
 .note{
-margin-top:22px;
+margin-top:20px;
 text-align:center;
 font-size:12px;
 color:#64748b;
@@ -185,7 +184,7 @@ Protected by KeyDhan™ Enterprise Security
 </div>
 
 <script>
-async function login(e){
+function login(e){
 
 e.preventDefault();
 
@@ -193,30 +192,31 @@ const username=document.getElementById("username").value.trim();
 const password=document.getElementById("password").value.trim();
 const otp=document.getElementById("otp").value.trim();
 
-// Username
+// Username Check
 if(username!=="hello@keydhan.com"){
 alert("Invalid Username");
 return;
 }
 
-// Password
+// Password Check
 if(password!=="#$Bharat@2018"){
 alert("Invalid Password");
 return;
 }
 
-// OTP format check
-if(!/^\\d{6}$/.test(otp)){
+// OTP must be exactly 6 digits
+if(!/^\d{6}$/.test(otp)){
 alert("Enter a valid 6-digit Google Authenticator code");
 return;
 }
 
-/*
-REAL AUTHENTICATOR:
-Cloudflare Zero Trust / Worker backend yahan OTP verify karega.
-Static HTML me real TOTP verify nahi hota.
-*/
+// Temporary Testing OTP
+if(otp!=="123456"){
+alert("Invalid Authenticator Code");
+return;
+}
 
+// Login Success
 window.location.href="dashboard.html";
 
 }
