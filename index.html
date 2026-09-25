@@ -1,34 +1,24 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="canonical" href="https://keydhan.com/">
 
 <meta name="robots" content="index, follow">
-
 <meta name="author" content="KeyDhan™">
 
 <meta property="og:title" content="KeyDhan™">
-
 <meta property="og:description" content="Premium Home Loan, Business Loan, Loan Against Property & Real Estate.">
-
 <meta property="og:image" content="https://keydhan.com/assets/logo.svg">
-
 <meta property="og:url" content="https://keydhan.com/">
-
 <meta property="og:type" content="website">
 
 <meta name="twitter:card" content="summary_large_image">
-
 <meta name="twitter:title" content="KeyDhan™">
-
 <meta name="twitter:description" content="Unlock Your Financial Key.">
-  
-<meta charset="UTF-8">
 
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>KeyDhan™ | Premium Finance & Real Estate</title>
@@ -36,6 +26,9 @@
 <meta name="description" content="Home Loan, Business Loan, LAP & Real Estate">
 
 <link rel="stylesheet" href="style.css">
+
+<!-- Added Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
 
@@ -52,13 +45,9 @@ Key<span>Dhan</span><sup>™</sup>
 <nav id="menu">
 
 <a href="#home">Home</a>
-
 <a href="#services">Services</a>
-
 <a href="#calculator">Calculator</a>
-
 <a href="#properties">Properties</a>
-
 <a href="#contact">Contact</a>
 
 </nav>
@@ -87,21 +76,10 @@ Get Started
 
 <div class="grid">
 
-<div class="card">
-🏠 Home Loan
-</div>
-
-<div class="card">
-💼 Business Loan
-</div>
-
-<div class="card">
-🏢 Loan Against Property
-</div>
-
-<div class="card">
-🏘 Real Estate
-</div>
+<div class="card">🏠 Home Loan</div>
+<div class="card">💼 Business Loan</div>
+<div class="card">🏢 Loan Against Property</div>
+<div class="card">🏘 Real Estate</div>
 
 </div>
 
@@ -113,18 +91,15 @@ Get Started
 
 <div class="card">
 
-<input id="loan" placeholder="Loan Amount">
+<input id="loan" type="number" placeholder="Loan Amount">
 
-<input id="rate" placeholder="Interest Rate">
+<input id="rate" type="number" step="0.01" placeholder="Interest Rate (%)">
 
-<input id="tenure" placeholder="Tenure">
+<input id="tenure" type="number" placeholder="Tenure">
 
 <select id="type">
-
 <option value="m">Months</option>
-
 <option value="y">Years</option>
-
 </select>
 
 <button onclick="calc()">
@@ -143,11 +118,15 @@ Calculate EMI
 
 <p><strong>Flat Yearly:</strong> <span id="flatY"></span></p>
 
+<!-- Added Pie Chart -->
+<canvas id="emiChart" height="220"></canvas>
+
 <button onclick="toggleChart()">
 Amortisation Chart
 </button>
 
 <div id="chart">
+
 <table>
 
 <thead>
@@ -181,21 +160,31 @@ Amortisation Chart
 
 <div class="card">
 
-<AsyncImage query="luxury apartment building night exterior" aspectRatio="5:4" width="100%" maxHeight=220/>
+<img src="https://placehold.co/600x400/071323/D4AF37?text=Luxury+Apartment"
+alt="Luxury Apartment">
 
 <h3>Luxury Apartment</h3>
 
 <p>₹55 Lakh</p>
 
+<button onclick="enquire('Luxury Apartment','5500000')">
+Enquire Now
+</button>
+
 </div>
 
 <div class="card">
 
-<AsyncImage query="modern luxury villa with pool night" aspectRatio="5:4" width="100%" maxHeight=220/>
+<img src="https://placehold.co/600x400/071323/D4AF37?text=Premium+Villa"
+alt="Premium Villa">
 
 <h3>Premium Villa</h3>
 
 <p>₹1.25 Crore</p>
+
+<button onclick="enquire('Premium Villa','12500000')">
+Enquire Now
+</button>
 
 </div>
 
@@ -207,16 +196,62 @@ Amortisation Chart
 
 <h2>Loan Enquiry</h2>
 
-<form>
+<!-- Updated Form -->
 
-<input placeholder="Full Name">
+<form id="leadForm">
 
-<input placeholder="Mobile">
+<input
+id="name"
+type="text"
+placeholder="Full Name"
+required>
 
-<input placeholder="Email">
+<input
+id="mobile"
+type="tel"
+placeholder="Mobile Number"
+required>
 
-<button>
-Submit
+<input
+id="email"
+type="email"
+placeholder="Email">
+
+<select id="loanType">
+
+<option value="">Select Loan Type</option>
+
+<option>Home Loan</option>
+
+<option>Business Loan</option>
+
+<option>Loan Against Property</option>
+
+<option>Real Estate</option>
+
+</select>
+
+<input
+id="propertyName"
+type="text"
+placeholder="Property Name (Optional)">
+
+<input
+id="budget"
+type="number"
+placeholder="Loan Amount">
+
+<input
+id="city"
+type="text"
+placeholder="City">
+
+<textarea
+id="message"
+placeholder="Tell us your requirement"></textarea>
+
+<button type="submit">
+Submit Enquiry
 </button>
 
 </form>
@@ -225,7 +260,11 @@ Submit
 
 <footer>
 
-KeyDhan™ © 2026
+<h3>KeyDhan™</h3>
+
+<p>hello@keydhan.com</p>
+
+<p>© 2026 KeyDhan™. All Rights Reserved.</p>
 
 </footer>
 
