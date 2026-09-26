@@ -1,7 +1,7 @@
 /* ==========================================
-   KeyDhan™ V20.5 Enterprise
+   KeyDhan™ V20.6 Enterprise
    Cloudflare Worker Backend
-   ========================================== */
+========================================== */
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -26,7 +26,7 @@ export default {
     if (url.pathname === "/") {
       return json({
         app: "KeyDhan™ API",
-        version: "V20.5",
+        version: "V20.6",
         status: "Online"
       });
     }
@@ -36,7 +36,7 @@ export default {
     ------------------------------ */
 
     if (url.pathname === "/api/lead" && request.method === "POST") {
-      return await saveLead(request, env);
+      return await saveLead(request);
     }
 
     /* -----------------------------
@@ -52,32 +52,49 @@ export default {
     }
 
     /* -----------------------------
-       Login API
+       Login API (GET + POST)
     ------------------------------ */
 
-    if (url.pathname === "/api/login" && request.method === "POST") {
+    if (url.pathname === "/api/login") {
 
-      const body = await request.json().catch(() => ({}));
-
-      const username = body.username || body.email || "";
-      const password = body.password || "";
-
-      // Temporary Admin Login
-      if (username === "admin" && password === "KeyDhan@2026") {
+      // Browser Test
+      if (request.method === "GET") {
         return json({
           success: true,
-          token: "KD_ADMIN_TOKEN",
-          user: {
-            name: "Dev",
-            role: "Admin"
-          }
+          endpoint: "/api/login",
+          methods: ["POST"],
+          message: "Login API is working."
         });
       }
 
-      return json({
-        success: false,
-        message: "Invalid username or password."
-      }, 401);
+      // Actual Login
+      if (request.method === "POST") {
+
+        const body = await request.json().catch(() => ({}));
+
+        const username = body.username || body.email || "";
+        const password = body.password || "";
+
+        if (
+          username === "keydhan2@gmail.com" &&
+          password === "#$Bharat@2018"
+        ) {
+          return json({
+            success: true,
+            token: "KD_ADMIN_TOKEN",
+            user: {
+              name: "Dev",
+              email: "keydhan2@gmail.com",
+              role: "Admin"
+            }
+          });
+        }
+
+        return json({
+          success: false,
+          message: "Invalid username or password."
+        }, 401);
+      }
     }
 
     /* -----------------------------
@@ -85,7 +102,6 @@ export default {
     ------------------------------ */
 
     if (url.pathname === "/api/properties") {
-
       return json({
         success: true,
         properties: [
@@ -111,6 +127,10 @@ export default {
       });
     }
 
+    /* -----------------------------
+       Not Found
+    ------------------------------ */
+
     return json({
       success: false,
       message: "Endpoint not found."
@@ -122,7 +142,7 @@ export default {
    Save Lead
 ========================================== */
 
-async function saveLead(request, env) {
+async function saveLead(request) {
 
   try {
 
@@ -169,6 +189,7 @@ async function saveLead(request, env) {
 ========================================== */
 
 function json(data, status = 200) {
+
   return new Response(
     JSON.stringify(data, null, 2),
     {
