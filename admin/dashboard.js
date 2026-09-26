@@ -3,295 +3,301 @@
    admin/dashboard.js
 ========================================== */
 
-const Dashboard={
+const API_BASE = "https://admin-api.keydhan.com/api";
 
-version:"V21",
-
-leads:[
-
-{id:1,name:"Rahul Sharma",mobile:"9876543210",loan:"Home Loan",budget:"₹45L",city:"Faridabad",status:"New"},
-
-{id:2,name:"Aman Verma",mobile:"9811111111",loan:"LAP",budget:"₹25L",city:"Gurugram",status:"Follow-up"},
-
-{id:3,name:"Priya Singh",mobile:"9899999999",loan:"Business Loan",budget:"₹18L",city:"Noida",status:"Approved"}
-
-]
-
+const Dashboard = {
+  version: "V21",
+  leads: []
 };
 
+const demoLeads = [
+  { id:1,name:"Rahul Sharma",mobile:"9876543210",loan:"Home Loan",budget:"₹45L",city:"Faridabad",status:"New"},
+  { id:2,name:"Aman Verma",mobile:"9811111111",loan:"LAP",budget:"₹25L",city:"Gurugram",status:"Follow-up"},
+  { id:3,name:"Priya Singh",mobile:"9899999999",loan:"Business Loan",budget:"₹18L",city:"Noida",status:"Approved"}
+];
+
+/* ---------- Sidebar ---------- */
+
 function toggleSidebar(){
-
-const sidebar=document.getElementById("sidebar");
-
-if(sidebar) sidebar.classList.toggle("show");
-
+  const sidebar=document.getElementById("sidebar");
+  if(sidebar) sidebar.classList.toggle("show");
 }
+
+/* ---------- API ---------- */
+
+async function fetchProperties(){
+  try{
+    const res = await fetch(`${API_BASE}/properties`,{
+      headers:{Accept:"application/json"}
+    });
+
+    if(!res.ok) throw new Error("API Error");
+
+    const data = await res.json();
+
+    Dashboard.leads = data.map((p,index)=>({
+      id:p.id || index+1,
+      name:p.title || "Property",
+      mobile:"-",
+      loan:"Property",
+      budget:p.price || "-",
+      city:p.location || "-",
+      status:p.featured ? "Approved":"New"
+    }));
+
+  }catch(err){
+    console.warn("API failed. Using demo data.");
+    Dashboard.leads = demoLeads;
+  }
+}
+
+/* ---------- Render ---------- */
 
 function renderLeads(){
 
-const table=document.querySelector("tbody");
+  const table=document.querySelector("tbody");
+  if(!table) return;
 
-if(!table) return;
+  table.innerHTML="";
 
-table.innerHTML="";
+  Dashboard.leads.forEach(lead=>{
 
-Dashboard.leads.forEach(lead=>{
+    table.innerHTML += `
+      <tr>
+        <td>${lead.name}</td>
+        <td>${lead.loan}</td>
+        <td>${lead.budget}</td>
+        <td>
+          <span class="status ${getStatusClass(lead.status)}">
+            ${lead.status}
+          </span>
+        </td>
+      </tr>
+    `;
 
-table.innerHTML+=`
+  });
 
-<tr>
-
-<td>${lead.name}</td>
-
-<td>${lead.loan}</td>
-
-<td>${lead.budget}</td>
-
-<td>
-<span class="status ${getStatusClass(lead.status)}">
-${lead.status}
-</span>
-</td>
-
-</tr>
-
-`;
-
-});
-
-updateStats();
-
+  updateStats();
 }
+
+/* ---------- Status ---------- */
 
 function getStatusClass(status){
 
-switch(status){
+  switch(status){
 
-case "New": return "new";
+    case "New": return "new";
+    case "Follow-up": return "follow";
+    case "Approved": return "closed";
+    default: return "new";
 
-case "Follow-up": return "follow";
-
-case "Approved": return "closed";
-
-default:return "new";
-
-}
+  }
 
 }
+
+/* ---------- Stats ---------- */
 
 function updateStats(){
 
-const leadCard=document.getElementById("leadCount");
+  const leadCard=document.getElementById("leadCount");
 
-if(leadCard) animateCounter(leadCard,Dashboard.leads.length);
+  if(leadCard) animateCounter(leadCard,Dashboard.leads.length);
 
 }
 
 function animateCounter(el,target){
 
-let count=0;
+  let count=0;
 
-const timer=setInterval(()=>{
+  el.innerText=0;
 
-count++;
+  const timer=setInterval(()=>{
 
-el.innerText=count;
+    count++;
 
-if(count>=target) clearInterval(timer);
+    el.innerText=count;
 
-},20);
+    if(count>=target) clearInterval(timer);
+
+  },20);
 
 }
+
+/* ---------- Search ---------- */
 
 function searchLeads(keyword){
 
-keyword=keyword.toLowerCase();
+  keyword=keyword.toLowerCase();
 
-const table=document.querySelector("tbody");
+  const table=document.querySelector("tbody");
 
-table.innerHTML="";
+  table.innerHTML="";
 
-Dashboard.leads
+  Dashboard.leads
+  .filter(l=>
 
-.filter(l=>
+    l.name.toLowerCase().includes(keyword)||
+    l.loan.toLowerCase().includes(keyword)||
+    l.city.toLowerCase().includes(keyword)
 
-l.name.toLowerCase().includes(keyword)||
+  )
+  .forEach(lead=>{
 
-l.loan.toLowerCase().includes(keyword)||
+    table.innerHTML += `
+      <tr>
+        <td>${lead.name}</td>
+        <td>${lead.loan}</td>
+        <td>${lead.budget}</td>
+        <td>
+          <span class="status ${getStatusClass(lead.status)}">
+            ${lead.status}
+          </span>
+        </td>
+      </tr>
+    `;
 
-l.city.toLowerCase().includes(keyword)
-
-)
-
-.forEach(lead=>{
-
-table.innerHTML+=`
-
-<tr>
-
-<td>${lead.name}</td>
-
-<td>${lead.loan}</td>
-
-<td>${lead.budget}</td>
-
-<td>
-<span class="status ${getStatusClass(lead.status)}">
-${lead.status}
-</span>
-</td>
-
-</tr>
-
-`;
-
-});
+  });
 
 }
+
+/* ---------- Demo Lead ---------- */
 
 function addDemoLead(){
 
-Dashboard.leads.unshift({
+  Dashboard.leads.unshift({
 
-id:Date.now(),
+    id:Date.now(),
+    name:"New Customer",
+    mobile:"9000000000",
+    loan:"Home Loan",
+    budget:"₹30L",
+    city:"Delhi",
+    status:"New"
 
-name:"New Customer",
+  });
 
-mobile:"9000000000",
+  renderLeads();
 
-loan:"Home Loan",
-
-budget:"₹30L",
-
-city:"Delhi",
-
-status:"New"
-
-});
-
-renderLeads();
-
-showToast("New lead added.");
+  showToast("New lead added.");
 
 }
+
+/* ---------- CSV ---------- */
 
 function exportCSV(){
 
-let csv="Name,Mobile,Loan,Budget,City,Status\n";
+  let csv="Name,Mobile,Loan,Budget,City,Status\n";
 
-Dashboard.leads.forEach(l=>{
+  Dashboard.leads.forEach(l=>{
 
-csv+=`${l.name},${l.mobile},${l.loan},${l.budget},${l.city},${l.status}\n`;
+    csv+=`${l.name},${l.mobile},${l.loan},${l.budget},${l.city},${l.status}\n`;
 
-});
+  });
 
-const blob=new Blob([csv],{type:"text/csv"});
+  const blob=new Blob([csv],{type:"text/csv"});
 
-const url=URL.createObjectURL(blob);
+  const url=URL.createObjectURL(blob);
 
-const a=document.createElement("a");
+  const a=document.createElement("a");
 
-a.href=url;
+  a.href=url;
 
-a.download="KeyDhan_Leads.csv";
+  a.download="KeyDhan_Leads.csv";
 
-a.click();
+  a.click();
 
-URL.revokeObjectURL(url);
+  URL.revokeObjectURL(url);
 
-showToast("CSV downloaded.");
+  showToast("CSV downloaded.");
 
 }
+
+/* ---------- Toast ---------- */
 
 function showToast(msg){
 
-const old=document.getElementById("toast");
+  const old=document.getElementById("toast");
 
-if(old) old.remove();
+  if(old) old.remove();
 
-const toast=document.createElement("div");
+  const toast=document.createElement("div");
 
-toast.id="toast";
+  toast.id="toast";
 
-toast.innerText=msg;
+  toast.innerText=msg;
 
-toast.style.cssText=`
+  toast.style.cssText=`
+    position:fixed;
+    bottom:25px;
+    right:25px;
+    background:#D4AF37;
+    color:#111;
+    padding:14px 20px;
+    border-radius:12px;
+    font-weight:700;
+    box-shadow:0 10px 30px rgba(0,0,0,.35);
+    z-index:9999;
+  `;
 
-position:fixed;
+  document.body.appendChild(toast);
 
-bottom:25px;
-
-right:25px;
-
-background:#D4AF37;
-
-color:#111;
-
-padding:14px 20px;
-
-border-radius:12px;
-
-font-weight:700;
-
-box-shadow:0 10px 30px rgba(0,0,0,.35);
-
-z-index:9999;
-
-`;
-
-document.body.appendChild(toast);
-
-setTimeout(()=>toast.remove(),2500);
+  setTimeout(()=>toast.remove(),2500);
 
 }
+
+/* ---------- Clock ---------- */
 
 function startClock(){
 
-const top=document.querySelector(".admin-info small");
+  const top=document.querySelector(".admin-info small");
 
-if(!top) return;
+  if(!top) return;
 
-setInterval(()=>{
+  setInterval(()=>{
 
-top.innerText="KeyDhan™ Admin • "+new Date().toLocaleTimeString();
+    top.innerText="KeyDhan™ Admin • "+new Date().toLocaleTimeString();
 
-},1000);
+  },1000);
 
 }
 
-/* -------- Auto Logout -------- */
+/* ---------- Auto Logout ---------- */
 
 let idleTimer;
 
 function resetIdle(){
 
-clearTimeout(idleTimer);
+  clearTimeout(idleTimer);
 
-idleTimer=setTimeout(()=>{
+  idleTimer=setTimeout(()=>{
 
-alert("Session expired.");
+    alert("Session expired.");
 
-window.top.location.replace("https://keydhan.com/cdn-cgi/access/logout");
+    window.top.location.replace("https://keydhan.com/cdn-cgi/access/logout");
 
-},15*60*1000);
+  },15*60*1000);
 
 }
 
 ["click","keypress","mousemove","touchstart"].forEach(e=>{
 
-document.addEventListener(e,resetIdle);
+  document.addEventListener(e,resetIdle);
 
 });
 
-function loadDashboard(){
+/* ---------- Load ---------- */
 
-renderLeads();
+async function loadDashboard(){
 
-startClock();
+  await fetchProperties();
 
-resetIdle();
+  renderLeads();
 
-console.log("KeyDhan™ Dashboard Loaded");
+  startClock();
+
+  resetIdle();
+
+  console.log("KeyDhan™ Dashboard V21 Connected");
 
 }
 
