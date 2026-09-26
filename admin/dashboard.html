@@ -35,6 +35,27 @@ td{padding:14px;border-bottom:1px solid rgba(255,255,255,.06)}
 @media(min-width:901px){.menu-btn{display:none}}
 </style>
 </head>
+  <script>
+// Dashboard ko browser history me replace karo
+history.replaceState(null, "", "/admin/");
+
+// Back/Forward cache block
+window.addEventListener("pageshow", function (event) {
+  const nav = performance.getEntriesByType("navigation")[0];
+
+  if (event.persisted || (nav && nav.type === "back_forward")) {
+    window.location.replace("/admin/");
+  }
+});
+
+// Logout
+function logout(){
+  localStorage.clear();
+  sessionStorage.clear();
+  history.replaceState(null, "", "/admin/");
+  window.location.replace("/cdn-cgi/access/logout");
+}
+</script>
 <body>
 <div class="dashboard">
 <div class="sidebar" id="sidebar">
