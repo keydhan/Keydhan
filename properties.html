@@ -1,1 +1,193 @@
-<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>KeyDhan Properties</title><link href='https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap' rel='stylesheet'><style>body{margin:0;font-family:Poppins,sans-serif;background:#020814;color:#fff}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;padding:30px}.card{background:#071323;border-radius:20px;overflow:hidden}.card img{width:100%;height:220px;object-fit:cover}.content{padding:18px}.btn{display:block;background:#D4AF37;color:#111;text-align:center;padding:12px;border-radius:999px;text-decoration:none;font-weight:700}</style></head><body><h1 style='text-align:center;color:#D4AF37'>Featured Properties</h1><div class='grid' id='grid'></div><script>fetch('data/properties.json').then(r=>r.json()).then(list=>{grid.innerHTML=list.map(p=>`<div class='card'><img src='${p.image}' onerror="this.src='https://via.placeholder.com/600x400?text=Property'"><div class='content'><h2 style='color:#D4AF37'>${p.title}</h2><h3>${p.price}</h3><p>${p.location} • ${p.bhk}</p><p>${p.description}</p><a class='btn' href='https://wa.me/919999999999?text='+encodeURIComponent('I am interested in '+p.title) target='_blank'>Enquire Now</a></div></div>`).join('')}).catch(()=>grid.innerHTML='<h2>Unable to load properties.</h2>')</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KeyDhan Properties</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+font-family:Poppins,sans-serif;
+background:#020814;
+color:white;
+}
+
+:root{
+--gold:#D4AF37;
+}
+
+header{
+
+padding:25px;
+text-align:center;
+font-size:34px;
+font-weight:800;
+color:var(--gold);
+
+}
+
+.grid{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:25px;
+padding:30px;
+
+}
+
+.card{
+
+background:#071323;
+border-radius:22px;
+overflow:hidden;
+border:1px solid rgba(212,175,55,.18);
+
+}
+
+.card img{
+
+width:100%;
+height:220px;
+object-fit:cover;
+
+}
+
+.content{
+
+padding:20px;
+
+}
+
+.title{
+
+font-size:24px;
+font-weight:700;
+color:var(--gold);
+
+}
+
+.price{
+
+font-size:22px;
+font-weight:700;
+margin-top:10px;
+
+}
+
+.location{
+
+color:#cbd5e1;
+margin-top:6px;
+
+}
+
+.desc{
+
+margin-top:12px;
+color:#94a3b8;
+
+}
+
+.btn{
+
+display:block;
+margin-top:20px;
+text-align:center;
+background:var(--gold);
+color:#111;
+padding:12px;
+text-decoration:none;
+border-radius:999px;
+font-weight:700;
+
+}
+
+.badge{
+
+display:inline-block;
+background:#D4AF37;
+color:#111;
+padding:5px 10px;
+border-radius:999px;
+font-size:12px;
+font-weight:700;
+margin-top:12px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>Featured Properties</header>
+
+<div class="grid" id="propertyGrid"></div>
+
+<script>
+
+async function loadProperties(){
+
+const grid=document.getElementById("propertyGrid");
+
+try{
+
+const res=await fetch("data/properties.json");
+
+const properties=await res.json();
+
+grid.innerHTML="";
+
+properties.forEach(p=>{
+
+grid.innerHTML+=`
+
+<div class="card">
+
+<img src="${p.image}" alt="${p.title}" onerror="this.src='https://via.placeholder.com/600x400?text=Property'">
+
+<div class="content">
+
+<div class="title">${p.title}</div>
+
+<div class="price">${p.price}</div>
+
+<div class="location">${p.location} • ${p.bhk}</div>
+
+<div class="desc">${p.description}</div>
+
+${p.featured?'<div class="badge">Featured</div>':''}
+
+<a class="btn" target="_blank"
+href="https://wa.me/919999999999?text=I%20am%20interested%20in%20'+encodeURIComponent(p.title)+'">
+Enquire Now
+</a>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+}catch(e){
+
+grid.innerHTML="<h2>Unable to load properties.</h2>";
+
+}
+
+}
+
+loadProperties();
+
+</script>
+
+</body>
+
+</html>
