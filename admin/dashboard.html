@@ -84,9 +84,9 @@ color:#111;
 }
 
 .logout{
-background:var(--gold);
-color:#111;
-padding:10px 18px;
+background:#ff4d4f;
+color:#fff;
+padding:12px 22px;
 border-radius:999px;
 border:none;
 cursor:pointer;
@@ -96,7 +96,7 @@ transition:.25s;
 }
 
 .logout:hover{
-background:#F8E58C;
+background:#ff6668;
 transform:translateY(-2px);
 }
 
@@ -167,9 +167,9 @@ font-weight:600;
 display:inline-block;
 }
 
-.new{background:#1e3a8a;color:#fff}
-.follow{background:#854d0e;color:#fff}
-.closed{background:#166534;color:#fff}
+.new{background:#2563eb;color:#fff}
+.follow{background:#d97706;color:#fff}
+.closed{background:#16a34a;color:#fff}
 
 /* Quick Actions */
 .actions{
@@ -237,9 +237,7 @@ cursor:pointer;
 }
 
 @media(min-width:901px){
-.menu-btn{
-display:none;
-}
+.menu-btn{display:none}
 }
 </style>
 </head>
@@ -287,7 +285,6 @@ Key<span>Dhan</span><sup style="font-size:11px;color:#D4AF37;">™</sup>
 
 </div>
 
-<!-- Cloudflare Force Logout -->
 <button class="logout" onclick="forceLogout()">Logout</button>
 
 </div>
@@ -325,14 +322,12 @@ Key<span>Dhan</span><sup style="font-size:11px;color:#D4AF37;">™</sup>
 <table>
 
 <thead>
-
 <tr>
 <th>Name</th>
 <th>Loan</th>
 <th>Budget</th>
 <th>Status</th>
 </tr>
-
 </thead>
 
 <tbody>
@@ -415,7 +410,7 @@ function toggleSidebar(){
 document.getElementById("sidebar").classList.toggle("show");
 }
 
-// Demo live counter animation
+// Demo Counter
 let count=248;
 const lead=document.getElementById("leadCount");
 
@@ -424,27 +419,14 @@ count++;
 lead.innerText=count;
 },10000);
 
-// ===== Cloudflare 100% Force Logout =====
+// ===== Cloudflare Force Logout =====
 function forceLogout(){
 
-// Browser history remove karke Cloudflare logout
-window.location.replace("https://keydhan.com/cdn-cgi/access/logout");
+window.location.href=
+"https://keydhan.com/cdn-cgi/access/logout?redirect_url="+
+encodeURIComponent("https://keydhan.com/admin/");
 
 }
-
-// Cached dashboard reopen na ho
-window.addEventListener("pageshow", function(event){
-if(event.persisted){
-window.location.reload();
-}
-});
-
-// Back button se dashboard na khule
-history.pushState(null,"",location.href);
-
-window.addEventListener("popstate", function(){
-history.pushState(null,"",location.href);
-});
 
 </script>
 
