@@ -1,0 +1,1 @@
+function saveProperty(){const p={id:Date.now(),title:title.value,price:price.value,location:location.value,bhk:bhk.value,description:description.value,image:image.value,featured:featured.checked};let a=JSON.parse(localStorage.getItem('kd_properties')||'[]');a.unshift(p);localStorage.setItem('kd_properties',JSON.stringify(a));alert('Property saved');}
