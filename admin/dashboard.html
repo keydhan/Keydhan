@@ -91,6 +91,12 @@ padding:10px 18px;
 border-radius:999px;
 text-decoration:none;
 font-weight:700;
+transition:.25s;
+}
+
+.logout:hover{
+background:#f0c94a;
+transform:translateY(-2px);
 }
 
 /* Stats */
@@ -242,7 +248,6 @@ display:none;
 <div class="dashboard">
 
 <!-- Sidebar -->
-
 <div class="sidebar" id="sidebar">
 
 <div class="logo">
@@ -260,7 +265,6 @@ Key<span>Dhan</span><sup style="font-size:11px;color:#D4AF37;">™</sup>
 </div>
 
 <!-- Main -->
-
 <div class="main">
 
 <div class="topbar">
@@ -283,12 +287,12 @@ Key<span>Dhan</span><sup style="font-size:11px;color:#D4AF37;">™</sup>
 
 </div>
 
-<a href="index.html" class="logout">Logout</a>
+<!-- Cloudflare Access Logout -->
+<a href="/cdn-cgi/access/logout" class="logout">Logout</a>
 
 </div>
 
 <!-- Stats -->
-
 <div class="stats">
 
 <div class="card">
@@ -314,7 +318,6 @@ Key<span>Dhan</span><sup style="font-size:11px;color:#D4AF37;">™</sup>
 </div>
 
 <!-- Recent Leads -->
-
 <div class="table-card">
 
 <h2 style="color:#D4AF37;">Recent Leads</h2>
@@ -322,14 +325,12 @@ Key<span>Dhan</span><sup style="font-size:11px;color:#D4AF37;">™</sup>
 <table>
 
 <thead>
-
 <tr>
 <th>Name</th>
 <th>Loan</th>
 <th>Budget</th>
 <th>Status</th>
 </tr>
-
 </thead>
 
 <tbody>
@@ -362,7 +363,6 @@ Key<span>Dhan</span><sup style="font-size:11px;color:#D4AF37;">™</sup>
 </div>
 
 <!-- Quick Actions -->
-
 <div class="table-card">
 
 <h2 style="color:#D4AF37;">Quick Actions</h2>
@@ -379,7 +379,7 @@ Add Property
 Loan Offer
 </div>
 
-<div class="action">
+<div class="action" onclick="location.href='leads.html'">
 <span>📧</span>
 View Leads
 </div>
@@ -410,25 +410,21 @@ Open Website
 <script>
 
 function toggleSidebar(){
-
 document.getElementById("sidebar").classList.toggle("show");
-
 }
 
 // Demo live counter animation
-
 let count=248;
 const lead=document.getElementById("leadCount");
 
 setInterval(()=>{
-
 count++;
 lead.innerText=count;
-
 },10000);
 
 </script>
-  
+
 <script src="dashboard.js"></script>
+
 </body>
 </html>
