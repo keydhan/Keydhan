@@ -1,7 +1,6 @@
 /* ==========================================
    KeyDhan™ V20.5 Enterprise
    Cloudflare Worker Backend
-   Author: KeyDhan
 ========================================== */
 
 const CORS = {
@@ -33,6 +32,34 @@ export default {
     }
 
     /* -----------------------------
+       Admin Login
+    ------------------------------ */
+
+    if (url.pathname === "/api/login" && request.method === "POST") {
+
+      const body = await request.json().catch(() => ({}));
+
+      const username = body.username || "";
+      const password = body.password || "";
+
+      if (username === "admin" && password === "123456") {
+        return json({
+          success: true,
+          token: "keydhan-admin-token",
+          user: {
+            name: "Dev",
+            role: "Admin"
+          }
+        });
+      }
+
+      return json({
+        success: false,
+        message: "Invalid username or password."
+      }, 401);
+    }
+
+    /* -----------------------------
        Lead API
     ------------------------------ */
 
@@ -53,61 +80,18 @@ export default {
     }
 
     /* -----------------------------
-       Admin Login
-    ------------------------------ */
-
-    if (url.pathname === "/api/login" && request.method === "POST") {
-
-      try {
-
-        const body = await request.json();
-
-        if (
-          body.username === "admin" &&
-          body.password === "KeyDhan@2026"
-        ) {
-
-          return json({
-            success: true,
-            token: "keydhan-admin-demo-token",
-            user: {
-              name: "Dev",
-              role: "Administrator"
-            }
-          });
-
-        }
-
-        return json({
-          success: false,
-          message: "Invalid username or password."
-        }, 401);
-
-      } catch (err) {
-
-        return json({
-          success: false,
-          message: "Invalid request."
-        }, 400);
-
-      }
-
-    }
-
-    /* -----------------------------
        Property API
     ------------------------------ */
 
     if (url.pathname === "/api/properties") {
-
       return json({
         success: true,
         properties: [
           {
             id: 1,
             title: "Luxury Apartment",
-            price: "₹55 Lakh",
             location: "Sector 143, Faridabad",
+            price: "₹55 Lakh",
             featured: true,
             image: "/images/luxury-apartment.jpg",
             description: "Modern apartment with premium amenities."
@@ -115,26 +99,20 @@ export default {
           {
             id: 2,
             title: "Premium Villa",
-            price: "₹1.25 Crore",
             location: "Gurugram",
+            price: "₹1.25 Crore",
             featured: true,
             image: "/images/premium-villa.jpg",
             description: "Independent luxury villa."
           }
         ]
       });
-
     }
-
-    /* -----------------------------
-       404
-    ------------------------------ */
 
     return json({
       success: false,
       message: "Endpoint not found."
     }, 404);
-
   }
 };
 
@@ -149,12 +127,10 @@ async function saveLead(request, env) {
     const data = await request.json();
 
     if (!data.name || !data.mobile) {
-
       return json({
         success: false,
         message: "Name and Mobile required."
       }, 400);
-
     }
 
     const lead = {
@@ -188,9 +164,7 @@ async function saveLead(request, env) {
       success: false,
       error: err.message
     }, 500);
-
   }
-
 }
 
 /* ==========================================
@@ -208,7 +182,6 @@ async function saveToGoogleSheets(lead, env) {
     },
     body: JSON.stringify(lead)
   });
-
 }
 
 /* ==========================================
@@ -216,9 +189,7 @@ async function saveToGoogleSheets(lead, env) {
 ========================================== */
 
 async function sendEmail(lead, env) {
-
   console.log("Email Ready:", lead.email);
-
 }
 
 /* ==========================================
@@ -226,9 +197,7 @@ async function sendEmail(lead, env) {
 ========================================== */
 
 async function sendWhatsApp(lead, env) {
-
   console.log("WhatsApp Ready:", lead.mobile);
-
 }
 
 /* ==========================================
@@ -236,7 +205,6 @@ async function sendWhatsApp(lead, env) {
 ========================================== */
 
 function json(data, status = 200) {
-
   return new Response(
     JSON.stringify(data, null, 2),
     {
@@ -244,5 +212,4 @@ function json(data, status = 200) {
       headers: CORS
     }
   );
-
 }
