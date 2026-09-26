@@ -1,5 +1,5 @@
 /* ==========================================
-   KeyDhan™ V20.5 Enterprise
+   KeyDhan™ V20.6 Enterprise
    Cloudflare Worker Backend
 ========================================== */
 
@@ -26,7 +26,7 @@ export default {
     if (url.pathname === "/") {
       return json({
         app: "KeyDhan™ API",
-        version: "V20.5",
+        version: "V20.6",
         status: "Online"
       });
     }
@@ -35,28 +35,42 @@ export default {
        Admin Login
     ------------------------------ */
 
-    if (url.pathname === "/api/login" && request.method === "POST") {
+    if (url.pathname === "/api/login") {
 
-      const body = await request.json().catch(() => ({}));
-
-      const username = body.username || "";
-      const password = body.password || "";
-
-      if (username === "admin" && password === "123456") {
+      // Browser se direct open karne par bhi response milega
+      if (request.method === "GET") {
         return json({
           success: true,
-          token: "keydhan-admin-token",
-          user: {
-            name: "Dev",
-            role: "Admin"
-          }
+          endpoint: "/api/login",
+          methods: ["POST"],
+          status: "Ready"
         });
       }
 
-      return json({
-        success: false,
-        message: "Invalid username or password."
-      }, 401);
+      // Login Request
+      if (request.method === "POST") {
+
+        const body = await request.json().catch(() => ({}));
+
+        const username = body.username || "";
+        const password = body.password || "";
+
+        if (username === "admin" && password === "123456") {
+          return json({
+            success: true,
+            token: "keydhan-admin-token",
+            user: {
+              name: "Dev",
+              role: "Admin"
+            }
+          });
+        }
+
+        return json({
+          success: false,
+          message: "Invalid username or password."
+        }, 401);
+      }
     }
 
     /* -----------------------------
@@ -108,6 +122,10 @@ export default {
         ]
       });
     }
+
+    /* -----------------------------
+       404
+    ------------------------------ */
 
     return json({
       success: false,
