@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
 <title>KeyDhan™ Admin Dashboard</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -248,7 +252,7 @@ Key<span>Dhan</span><sup style="font-size:11px;color:#D4AF37;">™</sup>
 
 <div class="card">
 <small>Properties</small>
-<h2>32</h2>
+<h2 id="propertyCount">32</h2>
 </div>
 
 <div class="card">
@@ -281,24 +285,10 @@ Key<span>Dhan</span><sup style="font-size:11px;color:#D4AF37;">™</sup>
 <tbody>
 
 <tr>
-<td>Rahul Sharma</td>
-<td>Home Loan</td>
-<td>₹45L</td>
-<td><span class="status new">New</span></td>
-</tr>
-
-<tr>
-<td>Aman Verma</td>
-<td>LAP</td>
-<td>₹25L</td>
-<td><span class="status follow">Follow-up</span></td>
-</tr>
-
-<tr>
-<td>Priya Singh</td>
-<td>Business Loan</td>
-<td>₹18L</td>
-<td><span class="status closed">Approved</span></td>
+<td>Loading...</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
 </tr>
 
 </tbody>
@@ -343,42 +333,27 @@ Key<span>Dhan</span><sup style="font-size:11px;color:#D4AF37;">™</sup>
 </div>
 
 <script>
-
 function toggleSidebar(){
 document.getElementById("sidebar").classList.toggle("show");
 }
 
-let count=249;
-const lead=document.getElementById("leadCount");
-
-setInterval(()=>{
-count++;
-lead.innerText=count;
-},10000);
-
-// Back cache protection
+// Prevent Back Cache
 history.replaceState(null,"","/admin/dashboard.html");
 
 window.addEventListener("pageshow",function(e){
 const nav=performance.getEntriesByType("navigation")[0];
-
 if(e.persisted || (nav && nav.type==="back_forward")){
-window.location.replace("/admin/dashboard.html");
+window.location.reload();
 }
 });
 
-// FINAL Logout
+// Cloudflare Logout
 function logoutAdmin(){
-
 localStorage.clear();
 sessionStorage.clear();
-
 history.replaceState(null,"","/admin/");
-
-window.location.replace("https://keydhan.com/cdn-cgi/access/logout?returnTo=https://keydhan.com/admin/");
-
+window.location.href="https://keydhan.com/cdn-cgi/access/logout";
 }
-
 </script>
 
 <script src="dashboard.js"></script>
