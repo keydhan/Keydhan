@@ -1,21 +1,21 @@
 /* ==========================================
-   KeyDhan™ V22 Enterprise
+   KeyDhan™ V23 Enterprise
    admin/dashboard.js
 ========================================== */
 
-const API_BASE = "https://admin-api.keydhan.com/api";
-const PROPERTY_KEY = "keydhan_properties";
+// Working Cloudflare Worker API
+const API_BASE = "https://polished-band-182e.keydhan2.workers.dev/api";
 
 const Dashboard = {
-  version: "V22",
-  leads: [],
-  properties: []
+  version: "V23",
+  properties: [],
+  leads: []
 };
 
 const demoLeads = [
-  { id:1,name:"Rahul Sharma",mobile:"9876543210",loan:"Home Loan",budget:"₹45L",city:"Faridabad",status:"New"},
-  { id:2,name:"Aman Verma",mobile:"9811111111",loan:"LAP",budget:"₹25L",city:"Gurugram",status:"Follow-up"},
-  { id:3,name:"Priya Singh",mobile:"9899999999",loan:"Business Loan",budget:"₹18L",city:"Noida",status:"Approved"}
+  { name:"Rahul Sharma", loan:"Home Loan", budget:"₹45L", status:"New"},
+  { name:"Aman Verma", loan:"LAP", budget:"₹25L", status:"Follow-up"},
+  { name:"Priya Singh", loan:"Business Loan", budget:"₹18L", status:"Approved"}
 ];
 
 /* ---------- Sidebar ---------- */
@@ -25,93 +25,30 @@ function toggleSidebar(){
   if(sidebar) sidebar.classList.toggle("show");
 }
 
-/* ---------- Navigation ---------- */
-
-function bindNavigation(){
-
-  const routes={
-    dashboard:"dashboard.html",
-    properties:"properties.html",
-    leads:"leads.html",
-    "loan-offers":"loan-offers.html",
-    analytics:"analytics.html",
-    settings:"settings.html",
-    website:"../index.html"
-  };
-
-  Object.keys(routes).forEach(id=>{
-    const el=document.getElementById(id);
-    if(!el) return;
-
-    el.addEventListener("click",e=>{
-      e.preventDefault();
-      location.href=routes[id];
-    });
-  });
-
-}
-
-/* ---------- Property Count ---------- */
-
-function loadLocalProperties(){
-
-  try{
-    Dashboard.properties=JSON.parse(localStorage.getItem(PROPERTY_KEY)||"[]");
-  }catch{
-    Dashboard.properties=[];
-  }
-
-}
-
 /* ---------- API ---------- */
 
 async function fetchProperties(){
 
   try{
 
-    const res=await fetch(`${API_BASE}/properties`,{
-      headers:{Accept:"application/json"}
-    });
+    const res=await fetch(`${API_BASE}/properties`);
 
     if(!res.ok) throw new Error();
 
-    const data=await res.json();
+    Dashboard.properties=await res.json();
 
-    Dashboard.properties=data;
-
-    Dashboard.leads=data.map((p,index)=>({
-      id:p.id||index+1,
-      name:p.title||"Property",
-      mobile:"-",
+    Dashboard.leads=Dashboard.properties.map(p=>({
+      name:p.title,
       loan:"Property",
-      budget:p.price||"-",
-      city:p.location||"-",
-      status:p.featured?"Approved":"New"
+      budget:p.price,
+      status:"New"
     }));
 
-  }catch{
+  }catch(e){
 
-    console.warn("API unavailable. Using local/demo data.");
+    console.warn("API unavailable");
 
-    loadLocalProperties();
-
-    if(Dashboard.properties.length){
-
-      Dashboard.leads=Dashboard.properties.map((p,index)=>({
-        id:index+1,
-        name:p.title,
-        mobile:"-",
-        loan:"Property",
-        budget:p.price,
-        city:p.location,
-        status:"Approved"
-      }));
-
-    }else{
-
-      Dashboard.leads=demoLeads;
-
-    }
+    Dashboard.leads=[...demoLeads];
 
   }
 
@@ -127,14 +64,14 @@ function renderLeads(){
 
   table.innerHTML="";
 
-  Dashboard.leads.forEach(lead=>{
+  Dashboard.leads.forEach(l=>{
 
     table.innerHTML+=`
       <tr>
-        <td>${lead.name}</td>
-        <td>${lead.loan}</td>
-        <td>${lead.budget}</td>
-        <td><span class="status ${getStatusClass(lead.status)}">${lead.status}</span></td>
+        <td>${l.name}</td>
+        <td>${l.loan}</td>
+        <td>${l.budget}</td>
+        <td><span class="status ${getStatus(l.status)}">${l.status}</span></td>
       </tr>
     `;
 
@@ -144,13 +81,10 @@ function renderLeads(){
 
 }
 
-/* ---------- Status ---------- */
-
-function getStatusClass(status){
+function getStatus(status){
 
   switch(status){
 
-    case "New": return "new";
     case "Follow-up": return "follow";
     case "Approved": return "closed";
     default:return "new";
@@ -159,116 +93,15 @@ function getStatusClass(status){
 
 }
 
-/* ---------- Stats ---------- */
+/* ---------- Dashboard Cards ---------- */
 
 function updateStats(){
 
-  const leadCard=document.getElementById("leadCount");
+  const lead=document.getElementById("leadCount");
+  if(lead) lead.innerText=Dashboard.leads.length;
 
-  if(leadCard)
-    animateCounter(leadCard,Dashboard.leads.length);
-
-  const cards=document.querySelectorAll(".card h2");
-
-  if(cards[1])
-    cards[1].innerText=Dashboard.properties.length||32;
-
-}
-
-function animateCounter(el,target){
-
-  let count=0;
-
-  el.innerText=0;
-
-  const timer=setInterval(()=>{
-
-    count++;
-
-    el.innerText=count;
-
-    if(count>=target) clearInterval(timer);
-
-  },20);
-
-}
-
-/* ---------- Search ---------- */
-
-function searchLeads(keyword){
-
-  keyword=keyword.toLowerCase();
-
-  const table=document.querySelector("tbody");
-
-  if(!table) return;
-
-  table.innerHTML="";
-
-  Dashboard.leads
-    .filter(l=>
-      l.name.toLowerCase().includes(keyword)||
-      l.loan.toLowerCase().includes(keyword)||
-      l.city.toLowerCase().includes(keyword)
-    )
-    .forEach(lead=>{
-
-      table.innerHTML+=`
-        <tr>
-          <td>${lead.name}</td>
-          <td>${lead.loan}</td>
-          <td>${lead.budget}</td>
-          <td><span class="status ${getStatusClass(lead.status)}">${lead.status}</span></td>
-        </tr>
-      `;
-
-    });
-
-}
-
-/* ---------- Demo ---------- */
-
-function addDemoLead(){
-
-  Dashboard.leads.unshift({
-    id:Date.now(),
-    name:"New Customer",
-    mobile:"9000000000",
-    loan:"Home Loan",
-    budget:"₹30L",
-    city:"Delhi",
-    status:"New"
-  });
-
-  renderLeads();
-
-  showToast("New lead added.");
-
-}
-
-/* ---------- CSV ---------- */
-
-function exportCSV(){
-
-  let csv="Name,Mobile,Loan,Budget,City,Status\n";
-
-  Dashboard.leads.forEach(l=>{
-    csv+=`${l.name},${l.mobile},${l.loan},${l.budget},${l.city},${l.status}\n`;
-  });
-
-  const blob=new Blob([csv],{type:"text/csv"});
-
-  const url=URL.createObjectURL(blob);
-
-  const a=document.createElement("a");
-
-  a.href=url;
-  a.download="KeyDhan_Leads.csv";
-  a.click();
-
-  URL.revokeObjectURL(url);
-
-  showToast("CSV downloaded.");
+  const property=document.getElementById("propertyCount");
+  if(property) property.innerText=Dashboard.properties.length || 32;
 
 }
 
@@ -279,27 +112,26 @@ function showToast(msg){
   const old=document.getElementById("toast");
   if(old) old.remove();
 
-  const toast=document.createElement("div");
+  const t=document.createElement("div");
 
-  toast.id="toast";
-  toast.innerText=msg;
+  t.id="toast";
+  t.innerText=msg;
 
-  toast.style.cssText=`
+  t.style.cssText=`
     position:fixed;
-    bottom:25px;
-    right:25px;
+    right:20px;
+    bottom:20px;
     background:#D4AF37;
     color:#111;
-    padding:14px 20px;
+    padding:14px 22px;
     border-radius:12px;
     font-weight:700;
-    box-shadow:0 10px 30px rgba(0,0,0,.35);
     z-index:9999;
   `;
 
-  document.body.appendChild(toast);
+  document.body.appendChild(t);
 
-  setTimeout(()=>toast.remove(),2500);
+  setTimeout(()=>t.remove(),2500);
 
 }
 
@@ -312,7 +144,9 @@ function startClock(){
   if(!top) return;
 
   setInterval(()=>{
+
     top.innerText="KeyDhan™ Admin • "+new Date().toLocaleTimeString();
+
   },1000);
 
 }
@@ -330,22 +164,30 @@ function resetIdle(){
     localStorage.clear();
     sessionStorage.clear();
 
-    window.location.replace(
-      "https://keydhan.com/cdn-cgi/access/logout?returnTo=https://keydhan.com/admin/"
-    );
+    window.location.href="https://keydhan.com/cdn-cgi/access/logout";
 
   },15*60*1000);
 
 }
 
-["click","keypress","mousemove","touchstart"]
-.forEach(e=>document.addEventListener(e,resetIdle));
+["mousemove","click","keypress","touchstart","scroll"].forEach(e=>{
+
+  document.addEventListener(e,resetIdle,{passive:true});
+
+});
+
+/* ---------- Auto Refresh ---------- */
+
+setInterval(async()=>{
+
+  await fetchProperties();
+  renderLeads();
+
+},30000);
 
 /* ---------- Load ---------- */
 
 async function loadDashboard(){
-
-  bindNavigation();
 
   await fetchProperties();
 
@@ -355,7 +197,7 @@ async function loadDashboard(){
 
   resetIdle();
 
-  console.log("KeyDhan™ Dashboard V22 Connected");
+  console.log("KeyDhan™ Dashboard V23 Connected");
 
 }
 
