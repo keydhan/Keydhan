@@ -2,129 +2,209 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KeyDhan Admin - Properties</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KeyDhan™ | Properties</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{
-  font-family:Arial,sans-serif;
-  background:#081224;
+  font-family:Poppins,sans-serif;
+  background:#06111f;
   color:#fff;
 }
-.container{display:flex;min-height:100vh}
-.sidebar{
-  width:240px;
-  background:#0d1b33;
-  padding:20px;
+:root{
+  --gold:#D4AF37;
+  --card:#0b1b31;
 }
-.logo{
+
+header{
+  padding:25px;
+  text-align:center;
+  background:#071323;
+  border-bottom:1px solid rgba(212,175,55,.15);
+}
+header h1{
+  color:var(--gold);
   font-size:34px;
-  font-weight:bold;
-  color:#f5c542;
-  margin-bottom:30px;
 }
-.menu a{
-  display:block;
-  color:#fff;
-  text-decoration:none;
-  padding:12px 14px;
-  border-radius:8px;
-  margin-bottom:8px;
+header p{
+  color:#b8c2d3;
+  margin-top:8px;
 }
-.menu a:hover,
-.menu a.active{
-  background:#1b4fd8;
+
+.container{
+  max-width:1280px;
+  margin:auto;
+  padding:35px 20px;
 }
-.main{
-  flex:1;
-  padding:30px;
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:24px;
 }
+
 .card{
-  background:#11213d;
-  border-radius:16px;
+  background:var(--card);
+  border-radius:22px;
+  overflow:hidden;
+  border:1px solid rgba(212,175,55,.15);
+  transition:.25s;
+}
+
+.card:hover{
+  transform:translateY(-5px);
+}
+
+.image{
+  width:100%;
+  height:230px;
+  object-fit:cover;
+  background:#14253e;
+}
+
+.content{
   padding:20px;
 }
-input,textarea{
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:8px;
-  margin-top:6px;
-  margin-bottom:15px;
+
+.title{
+  font-size:22px;
+  font-weight:700;
 }
-button{
-  background:#f5c542;
-  border:none;
-  padding:12px 20px;
-  border-radius:8px;
-  font-weight:bold;
-  cursor:pointer;
+
+.location{
+  margin-top:8px;
+  color:#b8c2d3;
 }
-table{
-  width:100%;
-  border-collapse:collapse;
-  margin-top:25px;
+
+.price{
+  margin-top:15px;
+  color:var(--gold);
+  font-size:28px;
+  font-weight:800;
 }
-th,td{
-  border-bottom:1px solid #2b3f67;
-  padding:12px;
-  text-align:left;
+
+.desc{
+  margin-top:12px;
+  color:#d4d8df;
+  line-height:1.6;
+}
+
+.btn{
+  display:inline-block;
+  margin-top:20px;
+  background:var(--gold);
+  color:#111;
+  text-decoration:none;
+  padding:12px 22px;
+  border-radius:999px;
+  font-weight:700;
+}
+
+.loading{
+  text-align:center;
+  color:#b8c2d3;
+  padding:60px;
+  font-size:18px;
+}
+
+.empty{
+  text-align:center;
+  padding:80px 20px;
+}
+
+.empty h2{
+  color:var(--gold);
+  margin-bottom:12px;
 }
 </style>
 </head>
 
 <body>
 
+<header>
+  <h1>KeyDhan™ Properties</h1>
+  <p>Verified Property Listings • Live from Admin Panel</p>
+</header>
+
 <div class="container">
 
-<div class="sidebar">
-<div class="logo">KeyDhan</div>
+  <div id="loading" class="loading">
+    Loading Properties...
+  </div>
 
-<div class="menu">
-<a href="dashboard.html">Dashboard</a>
-<a href="properties.html" class="active">Properties</a>
-<a href="leads.html">Leads</a>
-<a href="loan-offers.html">Loan Offers</a>
-<a href="analytics.html">Analytics</a>
-<a href="settings.html">Settings</a>
-<a href="../index.html">Website</a>
-</div>
-</div>
-
-<div class="main">
-
-<h2>Property Management</h2>
-<br>
-
-<div class="card">
-
-<h3>Add New Property</h3>
-
-<input id="title" placeholder="Property Title">
-<input id="location" placeholder="Location">
-<input id="price" placeholder="Price">
-<input id="image" placeholder="Image URL">
-<textarea id="desc" placeholder="Description"></textarea>
-
-<button id="saveBtn">Save Property</button>
-
-<table>
-<thead>
-<tr>
-<th>Title</th>
-<th>Location</th>
-<th>Price</th>
-</tr>
-</thead>
-<tbody id="propertyTable"></tbody>
-</table>
+  <div id="propertyGrid" class="grid"></div>
 
 </div>
-</div>
-</div>
 
-<script src="property-form.js"></script>
+<script>
+const API="https://admin-api.keydhan.com/api/properties";
+
+async function loadProperties(){
+
+  const grid=document.getElementById("propertyGrid");
+  const loading=document.getElementById("loading");
+
+  try{
+
+    const res=await fetch(API);
+    const data=await res.json();
+
+    loading.style.display="none";
+
+    if(!Array.isArray(data)||data.length===0){
+
+      grid.innerHTML=`
+        <div class="empty">
+          <h2>No Properties Available</h2>
+          <p>New listings will appear automatically.</p>
+        </div>`;
+      return;
+    }
+
+    grid.innerHTML="";
+
+    data.forEach(p=>{
+
+      const img=p.image && p.image.trim()!=="" ? p.image :
+      "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=900";
+
+      grid.innerHTML+=`
+        <div class="card">
+
+          <img class="image" src="${img}" alt="${p.title}">
+
+          <div class="content">
+
+            <div class="title">${p.title||"Property"}</div>
+
+            <div class="location">📍 ${p.location||"-"}</div>
+
+            <div class="price">${p.price||"-"}</div>
+
+            <div class="desc">${p.desc||""}</div>
+
+            <a href="contact.html" class="btn">Enquire Now</a>
+
+          </div>
+
+        </div>`;
+    });
+
+  }catch(err){
+
+    loading.innerHTML="Unable to load properties.";
+
+    console.error(err);
+
+  }
+
+}
+
+document.addEventListener("DOMContentLoaded",loadProperties);
+</script>
 
 </body>
 </html>
