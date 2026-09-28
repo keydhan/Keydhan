@@ -3,17 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-store,no-cache,must-revalidate,max-age=0">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
 <title>KeyDhan™ Admin - Property Management</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{
-font-family:Poppins,sans-serif;
-background:#06111f;
-color:#fff;
-}
+body{font-family:Poppins,sans-serif;background:#06111f;color:#fff}
 
 :root{
 --gold:#D4AF37;
@@ -21,10 +21,7 @@ color:#fff;
 --bg:#08111d;
 }
 
-.wrapper{
-display:flex;
-min-height:100vh;
-}
+.wrapper{display:flex;min-height:100vh}
 
 /* Sidebar */
 
@@ -33,6 +30,9 @@ width:250px;
 background:var(--bg);
 padding:25px 18px;
 border-right:1px solid rgba(212,175,55,.12);
+position:fixed;
+height:100vh;
+overflow:auto;
 }
 
 .logo{
@@ -62,6 +62,7 @@ color:var(--gold);
 
 .main{
 flex:1;
+margin-left:250px;
 padding:30px;
 }
 
@@ -70,6 +71,8 @@ display:flex;
 justify-content:space-between;
 align-items:center;
 margin-bottom:25px;
+flex-wrap:wrap;
+gap:15px;
 }
 
 .logout{
@@ -82,7 +85,34 @@ cursor:pointer;
 font-weight:700;
 }
 
-/* Form */
+/* Stats */
+
+.stats{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:18px;
+margin-bottom:25px;
+}
+
+.stat-card{
+background:var(--card);
+padding:20px;
+border-radius:18px;
+border:1px solid rgba(212,175,55,.15);
+}
+
+.stat-card h4{
+color:#b9c4d3;
+font-size:14px;
+}
+
+.stat-card h2{
+color:var(--gold);
+margin-top:8px;
+font-size:32px;
+}
+
+/* Cards */
 
 .card{
 background:var(--card);
@@ -97,10 +127,13 @@ color:var(--gold);
 margin-bottom:20px;
 }
 
+/* Form */
+
 label{
 display:block;
 margin-bottom:6px;
 color:#cdd5df;
+font-size:14px;
 }
 
 input,textarea{
@@ -129,12 +162,22 @@ font-weight:700;
 cursor:pointer;
 }
 
+/* Search */
+
+.search-box{
+margin-bottom:20px;
+}
+
 /* Table */
+
+.table-wrap{
+overflow-x:auto;
+}
 
 table{
 width:100%;
 border-collapse:collapse;
-margin-top:15px;
+min-width:720px;
 }
 
 th{
@@ -147,13 +190,34 @@ background:#12223b;
 td{
 padding:14px;
 border-bottom:1px solid rgba(255,255,255,.06);
+vertical-align:middle;
 }
 
-img.thumb{
+.thumb{
 width:80px;
 height:60px;
 object-fit:cover;
 border-radius:8px;
+background:#13243d;
+}
+
+.action-btn{
+padding:8px 12px;
+border:none;
+border-radius:8px;
+font-weight:600;
+cursor:pointer;
+margin-right:6px;
+}
+
+.edit{
+background:#D4AF37;
+color:#111;
+}
+
+.delete{
+background:#ff4d4f;
+color:#fff;
 }
 
 .empty{
@@ -161,12 +225,37 @@ text-align:center;
 padding:30px;
 color:#aeb9c7;
 }
+
+/* Mobile */
+
+@media(max-width:900px){
+
+.wrapper{
+flex-direction:column;
+}
+
+.sidebar{
+position:relative;
+width:100%;
+height:auto;
+border-right:none;
+border-bottom:1px solid rgba(212,175,55,.12);
+}
+
+.main{
+margin-left:0;
+padding:20px;
+}
+
+}
 </style>
 </head>
 
 <body>
 
 <div class="wrapper">
+
+<!-- Sidebar -->
 
 <div class="sidebar">
 
@@ -184,16 +273,42 @@ color:#aeb9c7;
 
 </div>
 
+<!-- Main -->
+
 <div class="main">
 
 <div class="top">
+
+<div>
 <h1>Property Management</h1>
-<button class="logout" onclick="window.location.href='https://keydhan.com/cdn-cgi/access/logout'">Logout</button>
+<p style="color:#9fb0c7">Manage Live Website Properties</p>
 </div>
+
+<button class="logout" onclick="logoutAdmin()">Logout</button>
+
+</div>
+
+<!-- Stats -->
+
+<div class="stats">
+
+<div class="stat-card">
+<h4>Total Properties</h4>
+<h2 id="propertyCount">0</h2>
+</div>
+
+<div class="stat-card">
+<h4>Live Website</h4>
+<h2>Active</h2>
+</div>
+
+</div>
+
+<!-- Add Property -->
 
 <div class="card">
 
-<h2>Add New Property</h2>
+<h2>Add / Edit Property</h2>
 
 <label>Property Title</label>
 <input id="title" placeholder="3BHK Luxury Apartment">
@@ -205,7 +320,7 @@ color:#aeb9c7;
 <input id="price" placeholder="₹65,00,000">
 
 <label>Image URL</label>
-<input id="image" placeholder="https://...">
+<input id="image" placeholder="https://example.com/image.jpg">
 
 <label>Description</label>
 <textarea id="desc" placeholder="Property Description"></textarea>
@@ -214,9 +329,17 @@ color:#aeb9c7;
 
 </div>
 
+<!-- Property List -->
+
 <div class="card">
 
 <h2>Saved Properties</h2>
+
+<div class="search-box">
+<input id="searchInput" placeholder="Search Property or Location...">
+</div>
+
+<div class="table-wrap">
 
 <table>
 
@@ -226,13 +349,16 @@ color:#aeb9c7;
 <th>Title</th>
 <th>Location</th>
 <th>Price</th>
+<th>Action</th>
 </tr>
 </thead>
 
 <tbody id="propertyTable">
+
 <tr>
-<td colspan="4" class="empty">Loading properties...</td>
+<td colspan="5" class="empty">Loading properties...</td>
 </tr>
+
 </tbody>
 
 </table>
@@ -242,6 +368,52 @@ color:#aeb9c7;
 </div>
 
 </div>
+
+</div>
+
+<script>
+function logoutAdmin(){
+
+localStorage.clear();
+sessionStorage.clear();
+
+window.location.href="https://keydhan.com/cdn-cgi/access/logout";
+
+}
+
+/* Search */
+
+document.getElementById("searchInput").addEventListener("input",function(){
+
+const value=this.value.toLowerCase();
+
+document.querySelectorAll("#propertyTable tr").forEach(row=>{
+
+const text=row.innerText.toLowerCase();
+
+row.style.display=text.includes(value)?"":"none";
+
+});
+
+});
+
+/* Update Property Count */
+
+const observer=new MutationObserver(()=>{
+
+const rows=document.querySelectorAll("#propertyTable tr");
+
+const count=[...rows].filter(r=>r.querySelector("td")).length;
+
+document.getElementById("propertyCount").innerText=
+count===1&&rows[0].innerText.includes("Loading")?0:count;
+
+});
+
+observer.observe(document.getElementById("propertyTable"),{
+childList:true
+});
+</script>
 
 <script src="property-form.js"></script>
 
