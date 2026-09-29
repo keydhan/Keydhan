@@ -1,0 +1,12 @@
+name = "keydhan-api-v29"
+main = "worker.js"
+compatibility_date = "2026-09-29"
+
+[[kv_namespaces]]
+binding = "KEYDHAN_DB"
+id = "REPLACE_WITH_YOUR_KEYDHAN_DB_ID"
+
+# Optional R2 image storage
+# [[r2_buckets]]
+# binding = "PROPERTY_IMAGES"
+# bucket_name = "keydhan-property-images"
