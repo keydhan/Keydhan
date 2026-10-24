@@ -377,7 +377,10 @@ console.log("KeyDhan™ V20.1 Loaded");
   if(c.heroImage){const hero=document.querySelector(".hero");if(hero)hero.style.backgroundImage="linear-gradient(90deg,rgba(2,8,20,.88),rgba(2,8,20,.55)),url('"+c.heroImage.replace(/['()\\]/g,"")+"')";}
   const services=document.querySelector("#services .grid");if(services&&Array.isArray(c.services)&&c.services.length)services.innerHTML=c.services.map(x=>'<div class="card">'+safe(x)+'</div>').join("");
   const grid=document.querySelector("#properties .grid");const props=Array.isArray(pd.properties)?pd.properties:[];
-  if(grid){grid.innerHTML=props.length?props.map(p=>'<div class="card"><img src="'+safe(p.image||"https://placehold.co/600x400?text=Property")+'" alt="'+safe(p.title)+'" style="width:100%;height:210px;object-fit:cover"><h3>'+safe(p.title)+'</h3><p>'+safe(p.price)+'</p><p>'+safe(p.location)+'</p><p>'+safe(p.description||p.desc||"")+'</p><button onclick="enquire(\''+safe(p.title).replace(/'/g,"&#39;")+'\',\''+safe(p.price).replace(/'/g,"")+'\')">Enquire Now</button></div>').join(""):'<p>No properties available right now.</p>';}
+  if(grid){
+   grid.innerHTML=props.length?props.map(p=>'<div class="card"><img src="'+safe(p.image||"https://placehold.co/600x400?text=Property")+'" alt="'+safe(p.title)+'" style="width:100%;height:210px;object-fit:cover"><h3>'+safe(p.title)+'</h3><p>'+safe(p.price)+'</p><p>'+safe(p.location)+'</p><p>'+safe(p.description||p.desc||"")+'</p><button type="button" data-enquire-title="'+safe(p.title)+'" data-enquire-price="'+safe(p.price)+'">Enquire Now</button></div>').join(""):'<p>No properties available right now.</p>';
+   grid.onclick=e=>{const b=e.target.closest("[data-enquire-title]");if(b)enquire(b.dataset.enquireTitle,b.dataset.enquirePrice)};
+  }
   const offerGrid=document.querySelector("#offers .grid");const offers=Array.isArray(od.offers)?od.offers:[];if(offerGrid)offerGrid.innerHTML=offers.map(o=>'<div class="card"><h3>'+safe(o.title)+'</h3><p>'+safe(o.lender)+'</p><p>'+safe(o.interestRate)+'</p><p>'+safe(o.description)+'</p></div>').join("");
   if(s.contactEmail){const f=document.querySelector("footer");if(f){const ps=f.querySelectorAll("p");if(ps[0])ps[0].textContent=s.contactEmail;if(ps[1]&&s.contactPhone)ps[1].textContent=s.contactPhone;}}
  }catch(e){console.warn("KeyDhan CMS content not loaded; static page fallback remains.",e)}
