@@ -1,12 +1,8 @@
-name = "keydhan-api-v29"
+name = "keydhan-api-v30"
 main = "worker.js"
 compatibility_date = "2026-09-29"
 
+# Before deploying, create a KV namespace and replace this placeholder with its ID.
 [[kv_namespaces]]
 binding = "KEYDHAN_DB"
 id = "REPLACE_WITH_YOUR_KEYDHAN_DB_ID"
-
-# Optional R2 image storage
-# [[r2_buckets]]
-# binding = "PROPERTY_IMAGES"
-# bucket_name = "keydhan-property-images"
