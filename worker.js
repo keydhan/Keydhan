@@ -25,6 +25,7 @@ export default {async fetch(req,env){
   if(path==="/api/properties"&&method==="GET"){const list=await read(env,keys.properties,[]);return response({success:true,properties:list.filter(p=>(p.status||"published")==="published")},200,origin);}
   if(path==="/api/loan-offers"&&method==="GET"){const list=await read(env,keys.offers,[]);return response({success:true,offers:list.filter(o=>o.status==="published")},200,origin);}
   if(path==="/api/content"&&method==="GET")return response({success:true,content:await read(env,keys.content,{})},200,origin);
+  if(path==="/api/settings"&&method==="GET")return response({success:true,settings:await read(env,keys.settings,{businessName:"KeyDhan",contactEmail:"hello@keydhan.com"})},200,origin);
   if(path==="/api/leads"&&method==="POST"){
    const b=await req.json();if(str(b.website,200))return response({success:true},201,origin);
    const name=str(b.name,100),phone=str(b.phone??b.mobile,30),email=str(b.email,150),message=str(b.message,2000);
