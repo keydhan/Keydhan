@@ -267,8 +267,8 @@ const data={
 name:document.getElementById("name").value,
 mobile:document.getElementById("mobile").value,
 email:document.getElementById("email").value,
-loanType:document.getElementById("loanType").value,
-amount:document.getElementById("budget").value,
+interest:document.getElementById("loanType").value,
+amount:document.getElementById("budget").value,\npropertyId:document.getElementById("propertyName")?.value||"",
 city:document.getElementById("city").value,
 message:document.getElementById("message").value
 
@@ -276,7 +276,7 @@ message:document.getElementById("message").value
 
 try{
 
-const res=await fetch("/api/lead",{
+const res=await fetch("https://admin-api.keydhan.com/api/leads",{
 
 method:"POST",
 
@@ -362,3 +362,23 @@ status:"Production Ready"
 };
 
 console.log("KeyDhan™ V20.1 Loaded");
+
+
+/* ---------- LIVE CMS CONTENT + PROPERTIES ---------- */
+(async function loadKeyDhanCMS(){
+ const API_URL="https://admin-api.keydhan.com/api";
+ const safe=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+ try{
+  const [cr,pr,sr,or]=await Promise.all([fetch(API_URL+"/content",{cache:"no-store"}),fetch(API_URL+"/properties",{cache:"no-store"}),fetch(API_URL+"/settings",{cache:"no-store"}),fetch(API_URL+"/loan-offers",{cache:"no-store"})]);
+  const cd=cr.ok?await cr.json():{},pd=pr.ok?await pr.json():{},sd=sr.ok?await sr.json():{},od=or.ok?await or.json():{};
+  const c=cd.content||{};const s=sd.settings||{};
+  const set=(selector,value)=>{const el=document.querySelector(selector);if(el&&value)el.textContent=value};
+  set(".hero h1",c.heroTitle);set(".hero p",c.heroSubtitle);set(".hero .btn",c.heroButton);set("#services h2",c.servicesTitle);set("#properties h2",c.propertiesTitle);set("#contact h2",c.contactTitle);set("footer h3",s.businessName||c.footerText);set("footer p",s.contactEmail);
+  if(c.heroImage){const hero=document.querySelector(".hero");if(hero)hero.style.backgroundImage="linear-gradient(90deg,rgba(2,8,20,.88),rgba(2,8,20,.55)),url('"+c.heroImage.replace(/['()\\]/g,"")+"')";}
+  const services=document.querySelector("#services .grid");if(services&&Array.isArray(c.services)&&c.services.length)services.innerHTML=c.services.map(x=>'<div class="card">'+safe(x)+'</div>').join("");
+  const grid=document.querySelector("#properties .grid");const props=Array.isArray(pd.properties)?pd.properties:[];
+  if(grid){grid.innerHTML=props.length?props.map(p=>'<div class="card"><img src="'+safe(p.image||"https://placehold.co/600x400?text=Property")+'" alt="'+safe(p.title)+'" style="width:100%;height:210px;object-fit:cover"><h3>'+safe(p.title)+'</h3><p>'+safe(p.price)+'</p><p>'+safe(p.location)+'</p><p>'+safe(p.description||p.desc||"")+'</p><button onclick="enquire(\''+safe(p.title).replace(/'/g,"&#39;")+'\',\''+safe(p.price).replace(/'/g,"")+'\')">Enquire Now</button></div>').join(""):'<p>No properties available right now.</p>';}
+  const offerGrid=document.querySelector("#offers .grid");const offers=Array.isArray(od.offers)?od.offers:[];if(offerGrid)offerGrid.innerHTML=offers.map(o=>'<div class="card"><h3>'+safe(o.title)+'</h3><p>'+safe(o.lender)+'</p><p>'+safe(o.interestRate)+'</p><p>'+safe(o.description)+'</p></div>').join("");
+  if(s.contactEmail){const f=document.querySelector("footer");if(f){const ps=f.querySelectorAll("p");if(ps[0])ps[0].textContent=s.contactEmail;if(ps[1]&&s.contactPhone)ps[1].textContent=s.contactPhone;}}
+ }catch(e){console.warn("KeyDhan CMS content not loaded; static page fallback remains.",e)}
+})();
