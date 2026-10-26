@@ -28,3 +28,34 @@ body{width:100%;max-width:100%;overflow-x:hidden}
  .nav a{padding:9px 10px}
  .panel h2{font-size:18px}
 }
+
+/* V30 mobile polish: compact header, visible navigation, balanced KPI cards */
+@media(max-width:800px){
+ .side{padding:12px 14px}
+ .brand{font-size:23px;padding:4px 8px 12px}
+ .nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;overflow:visible}
+ .nav a{white-space:normal;min-width:0;padding:9px 10px;font-size:14px;line-height:1.25}
+ .main{padding:16px}
+ .top{display:flex;flex-direction:column;align-items:stretch;gap:12px;margin-bottom:18px}
+ .top>div{width:100%}
+ .top h1{font-size:clamp(25px,7vw,32px);line-height:1.15}
+ .top button{align-self:flex-start;width:auto;max-width:100%;font-size:14px;padding:10px 13px}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .stat{padding:14px;min-height:100px}
+ .stat b{font-size:25px}
+ .panel{margin:14px 0;padding:14px}
+ .panel h2{font-size:18px}
+ .tablewrap{margin-top:8px}
+ table{min-width:520px}
+}
+@media(max-width:420px){
+ .main{padding:12px}
+ .nav{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .nav a{font-size:13px;padding:8px}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .stat{padding:12px;min-height:92px}
+ .stat small{font-size:12px}
+ .stat b{font-size:23px}
+ .top button{font-size:13px}
+ .panel{padding:12px}
+}
