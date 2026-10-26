@@ -1,5 +1,5 @@
 // KeyDhan API v30 — KV-backed CMS. Set KEYDHAN_DB KV binding and ADMIN_API_KEY Worker secret.
-const ALLOWED = new Set(["https://keydhan.com","https://www.keydhan.com"]);
+const ALLOWED = new Set(["https://keydhan.com","https://www.keydhan.com","https://keydhan-v30-full-admin.keydhan-admin.pages.dev"]);
 const cors = origin => ({
   "Access-Control-Allow-Origin": ALLOWED.has(origin) ? origin : "https://keydhan.com",
   "Access-Control-Allow-Methods":"GET,POST,PUT,DELETE,OPTIONS",
