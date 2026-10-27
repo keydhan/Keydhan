@@ -24,7 +24,10 @@
 .contact-page-note{display:flex;align-items:center;justify-content:center;gap:8px;margin:18px 0 0;color:#98a7bb;font-size:12px;text-align:center}
 .contact-page-note span{color:var(--gold)}
 @media(max-width:600px){.contact-page-main{padding:32px 16px 52px}.contact-page-heading{margin-bottom:22px}.contact-page-heading p{font-size:14px}.contact-page-card{padding:16px;border-radius:20px}.contact-page-card #leadForm{grid-template-columns:1fr;gap:12px}.contact-page-card #leadForm textarea,.contact-page-card #leadForm button{grid-column:1}.contact-page-card #leadForm input,.contact-page-card #leadForm select{min-height:58px}}
-</style>
+
+      .field-error{margin:-10px 4px 14px;color:#ff8585;font-size:14px;line-height:1.4}
+      .field-error[hidden]{display:none}
+    </style>
 </head>
 <body>
 <header>
@@ -48,7 +51,8 @@
     <section class="contact-page-card" aria-label="Loan and property enquiry form">
       <form id="leadForm">
         <input id="name" type="text" placeholder="Full Name" autocomplete="name" required>
-        <input id="mobile" type="tel" placeholder="10-digit Mobile Number" autocomplete="tel" inputmode="numeric" pattern="[6-9][0-9]{9}" minlength="10" maxlength="10" title="Enter a valid 10-digit Indian mobile number starting with 6, 7, 8 or 9" required>
+        <input id="mobile" type="tel" placeholder="10-digit Mobile Number" autocomplete="tel" inputmode="numeric" maxlength="10" title="Please enter a valid mobile number." aria-describedby="mobileError" required>
+        <p id="mobileError" class="field-error" role="alert" hidden>Please enter a valid mobile number.</p>
         <input id="email" type="email" placeholder="Email (Optional)" autocomplete="email" inputmode="email" maxlength="254" pattern="[A-Za-z0-9.!#$%&amp;’*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+">
         <select id="loanType" aria-label="Select Loan Type" required>
           <option value="">Select Enquiry Type</option>
@@ -67,6 +71,6 @@
     </section>
   </div>
 </main>
-<script src="/app.js?v=20261027-contact-validation"></script>
+<script src="/app.js?v=20261028-contact-validation-message"></script>
 </body>
 </html>
