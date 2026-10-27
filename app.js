@@ -6,25 +6,17 @@
 
 const menuBtn=document.getElementById("menuBtn");
 const menu=document.getElementById("menu");
-
 if(menuBtn&&menu){
-
-menuBtn.addEventListener("click",()=>{
-
-menu.classList.toggle("show");
-
-});
-
-document.addEventListener("click",(e)=>{
-
-if(!menu.contains(e.target)&&!menuBtn.contains(e.target)){
-
-menu.classList.remove("show");
-
-}
-
-});
-
+ let backdrop=document.querySelector(".mobile-menu-backdrop");
+ if(!backdrop){backdrop=document.createElement("div");backdrop.className="mobile-menu-backdrop";backdrop.setAttribute("aria-hidden","true");document.body.appendChild(backdrop);}
+ const closeMenu=()=>{menu.classList.remove("show");backdrop.classList.remove("show");menuBtn.setAttribute("aria-expanded","false");menuBtn.setAttribute("aria-label","Open navigation menu");document.body.classList.remove("menu-open");};
+ const openMenu=()=>{menu.classList.add("show");backdrop.classList.add("show");menuBtn.setAttribute("aria-expanded","true");menuBtn.setAttribute("aria-label","Close navigation menu");document.body.classList.add("menu-open");};
+ menuBtn.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();menu.classList.contains("show")?closeMenu():openMenu();});
+ backdrop.addEventListener("click",closeMenu);
+ menu.addEventListener("click",e=>{if(e.target.closest("a"))closeMenu();});
+ document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu();});
+ document.addEventListener("click",e=>{if(menu.classList.contains("show")&&!menu.contains(e.target)&&!menuBtn.contains(e.target))closeMenu();});
+ window.addEventListener("resize",()=>{if(window.innerWidth>768)closeMenu();});
 }
 
 /* ---------- HIDDEN ADMIN ---------- */
