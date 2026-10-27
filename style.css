@@ -496,3 +496,37 @@ header{isolation:isolate}header .menu-btn{align-items:center;justify-content:cen
 @media(max-width:900px){.services-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.service-card{min-height:220px;padding:19px 17px 17px}.service-icon{margin-bottom:18px}.service-copy strong{font-size:18px}}
 @media(max-width:480px){.services-premium{padding-top:46px;padding-bottom:54px}.services-heading{margin-bottom:25px}.services-eyebrow{font-size:9px;letter-spacing:.14em}.services-heading h2{font-size:32px;line-height:1.14;margin-top:16px}.services-heading p{font-size:14px}.services-grid{gap:10px}.service-card{min-height:205px;padding:15px 13px 14px;border-radius:17px}.service-icon{width:42px;height:42px;flex-basis:42px;border-radius:12px;margin-bottom:15px}.service-icon svg{width:22px;height:22px}.service-copy{gap:7px}.service-copy strong{font-size:15px;line-height:1.35}.service-copy small{font-size:11px;line-height:1.5;min-height:48px}.service-link{font-size:12px;margin-top:2px}.service-link b{width:21px;height:21px}.service-number{right:12px;top:13px;font-size:9px}}
 @media(prefers-reduced-motion:reduce){.service-card,.service-link b{transition:none}}
+
+
+/* Premium calculated EMI results panel */
+#calculator .card{border-radius:24px}
+#calculator #results.emi-results{margin-top:28px;padding:0;border:1px solid rgba(212,175,55,.22);border-radius:22px;background:linear-gradient(155deg,rgba(11,24,42,.98),rgba(4,11,22,.99));overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.2),inset 0 1px rgba(255,255,255,.025)}
+.emi-results-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:19px 20px 15px;border-bottom:1px solid rgba(255,255,255,.07)}
+.emi-kicker{font-size:10px;letter-spacing:.16em;font-weight:800;color:#d9b943}
+.emi-status{display:inline-flex;align-items:center;gap:7px;color:#9db7ad;font-size:9px;font-weight:800;letter-spacing:.08em}
+.emi-status i{width:6px;height:6px;border-radius:50%;background:#63c6a2;box-shadow:0 0 10px rgba(99,198,162,.35)}
+.emi-highlight{display:flex;flex-direction:column;align-items:flex-start;margin:16px;padding:21px 20px;border:1px solid rgba(212,175,55,.28);border-radius:17px;background:radial-gradient(ellipse at 90% 0%,rgba(212,175,55,.12),transparent 55%),linear-gradient(120deg,#102039,#0a1424)}
+.emi-label{color:#b5c2d4;font-size:13px;font-weight:600}
+.emi-amount{display:flex;align-items:baseline;flex-wrap:wrap;gap:3px;margin-top:7px;color:#f1d46c;font-size:clamp(30px,5vw,42px);font-weight:850;letter-spacing:-.04em;line-height:1.2;overflow-wrap:anywhere}
+.emi-amount #emi{color:inherit}
+.emi-caption{margin-top:7px;color:#8e9fb5;font-size:11px}
+.emi-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:0 16px 16px}
+.emi-metric{display:flex;flex-direction:column;justify-content:center;gap:9px;min-width:0;padding:15px 14px;border:1px solid rgba(150,169,193,.12);border-radius:14px;background:rgba(13,27,46,.74)}
+.emi-metric>span{color:#9eacc0;font-size:11px;line-height:1.4}
+.emi-metric strong{color:#f4f6fa;font-size:clamp(14px,2vw,18px);font-weight:750;overflow-wrap:anywhere}
+.emi-chart-card{margin:0 16px 14px;padding:17px 15px 13px;border:1px solid rgba(150,169,193,.12);border-radius:16px;background:rgba(5,13,25,.62)}
+.emi-chart-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.emi-chart-heading>div{display:flex;flex-direction:column;gap:5px}
+.emi-chart-heading strong{color:#f4f6fa;font-size:14px}
+.emi-chart-heading small{color:#91a0b5;font-size:11px}
+.emi-chart-icon{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:11px;background:rgba(212,175,55,.1);color:#e1c34f;font-size:21px}
+.emi-chart-canvas{position:relative;width:100%;max-width:340px;margin:10px auto 0;min-height:180px}
+.emi-chart-canvas canvas{display:block;width:100%!important;max-width:100%;height:auto!important;max-height:280px}
+.emi-amortisation-btn{display:flex;align-items:center;justify-content:space-between;gap:12px;width:calc(100% - 32px);margin:0 16px 16px;padding:15px 16px;border:1px solid rgba(212,175,55,.28);border-radius:13px;background:rgba(212,175,55,.07);color:#e5c653;font-size:13px;font-weight:750;text-align:left}
+.emi-amortisation-btn:hover{background:rgba(212,175,55,.13)}
+#calculator #chart.emi-amortisation-table{margin:0 16px 16px;padding:0 12px 12px;border:1px solid rgba(150,169,193,.12);border-radius:14px;overflow-x:auto}
+#calculator #chart table{min-width:500px;font-size:12px}
+#calculator #chart th,#calculator #chart td{padding:10px 8px}
+#calculator #results p{margin:0}
+@media(min-width:900px){#calculator>.card{max-width:920px;margin-left:auto;margin-right:auto;padding:30px}#calculator #results.emi-results{display:none}#calculator .card:has(#results[style*="block"]){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:26px;align-items:start}#calculator .card:has(#results[style*="block"]) #results{grid-column:2;grid-row:1 / span 6;margin-top:0}#calculator .card:has(#results[style*="block"]) #loan,#calculator .card:has(#results[style*="block"]) #rate,#calculator .card:has(#results[style*="block"]) #tenure,#calculator .card:has(#results[style*="block"]) #type,#calculator .card:has(#results[style*="block"]) button:not(.emi-amortisation-btn){grid-column:1}}
+@media(max-width:600px){#calculator #results.emi-results{margin-top:22px;border-radius:18px}.emi-results-heading{padding:15px 14px 12px}.emi-kicker{font-size:9px}.emi-status{font-size:8px}.emi-highlight{margin:12px;padding:18px 15px}.emi-metrics{gap:8px;padding:0 12px 12px}.emi-metric{padding:12px 10px;gap:7px}.emi-metric>span{font-size:10px}.emi-metric strong{font-size:14px}.emi-chart-card{margin:0 12px 12px;padding:14px 12px}.emi-chart-canvas{max-width:270px;min-height:150px}.emi-amortisation-btn{width:calc(100% - 24px);margin:0 12px 12px;padding:14px;font-size:12px}#calculator #chart.emi-amortisation-table{margin:0 12px 12px}}
