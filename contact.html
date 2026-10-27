@@ -51,13 +51,13 @@
         <input id="mobile" type="tel" placeholder="Mobile Number" autocomplete="tel" inputmode="tel" required>
         <input id="email" type="email" placeholder="Email (Optional)" autocomplete="email">
         <select id="loanType" aria-label="Select Loan Type" required>
-          <option value="">Select Loan Type</option>
+          <option value="">Select Enquiry Type</option>
           <option>Home Loan</option>
           <option>Business Loan</option>
           <option>Loan Against Property</option>
           <option>Real Estate</option>
         </select>
-        <input id="propertyName" type="text" placeholder="Property Name (Optional)">
+        <input id="propertyName" type="text" placeholder="Property Name (Optional)" hidden>
         <input id="budget" type="number" min="0" placeholder="Loan Amount (₹)">
         <input id="city" type="text" placeholder="City" autocomplete="address-level2">
         <textarea id="message" placeholder="Tell us your requirement" rows="4"></textarea>
@@ -67,6 +67,6 @@
     </section>
   </div>
 </main>
-<script src="/app.js?v=20261027-contact-page"></script>
+<script src="/app.js?v=20261027-contact-conditional-property"></script>
 </body>
 </html>
