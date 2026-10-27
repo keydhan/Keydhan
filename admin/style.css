@@ -194,3 +194,18 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .lead-action-menu button{width:100%;white-space:nowrap}
 @media(max-width:800px){.lead-filters{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.lead-filters>#search{grid-column:1/-1}.lead-filters>select{font-size:14px}.filter-actions{display:grid;grid-template-columns:1fr 1fr}.filter-actions span{grid-column:1/-1}.filter-actions button{width:100%}}
 @media(max-width:480px){.lead-filters{grid-template-columns:minmax(0,1fr)}.lead-filters>#search{grid-column:auto}.lead-filters>select{font-size:15px}.custom-dates{grid-template-columns:minmax(0,1fr)}.filter-actions{grid-template-columns:1fr 1fr}.lead-actions summary{min-height:36px;padding:7px 9px}}
+
+
+/* Premium lead overview and action hierarchy */
+.lead-overview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0 0 18px}
+.lead-stat{position:relative;overflow:hidden;padding:18px;border:1px solid #2a3b52;border-radius:18px;background:radial-gradient(ellipse at top right,rgba(212,175,55,.10),transparent 55%),linear-gradient(145deg,#15253a,#0d1929);box-shadow:0 10px 26px rgba(0,0,0,.12)}
+.lead-stat:after{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:0 4px 4px 0;background:#d4af37}
+.lead-stat span{display:block;color:#aab8ca;font-size:13px;font-weight:650}
+.lead-stat strong{display:block;margin:6px 0 2px;color:#f7f8fb;font-size:30px;line-height:1.15;letter-spacing:-.04em}
+.lead-stat small{font-size:11px}
+.lead-stat.pending strong{color:#f2cf55}
+.lead-view{display:inline-flex;align-items:center;justify-content:center;margin:0 6px 4px 0;padding:8px 10px;min-height:36px;border:1px solid #d4af37;border-radius:10px;background:linear-gradient(135deg,#e2c044,#caa32a);color:#071323;font-size:12px;font-weight:800;white-space:nowrap}
+.lead-actions{display:inline-block;vertical-align:middle}
+.lead-actions summary{font-size:12px}
+@media(max-width:800px){.lead-overview{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:14px}.lead-stat{padding:14px;border-radius:16px}.lead-stat strong{font-size:28px}.lead-stat small{font-size:10px}}
+@media(max-width:480px){.lead-overview{gap:8px}.lead-stat{padding:12px 12px 12px 15px}.lead-stat span{font-size:12px}.lead-stat strong{font-size:25px}.lead-stat:after{top:12px;bottom:12px}.lead-view{width:100%;margin:0 0 7px}.lead-actions{width:100%}.lead-actions summary{width:100%}.lead-action-menu{left:0;right:auto;width:100%}}
