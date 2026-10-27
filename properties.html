@@ -23,7 +23,7 @@
 #propertyGrid .property-card:hover{transform:translateY(-4px);border-color:rgba(212,175,55,.55);box-shadow:0 18px 36px rgba(0,0,0,.24)}
 .property-visual{position:relative;display:flex;align-items:center;justify-content:center;width:100%;height:218px;overflow:hidden;background:radial-gradient(ellipse at 50% 15%,rgba(212,175,55,.18),transparent 48%),linear-gradient(135deg,#14253a,#07111f 75%);border-bottom:1px solid rgba(212,175,55,.16)}
 .property-visual:after{content:"";position:absolute;inset:14px;border:1px solid rgba(212,175,55,.14);border-radius:12px;pointer-events:none}
-.property-visual img{display:block;width:100%;height:100%;object-fit:cover;margin:0;border-radius:0}
+.property-visual img{position:absolute;inset:0;z-index:0;display:block;width:100%;height:100%;object-fit:cover;margin:0;border-radius:0}
 .property-visual .visual-brand{position:absolute;left:22px;top:20px;color:#f4d77a;font-size:10px;letter-spacing:.18em;font-weight:800;text-transform:uppercase;z-index:1}
 .property-visual .visual-icon{width:72px;height:72px;color:rgba(244,215,122,.9);filter:drop-shadow(0 8px 20px rgba(212,175,55,.12))}
 .property-content{padding:21px;display:flex;flex:1;flex-direction:column;min-width:0}
@@ -119,7 +119,7 @@
     const title=esc(p.title||"Property");
     const image=String(p.image||"").trim();
     const imageBlock=image
-      ? '<div class="property-visual"><span class="visual-brand">KeyDhan Property</span><img loading="lazy" src="'+esc(image)+'" alt="'+title+'" onerror="this.parentElement.innerHTML=\'<span class=&quot;visual-brand&quot;>KeyDhan Property</span>'+houseIcon+'\'"></div>'
+      ? '<div class="property-visual"><span class="visual-brand">KeyDhan Property</span>'+houseIcon+'<img loading="lazy" src="'+esc(image)+'" alt="'+title+'" onerror="this.remove()"></div>'
       : '<div class="property-visual"><span class="visual-brand">KeyDhan Property</span>'+houseIcon+'</div>';
     const location=esc(p.location||"Location on request");
     const price=esc(formatPrice(p.price));
@@ -128,7 +128,7 @@
     const description=esc(p.description||p.desc||"");
     const phone=String(p.whatsapp||s.contactPhone||"").replace(/[^0-9]/g,"");
     const enquiryText=encodeURIComponent("Hello KeyDhan, I am interested in "+(p.title||"this property")+" ("+formatPrice(p.price)+"). Please share more details.");
-    const enquiryHref=phone?'https://wa.me/'+esc(phone)+'?text='+enquiryText:'/##contact';
+    const enquiryHref=phone?'https://wa.me/'+esc(phone)+'?text='+enquiryText':'+'/#contact';
     return '<article class="card property-card">'+imageBlock+'<div class="property-content"><div class="property-title">'+title+'</div><div class="property-price">'+price+'</div><div class="property-location"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="1.8"/></svg><span>'+location+'</span></div><div class="property-meta">'+(beds?'<span class="property-detail">'+beds+'</span>':'')+(type?'<span class="property-detail">'+type+'</span>':'')+(p.featured?'<span class="property-badge">★ Featured</span>':'')+'</div>'+(description?'<p class="property-desc">'+description+'</p>':'')+'<div class="property-actions"><a class="btn" target="_blank" rel="noopener noreferrer" href="'+enquiryHref+'">Enquire Now <span aria-hidden="true">↗</span></a></div></div></article>';
    }).join("");
   }catch(e){status.textContent="Properties are temporarily unavailable. Please try again shortly.";console.error("KeyDhan properties page:",e);}
