@@ -268,7 +268,8 @@ name:document.getElementById("name").value,
 mobile:document.getElementById("mobile").value,
 email:document.getElementById("email").value,
 interest:document.getElementById("loanType").value,
-amount:document.getElementById("budget").value,\npropertyId:document.getElementById("propertyName")?.value||"",
+amount:document.getElementById("budget").value,
+propertyId:document.getElementById("propertyName")?.value||"",
 city:document.getElementById("city").value,
 message:document.getElementById("message").value
 
@@ -378,7 +379,14 @@ console.log("KeyDhan™ V20.1 Loaded");
   const services=document.querySelector("#services .grid");if(services&&Array.isArray(c.services)&&c.services.length)services.innerHTML=c.services.map(x=>'<div class="card">'+safe(x)+'</div>').join("");
   const grid=document.querySelector("#properties .grid");const props=Array.isArray(pd.properties)?pd.properties:[];
   const priceLabel=v=>{const raw=String(v??"").trim();if(!raw)return "Price on request";if(/[₹]|lakh|lac|crore|cr\\b|\\bnegotiable\\b/i.test(raw))return raw;const n=Number(raw.replace(/[,\\s]/g,""));if(!Number.isFinite(n)||n<=0)return raw;if(n>=10000000)return "₹"+(n/10000000).toLocaleString("en-IN",{maximumFractionDigits:2})+" Crore";if(n>=100000)return "₹"+(n/100000).toLocaleString("en-IN",{maximumFractionDigits:2})+" Lakh";return "₹"+n.toLocaleString("en-IN")};
-  const homeCard=p=>{const title=safe(p.title||"Property"),image=String(p.image||"").trim(),location=safe(p.location||"Location on request"),description=safe(p.description||p.desc||"");const beds=Number(p.bedrooms)||0,type=safe(p.type||"Residential");const visual=image?'<div class="home-property-visual"><span>KEYDHAN PROPERTY</span><img loading="lazy" src="'+safe(image)+'" alt="'+title+'" onerror="this.remove()"></div>':'<div class="home-property-visual home-property-placeholder"><span>KEYDHAN PROPERTY</span><b aria-hidden="true">⌂</b></div>';return '<article class="card home-property-card">'+visual+'<div class="home-property-body"><h3>'+title+'</h3><strong class="home-property-price">'+safe(priceLabel(p.price))+'</strong><p class="home-property-location">⌖ '+location+'</p><div class="home-property-tags">'+(beds?'<span>'+beds+' BHK</span>':'')+'<span>'+type+'</span>'+(p.featured?'<span>Featured</span>':'')+'</div>'+(description?'<p class="home-property-description">'+description+'</p>':'')+'<button type="button" class="home-property-enquire" data-enquire-title="'+title+'" data-enquire-price="'+safe(p.price)+'">Enquire Now ↗</button></div></article>'};
+  const homeCard=p=>{
+   const title=safe(p.title||"Property"),image=String(p.image||"").trim(),location=safe(p.location||"Location on request"),description=safe(p.description||p.desc||"");
+   const beds=Number(p.bedrooms)||0,type=safe(p.type||p.propertyType||p.property_type||"Residential");
+   const visual=image?'<div class="home-property-visual"><span class="visual-brand">KEYDHAN PROPERTY</span><img loading="lazy" src="'+safe(image)+'" alt="'+title+'" onerror="this.remove()"></div>':'<div class="home-property-visual home-property-placeholder"><span class="visual-brand">KEYDHAN PROPERTY</span><svg class="home-house-icon" viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M8 29 32 9l24 20M15 25v29h34V25M26 54V37h12v17" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
+   const price=safe(priceLabel(p.price));
+   const pin='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="1.8"/></svg>';
+   return '<article class="card home-property-card">'+visual+'<div class="home-property-body"><h3 class="home-property-title">'+title+'</h3><div class="home-property-price">'+price+'</div><div class="home-property-location">'+pin+'<span>'+location+'</span></div><div class="home-property-tags">'+(beds?'<span class="home-property-detail">'+beds+' BHK</span>':'')+(type?'<span class="home-property-detail">'+type+'</span>':'')+(p.featured?'<span class="home-property-badge">★ Featured</span>':'')+'</div>'+(description?'<p class="home-property-description">'+description+'</p>':'')+'<button type="button" class="home-property-enquire" data-enquire-title="'+title+'" data-enquire-price="'+safe(p.price)+'">Enquire Now <span aria-hidden="true">↗</span></button></div></article>';
+  }
   if(grid){
    const shown=props.slice(0,4);grid.innerHTML=shown.length?shown.map(homeCard).join(""):'<p>No properties available right now.</p>';
    grid.onclick=e=>{const b=e.target.closest("[data-enquire-title]");if(b)enquire(b.dataset.enquireTitle,b.dataset.enquirePrice)};
