@@ -397,3 +397,16 @@ font-size:56px;
 #featuredProperties .home-property-description{font-size:12px;line-height:1.65;color:#cbd5e1;margin:0 0 14px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 #featuredProperties .home-property-enquire{width:100%;margin-top:auto;padding:12px 14px;border-radius:11px;font-size:13px}
 @media(max-width:600px){#featuredProperties{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}#featuredProperties .home-property-card{padding:9px;border-radius:16px}#featuredProperties .home-property-visual{height:130px;margin-bottom:10px}#featuredProperties .home-property-body h3{font-size:15px}#featuredProperties .home-property-price{font-size:18px}#featuredProperties .home-property-description{font-size:11px;-webkit-line-clamp:3}#featuredProperties .home-property-enquire{font-size:12px;padding:10px 7px}}
+
+
+/* Homepage cards: compact premium layout */
+#properties #featuredProperties{grid-template-columns:repeat(auto-fit,minmax(220px,280px));justify-content:center;gap:18px}
+#properties #featuredProperties .home-property-card{padding:10px;border-radius:18px}
+#properties #featuredProperties .home-property-visual{height:145px;margin-bottom:11px;border-radius:12px}
+#properties #featuredProperties .home-property-body h3{font-size:17px;margin-bottom:5px}
+#properties #featuredProperties .home-property-price{font-size:20px;margin-bottom:6px}
+#properties #featuredProperties .home-property-location{font-size:11px;margin-bottom:7px}
+#properties #featuredProperties .home-property-tags{margin-bottom:7px}
+#properties #featuredProperties .home-property-description{font-size:11px;line-height:1.5;-webkit-line-clamp:2;margin-bottom:10px}
+#properties #featuredProperties .home-property-enquire{padding:10px 12px;font-size:12px}
+@media(max-width:600px){#properties #featuredProperties{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}#properties #featuredProperties .home-property-card{padding:8px;border-radius:14px}#properties #featuredProperties .home-property-visual{height:105px;margin-bottom:8px;border-radius:10px}#properties #featuredProperties .home-property-body h3{font-size:13px;margin-bottom:5px}#properties #featuredProperties .home-property-price{font-size:16px;margin-bottom:5px}#properties #featuredProperties .home-property-location{font-size:10px;line-height:1.35;margin-bottom:6px}#properties #featuredProperties .home-property-tags{gap:4px;margin-bottom:6px}#properties #featuredProperties .home-property-tags span{font-size:9px;padding:3px 6px}#properties #featuredProperties .home-property-description{font-size:10px;line-height:1.4;-webkit-line-clamp:2;margin-bottom:8px}#properties #featuredProperties .home-property-enquire{font-size:10px;padding:9px 5px;border-radius:9px}}
