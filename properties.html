@@ -1,1 +1,101 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Browse KeyDhan properties and real estate listings."><title>Properties | KeyDhan</title><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet"><style>:root{--gold:#D4AF37}*{box-sizing:border-box}body{margin:0;font-family:Poppins,sans-serif;background:#020814;color:white}header{padding:25px;text-align:center;font-size:34px;font-weight:800;color:var(--gold)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:25px;padding:24px}.card{background:#071323;border-radius:18px;overflow:hidden;border:1px solid rgba(212,175,55,.18)}.card img{width:100%;height:220px;object-fit:cover}.content{padding:20px}.title{font-size:22px;font-weight:700;color:var(--gold)}.price{font-size:21px;font-weight:700;margin-top:10px}.location{color:#cbd5e1;margin-top:6px}.desc{margin-top:12px;color:#94a3b8}.btn{display:block;margin-top:20px;text-align:center;background:var(--gold);color:#111;padding:12px;text-decoration:none;border-radius:999px;font-weight:700}.badge{display:inline-block;background:var(--gold);color:#111;padding:5px 10px;border-radius:999px;font-size:12px;font-weight:700;margin-top:12px}.status{text-align:center;color:#a9b5c5;padding:15px}</style></head><body><header id="pageTitle">Featured Properties</header><div id="status" class="status">Loading properties…</div><div class="grid" id="propertyGrid"></div><script>const API="https://admin-api.keydhan.com/api";const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));async function loadProperties(){const grid=document.getElementById("propertyGrid"),status=document.getElementById("status");try{const [r,c]=await Promise.all([fetch(API+"/properties",{cache:"no-store"}),fetch(API+"/content",{cache:"no-store"})]);if(!r.ok)throw Error("Property API returned HTTP "+r.status);const data=await r.json(),content=c.ok?(await c.json()).content||{}:{};if(content.propertiesTitle)document.getElementById("pageTitle").textContent=content.propertiesTitle;const list=Array.isArray(data.properties)?data.properties:[];status.textContent=list.length?list.length+" properties available":"No properties published yet.";grid.innerHTML=list.map(p=>'<article class="card"><img src="'+esc(p.image||"https://placehold.co/600x400?text=Property")+'" alt="'+esc(p.title)+'" onerror="this.src=\'https://placehold.co/600x400?text=Property\'"><div class="content"><div class="title">'+esc(p.title)+'</div><div class="price">'+esc(p.price)+'</div><div class="location">'+esc(p.location)+' · '+esc(p.bedrooms||"")+' BHK</div><div class="desc">'+esc(p.description||p.desc||"")+'</div>'+(p.featured?'<span class="badge">Featured</span>':'')+'<a class="btn" target="_blank" rel="noopener" href="https://wa.me/'+esc(p.whatsapp||"919999999999")+'?text='+encodeURIComponent("I am interested in "+p.title+" ("+p.price+")")+'">Enquire Now</a></div></article>').join("")}catch(e){status.textContent="Unable to load properties. Please try again later.";console.error(e)}}loadProperties();</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Explore the latest published properties listed by KeyDhan.">
+<link rel="canonical" href="https://keydhan.com/properties.html">
+<title>Properties | KeyDhan™</title>
+<link rel="stylesheet" href="/style.css">
+<style>
+.properties-intro{padding:64px 20px 18px;text-align:center;background:radial-gradient(circle at top,rgba(212,175,55,.12),transparent 60%)}
+.properties-intro h1{font-size:clamp(34px,6vw,52px);line-height:1.1;color:var(--gold);margin:0 0 12px}
+.properties-intro p{color:var(--muted);font-size:17px;max-width:650px;margin:0 auto}
+#propertyStatus{text-align:center;color:var(--muted);padding:22px 12px}
+#propertyGrid .property-card{padding:0;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+#propertyGrid .property-card img{display:block;width:100%;height:230px;object-fit:cover;margin:0;border-radius:0}
+#propertyGrid .property-content{padding:20px;display:flex;flex:1;flex-direction:column}
+#propertyGrid .property-title{font-size:21px;color:var(--gold);font-weight:700;line-height:1.35}
+#propertyGrid .property-price{font-size:22px;font-weight:800;margin-top:10px}
+#propertyGrid .property-location{color:var(--muted);margin-top:6px}
+#propertyGrid .property-desc{color:#94a3b8;margin-top:12px;line-height:1.65;overflow-wrap:anywhere}
+#propertyGrid .property-badge{display:inline-block;align-self:flex-start;background:rgba(212,175,55,.14);border:1px solid var(--border);color:var(--gold);padding:5px 10px;border-radius:999px;font-size:12px;font-weight:700;margin-top:12px}
+#propertyGrid .property-actions{margin-top:auto;padding-top:18px}
+#propertyGrid .property-actions .btn{display:block;text-align:center;margin:0}
+.properties-empty{grid-column:1/-1;text-align:center;padding:35px 18px;background:var(--bg2);border:1px solid var(--border);border-radius:18px;color:var(--muted)}
+@media(max-width:600px){.properties-intro{padding:44px 16px 10px}#propertyGrid{grid-template-columns:minmax(0,1fr);padding:0 16px 36px;gap:18px}#propertyGrid .property-card img{height:215px}#propertyGrid .property-content{padding:17px}}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="/" aria-label="KeyDhan home" style="text-decoration:none;color:inherit">Key<span>Dhan</span><sup>™</sup></a>
+  <button class="menu-btn" id="menuBtn" type="button" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+  <nav id="menu">
+    <a href="/#home">Home</a>
+    <a href="/#services">Services</a>
+    <a href="/#calculator">Calculator</a>
+    <a href="/properties.html" aria-current="page">Properties</a>
+    <a href="/#contact">Contact</a>
+  </nav>
+</header>
+<main>
+  <section class="properties-intro">
+    <h1 id="pageTitle">Properties</h1>
+    <p>Explore the latest published properties from KeyDhan.</p>
+  </section>
+  <section class="section" aria-label="Published properties" style="padding-top:24px">
+    <div id="propertyStatus" role="status" aria-live="polite">Loading latest properties…</div>
+    <div class="grid" id="propertyGrid"></div>
+  </section>
+</main>
+<footer>
+  <h3>KeyDhan™</h3>
+  <p>hello@keydhan.com</p>
+  <p>© 2026 KeyDhan™. All Rights Reserved.</p>
+</footer>
+<script src="/app.js"></script>
+<script>
+(function(){
+ const API="https://admin-api.keydhan.com/api";
+ const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+ const dateValue=p=>{
+  const fields=["updatedAt","updated_at","lastUpdated","last_updated","modifiedAt","modified_at","createdAt","created_at","publishedAt","published_at","timestamp"];
+  for(const k of fields){const v=p&&p[k];if(v){const n=typeof v==="number"?(v<1e12?v*1000:v):Date.parse(v);if(Number.isFinite(n))return n;}}
+  return 0;
+ };
+ const money=p=>String(p??"");
+ async function load(){
+  const grid=document.getElementById("propertyGrid"),status=document.getElementById("propertyStatus");
+  try{
+   const [pr,cr,sr]=await Promise.all([
+    fetch(API+"/properties",{cache:"no-store"}),
+    fetch(API+"/content",{cache:"no-store"}),
+    fetch(API+"/settings",{cache:"no-store"})
+   ]);
+   if(!pr.ok)throw new Error("Properties request failed");
+   const pd=await pr.json(),cd=cr.ok?await cr.json():{},sd=sr.ok?await sr.json():{};
+   const c=cd.content||{},s=sd.settings||{};
+   if(c.propertiesTitle)document.getElementById("pageTitle").textContent=c.propertiesTitle;
+   const footer=document.querySelector("footer");
+   if(footer){if(s.businessName)footer.querySelector("h3").textContent=s.businessName;if(s.contactEmail)footer.querySelectorAll("p")[0].textContent=s.contactEmail;if(s.contactPhone){const phone=document.createElement("p");phone.textContent=s.contactPhone;footer.insertBefore(phone,footer.querySelectorAll("p")[1]||null);}}
+   const list=(Array.isArray(pd.properties)?pd.properties:[]).filter(p=>String(p.status||"published").toLowerCase()==="published").sort((a,b)=>dateValue(b)-dateValue(a));
+   status.textContent=list.length?list.length+" published propert"+(list.length===1?"y":"ies"):"";
+   if(!list.length){grid.innerHTML='<div class="properties-empty">No published properties yet. Please check back soon.</div>';return;}
+   grid.innerHTML=list.map(p=>{
+    const title=esc(p.title||"Property");
+    const image=esc(p.image||"https://placehold.co/900x600/071323/D4AF37?text=KeyDhan+Property");
+    const location=esc(p.location||"");
+    const price=esc(money(p.price)||"Price on request");
+    const beds=p.bedrooms?esc(p.bedrooms)+" BHK":"";
+    const details=[location,beds].filter(Boolean).join(" · ");
+    const description=esc(p.description||p.desc||"");
+    const phone=String(p.whatsapp||s.contactPhone||"919999999999").replace(/[^0-9]/g,"");
+    return '<article class="card property-card"><img loading="lazy" src="'+image+'" alt="'+title+'" onerror="this.onerror=null;this.src=\'https://placehold.co/900x600/071323/D4AF37?text=KeyDhan+Property\'"><div class="property-content"><div class="property-title">'+title+'</div><div class="property-price">'+price+'</div><div class="property-location">'+details+'</div>'+(description?'<p class="property-desc">'+description+'</p>':'')+(p.featured?'<span class="property-badge">Featured</span>':'')+'<div class="property-actions"><a class="btn" target="_blank" rel="noopener noreferrer" href="https://wa.me/'+esc(phone)+'?text='+encodeURIComponent("I am interested in "+(p.title||"this property")+" ("+(p.price||"Price on request")+")")+'">Enquire Now</a></div></div></article>';
+   }).join("");
+  }catch(e){status.textContent="Properties are temporarily unavailable. Please try again shortly.";console.error("KeyDhan properties page:",e);}
+ }
+ load();
+})();
+</script>
+</body>
+</html>
