@@ -25,7 +25,7 @@
 
 <meta name="description" content="Home Loan, Business Loan, LAP & Real Estate">
 
-<link rel="stylesheet" href="style.css?v=20261027-premium-services">
+<link rel="stylesheet" href="style.css?v=20261027-emi-results">
 
 <!-- Added Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -144,26 +144,34 @@ Key<span>Dhan</span><sup>™</sup>
 Calculate EMI
 </button>
 
-<div id="results">
+<div id="results" class="emi-results">
 
-<p><strong>Monthly EMI:</strong> <span id="emi"></span></p>
+<div class="emi-results-heading">
+  <span class="emi-kicker">YOUR LOAN SUMMARY</span>
+  <span class="emi-status"><i></i> ESTIMATE READY</span>
+</div>
 
-<p><strong>Total Interest:</strong> <span id="interest"></span></p>
+<div class="emi-highlight">
+  <span class="emi-label">Estimated Monthly EMI</span>
+  <strong class="emi-amount">₹<span id="emi"></span></strong>
+  <span class="emi-caption">Your estimated monthly instalment</span>
+</div>
 
-<p><strong>Total Payment:</strong> <span id="total"></span></p>
+<div class="emi-metrics">
+  <div class="emi-metric"><span>Total Interest</span><strong>₹<span id="interest"></span></strong></div>
+  <div class="emi-metric"><span>Total Payment</span><strong>₹<span id="total"></span></strong></div>
+  <div class="emi-metric"><span>Flat Monthly Rate</span><strong><span id="flatM"></span></strong></div>
+  <div class="emi-metric"><span>Flat Yearly Rate</span><strong><span id="flatY"></span></strong></div>
+</div>
 
-<p><strong>Flat Monthly:</strong> <span id="flatM"></span></p>
+<div class="emi-chart-card">
+  <div class="emi-chart-heading"><div><strong>Payment Breakdown</strong><small>Principal vs. total interest</small></div><span class="emi-chart-icon">◒</span></div>
+  <div class="emi-chart-canvas"><canvas id="emiChart" height="220"></canvas></div>
+</div>
 
-<p><strong>Flat Yearly:</strong> <span id="flatY"></span></p>
+<button class="emi-amortisation-btn" onclick="toggleChart()" type="button"><span>View Amortisation Schedule</span><span aria-hidden="true">⌄</span></button>
 
-<!-- Added Pie Chart -->
-<canvas id="emiChart" height="220"></canvas>
-
-<button onclick="toggleChart()">
-Amortisation Chart
-</button>
-
-<div id="chart">
+<div id="chart" class="emi-amortisation-table">
 
 <table>
 
