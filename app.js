@@ -112,8 +112,11 @@ drawPie(P,interest);
 
 }
 
-function resetEMI(){
-  ["loan","rate","tenure"].forEach(id=>{const field=document.getElementById(id);if(field)field.value="";});
+window.resetEMI = function resetEMI(){
+  ["loan","rate","tenure"].forEach(id=>{
+    const field=document.getElementById(id);
+    if(field)field.value="";
+  });
   const type=document.getElementById("type");
   if(type)type.value="m";
   const resultPanel=document.getElementById("results");
@@ -123,8 +126,6 @@ function resetEMI(){
   const rows=document.getElementById("rows");
   if(rows)rows.innerHTML="";
   if(typeof chart!=="undefined"&&chart){chart.destroy();chart=null;}
-  const loan=document.getElementById("loan");
-  if(loan)loan.focus({preventScroll:true});
 }
 
 /* ---------- ELEMENT SHORTCUTS ---------- */
