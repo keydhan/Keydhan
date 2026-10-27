@@ -153,43 +153,10 @@ Amortisation Chart
 </section>
 
 <section id="properties" class="section">
-
 <h2>Featured Properties</h2>
-
-<div class="grid">
-
-<div class="card">
-
-<img src="https://placehold.co/600x400/071323/D4AF37?text=Luxury+Apartment"
-alt="Luxury Apartment">
-
-<h3>Luxury Apartment</h3>
-
-<p>₹55 Lakh</p>
-
-<button onclick="enquire('Luxury Apartment','5500000')">
-Enquire Now
-</button>
-
-</div>
-
-<div class="card">
-
-<img src="https://placehold.co/600x400/071323/D4AF37?text=Premium+Villa"
-alt="Premium Villa">
-
-<h3>Premium Villa</h3>
-
-<p>₹1.25 Crore</p>
-
-<button onclick="enquire('Premium Villa','12500000')">
-Enquire Now
-</button>
-
-</div>
-
-</div>
-
+<p id="featuredStatus" aria-live="polite">Loading latest properties…</p>
+<div class="grid" id="featuredProperties"></div>
+<p style="text-align:center;margin-top:24px"><a class="btn" href="/properties.html">View All Properties</a></p>
 </section>
 
 <section id="contact" class="section">
@@ -269,6 +236,25 @@ Submit Enquiry
 </footer>
 
 <script src="app.js"></script>
+<script>
+(async function(){
+ const grid=document.getElementById('featuredProperties'),status=document.getElementById('featuredStatus');
+ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ try{
+  const r=await fetch('https://admin-api.keydhan.com/api/properties',{cache:'no-store'});
+  if(!r.ok)throw new Error('API '+r.status);
+  const d=await r.json();
+  const list=(Array.isArray(d.properties)?d.properties:[]).filter(p=>String(p.status||'published').toLowerCase()==='published').sort((a,b)=>Date.parse(b.updatedAt||b.updated_at||b.createdAt||0)-Date.parse(a.updatedAt||a.updated_at||a.createdAt||0));
+  status.textContent=list.length?list.length+' published properties':'No published properties yet.';
+  if(!list.length)return;
+  grid.innerHTML=list.slice(0,6).map(p=>{
+   const title=esc(p.title||'Property'),image=esc(p.image||'https://placehold.co/600x400/071323/D4AF37?text=KeyDhan+Property');
+   const price=esc(p.price||'Price on request'),location=esc(p.location||''),description=esc(p.description||p.desc||'');
+   return '<article class="card"><img loading="lazy" src="'+image+'" alt="'+title+'" onerror="this.onerror=null;this.src=\'https://placehold.co/600x400/071323/D4AF37?text=KeyDhan+Property\'"><h3>'+title+'</h3><p>'+price+'</p><p>'+location+'</p>'+(description?'<p>'+description+'</p>':'')+'<a class="btn" href="/properties.html">View Details / Enquire</a></article>';
+  }).join('');
+ }catch(e){status.textContent='Latest properties are temporarily unavailable.';console.error(e);}
+})();
+</script>
 
 </body>
 </html>
