@@ -6,7 +6,7 @@
 <meta name="description" content="Explore the latest published properties listed by KeyDhan.">
 <link rel="canonical" href="https://keydhan.com/properties.html">
 <title>Properties | KeyDhan™</title>
-<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/style.css?v=20261027-listing-slider">
 <style>
 .properties-intro{padding:58px 20px 24px;text-align:center;background:radial-gradient(ellipse at top,rgba(212,175,55,.13),transparent 65%)}
 .properties-intro .eyebrow{display:inline-flex;align-items:center;gap:8px;margin-bottom:14px;color:var(--gold);font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}
@@ -39,7 +39,7 @@
 #propertyGrid .property-actions{margin-top:auto;padding-top:22px}
 #propertyGrid .property-actions .btn{display:flex;align-items:center;justify-content:center;gap:9px;text-align:center;margin:0;width:100%;min-height:48px;padding:13px 16px;border-radius:12px;font-size:14px}
 #propertyGrid .property-actions .btn span{font-size:18px;line-height:1}
-.properties-empty{grid-column:1/-1;text-align:center;padding:48px 22px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;color:var(--muted)}
+.properties-pagination{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:8px;margin:28px auto 0}.properties-pagination button{display:inline-flex;align-items:center;justify-content:center;min-width:42px;min-height:42px;padding:9px 13px;border-radius:11px;background:#0b1627;border:1px solid rgba(212,175,55,.22);color:#e2e8f0;font-weight:700;font-size:14px}.properties-pagination button[aria-current="page"]{background:var(--gold);border-color:var(--gold);color:#111}.properties-pagination button:disabled{opacity:.35;cursor:default}.properties-page-info{width:100%;text-align:center;color:#94a3b8;font-size:12px;margin-top:4px}.properties-empty{grid-column:1/-1;text-align:center;padding:48px 22px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;color:var(--muted)}
 .properties-empty strong{display:block;color:#f5d46a;font-size:20px;margin-bottom:8px}
 @media(max-width:950px){#propertyGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.properties-wrap{padding-left:20px;padding-right:20px}}
 @media(max-width:600px){.properties-intro{padding:42px 17px 20px}.properties-wrap{padding:10px 15px 48px}.properties-toolbar{padding:12px 14px;margin-bottom:16px;align-items:flex-start;flex-direction:column;gap:4px}#propertyGrid{grid-template-columns:minmax(0,1fr);gap:17px}#propertyGrid .property-card{border-radius:18px}.property-visual{height:195px}.property-content{padding:18px}#propertyGrid .property-title{font-size:20px}#propertyGrid .property-price{font-size:25px}.properties-sort-note{font-size:11px}}
@@ -115,7 +115,9 @@
    const list=(Array.isArray(pd.properties)?pd.properties:[]).filter(p=>String(p.status||"published").toLowerCase()==="published").sort((a,b)=>dateValue(b)-dateValue(a));
    status.innerHTML='<strong>'+list.length+'</strong> published '+(list.length===1?'property':'properties');
    if(!list.length){grid.innerHTML='<div class="properties-empty"><strong>New properties are coming soon</strong>Our team is updating the latest listings. Please check back shortly.</div>';return;}
-   grid.innerHTML=list.map(p=>{
+   let page=Math.max(1,parseInt(new URLSearchParams(location.search).get("page")||"1",10)||1),pageSizeNow=window.matchMedia("(max-width: 600px)").matches?6:9;
+   const renderPage=()=>{const size=window.matchMedia("(max-width: 600px)").matches?6:9,totalPages=Math.max(1,Math.ceil(list.length/size));page=Math.min(page,totalPages);const offset=(page-1)*size;
+   grid.innerHTML=list.slice(offset,offset+size).map(p=>{
     const title=esc(p.title||"Property");
     const image=String(p.image||"").trim();
     const imageBlock=image
@@ -131,6 +133,17 @@
     const enquiryHref=phone?'https://wa.me/'+esc(phone)+'?text='+enquiryText:'/#contact';
     return '<article class="card property-card">'+imageBlock+'<div class="property-content"><div class="property-title">'+title+'</div><div class="property-price">'+price+'</div><div class="property-location"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="1.8"/></svg><span>'+location+'</span></div><div class="property-meta">'+(beds?'<span class="property-detail">'+beds+'</span>':'')+(type?'<span class="property-detail">'+type+'</span>':'')+(p.featured?'<span class="property-badge">★ Featured</span>':'')+'</div>'+(description?'<p class="property-desc">'+description+'</p>':'')+'<div class="property-actions"><a class="btn" target="_blank" rel="noopener noreferrer" href="'+enquiryHref+'">Enquire Now <span aria-hidden="true">↗</span></a></div></div></article>';
    }).join("");
+   let pager=document.getElementById("propertiesPagination");if(!pager){pager=document.createElement("nav");pager.id="propertiesPagination";pager.className="properties-pagination";pager.setAttribute("aria-label","Property pages");grid.after(pager);}
+   if(totalPages<=1){pager.innerHTML="";return;}
+   let controls='<button type="button" data-page="'+(page-1)+'" '+(page===1?"disabled":"")+' aria-label="Previous page">‹ Prev</button>';
+   const from=Math.max(1,page-2),to=Math.min(totalPages,page+2);if(from>1){controls+='<button type="button" data-page="1">1</button>';if(from>2)controls+="<span>…</span>";}
+   for(let n=from;n<=to;n++)controls+='<button type="button" data-page="'+n+'" '+(n===page?'aria-current="page"':"")+'>'+n+'</button>';
+   if(to<totalPages){if(to<totalPages-1)controls+="<span>…</span>";controls+='<button type="button" data-page="'+totalPages+'">'+totalPages+'</button>';}
+   controls+='<button type="button" data-page="'+(page+1)+'" '+(page===totalPages?"disabled":"")+' aria-label="Next page">Next ›</button><div class="properties-page-info">Page '+page+' of '+totalPages+' · Showing '+(offset+1)+'–'+Math.min(offset+size,list.length)+' of '+list.length+'</div>';pager.innerHTML=controls;
+   pager.onclick=e=>{const b=e.target.closest("[data-page]");if(!b||b.disabled)return;page=Number(b.dataset.page);const u=new URL(location.href);u.searchParams.set("page",String(page));history.pushState({page:page},"",u);renderPage();document.querySelector(".properties-wrap").scrollIntoView({behavior:"smooth",block:"start"});};
+   };renderPage();
+   window.addEventListener("popstate",()=>{page=Math.max(1,parseInt(new URLSearchParams(location.search).get("page")||"1",10)||1);renderPage();});
+   window.addEventListener("resize",()=>{const n=window.matchMedia("(max-width: 600px)").matches?6:9;if(n!==pageSizeNow){pageSizeNow=n;page=1;renderPage();}});
   }catch(e){status.textContent="Properties are temporarily unavailable. Please try again shortly.";console.error("KeyDhan properties page:",e);}
  }
  load();
