@@ -48,8 +48,8 @@
     <section class="contact-page-card" aria-label="Loan and property enquiry form">
       <form id="leadForm">
         <input id="name" type="text" placeholder="Full Name" autocomplete="name" required>
-        <input id="mobile" type="tel" placeholder="Mobile Number" autocomplete="tel" inputmode="tel" required>
-        <input id="email" type="email" placeholder="Email (Optional)" autocomplete="email">
+        <input id="mobile" type="tel" placeholder="10-digit Mobile Number" autocomplete="tel" inputmode="numeric" pattern="[6-9][0-9]{9}" minlength="10" maxlength="10" title="Enter a valid 10-digit Indian mobile number starting with 6, 7, 8 or 9" required>
+        <input id="email" type="email" placeholder="Email (Optional)" autocomplete="email" inputmode="email" maxlength="254" pattern="[A-Za-z0-9.!#$%&amp;’*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+">
         <select id="loanType" aria-label="Select Loan Type" required>
           <option value="">Select Enquiry Type</option>
           <option>Home Loan</option>
@@ -67,6 +67,6 @@
     </section>
   </div>
 </main>
-<script src="/app.js?v=20261027-contact-heading"></script>
+<script src="/app.js?v=20261027-contact-validation"></script>
 </body>
 </html>
