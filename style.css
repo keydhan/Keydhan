@@ -566,3 +566,21 @@ header{isolation:isolate}header .menu-btn{align-items:center;justify-content:cen
  .emi-metric strong{font-size:13px}
  .emi-chart-canvas{max-width:250px}
 }
+
+
+/* Fix mobile amortisation table escaping the calculator card */
+#calculator, #calculator>.card, #calculator #results.emi-results,
+#calculator #chart.emi-amortisation-table{min-width:0;max-width:100%;box-sizing:border-box}
+#calculator>.card{overflow:hidden}
+#calculator #results.emi-results{width:100%}
+#calculator #chart.emi-amortisation-table{display:none;width:100%;margin:0 0 12px;padding:0 10px 12px;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;contain:inline-size}
+#calculator #chart.emi-amortisation-table[style*="block"]{display:block}
+#calculator #chart.emi-amortisation-table table{width:max-content;min-width:560px;max-width:none;table-layout:auto;margin:12px 0 0}
+#calculator #chart.emi-amortisation-table th,#calculator #chart.emi-amortisation-table td{white-space:nowrap;padding:10px 9px}
+@media(max-width:768px){
+ #calculator>.card{width:100%;padding:18px 14px}
+ #calculator #results.emi-results{overflow:hidden}
+ #calculator #chart.emi-amortisation-table{width:100%;margin:0 0 12px;padding-left:8px;padding-right:8px}
+ #calculator #chart.emi-amortisation-table table{min-width:540px;font-size:12px}
+ #calculator #chart.emi-amortisation-table th,#calculator #chart.emi-amortisation-table td{padding:9px 8px}
+}
