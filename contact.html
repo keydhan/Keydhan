@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Contact KeyDhan for home loans, business loans, loans against property and real estate enquiries.">
+<link rel="canonical" href="https://keydhan.com/contact.html">
+<title>Loan Enquiry | KeyDhan™</title>
+<link rel="stylesheet" href="/style.css?v=20261027-contact-page">
+<style>
+.contact-page-main{min-height:calc(100vh - 160px);padding:44px 20px 72px;background:radial-gradient(ellipse at 50% 0,rgba(212,175,55,.09),transparent 48%)}
+.contact-page-wrap{max-width:760px;margin:0 auto}
+.contact-page-heading{text-align:center;margin:0 auto 30px}
+.contact-page-heading .eyebrow{display:inline-flex;align-items:center;gap:9px;color:var(--gold);font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}
+.contact-page-heading .eyebrow:before,.contact-page-heading .eyebrow:after{content:"";width:22px;height:1px;background:var(--gold);opacity:.7}
+.contact-page-heading h1{margin:12px 0 10px;color:var(--gold);font-size:clamp(34px,5vw,48px);line-height:1.12;letter-spacing:-.035em}
+.contact-page-heading p{margin:0;color:var(--muted);font-size:15px;line-height:1.65}
+.contact-page-card{padding:clamp(18px,4vw,32px);border:1px solid rgba(212,175,55,.32);border-radius:24px;background:linear-gradient(145deg,rgba(11,25,43,.98),rgba(5,13,25,.99));box-shadow:0 18px 50px rgba(0,0,0,.2)}
+.contact-page-card #leadForm{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.contact-page-card #leadForm input,.contact-page-card #leadForm select,.contact-page-card #leadForm textarea{width:100%;min-width:0;box-sizing:border-box;margin:0}
+.contact-page-card #leadForm textarea{grid-column:1/-1;min-height:130px;resize:vertical}
+.contact-page-card #leadForm button{grid-column:1/-1;width:100%;margin-top:3px}
+.contact-page-card #leadForm #message{grid-column:1/-1}
+.contact-page-note{display:flex;align-items:center;justify-content:center;gap:8px;margin:18px 0 0;color:#98a7bb;font-size:12px;text-align:center}
+.contact-page-note span{color:var(--gold)}
+@media(max-width:600px){.contact-page-main{padding:32px 16px 52px}.contact-page-heading{margin-bottom:22px}.contact-page-heading p{font-size:14px}.contact-page-card{padding:16px;border-radius:20px}.contact-page-card #leadForm{grid-template-columns:1fr;gap:12px}.contact-page-card #leadForm textarea,.contact-page-card #leadForm button{grid-column:1}.contact-page-card #leadForm input,.contact-page-card #leadForm select{min-height:58px}}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="/" aria-label="KeyDhan home" style="text-decoration:none;color:inherit">Key<span>Dhan</span><sup>™</sup></a>
+  <button class="menu-btn" id="menuBtn" type="button" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+  <nav id="menu">
+    <a href="/#home">Home</a>
+    <a href="/#services">Services</a>
+    <a href="/#calculator">Calculator</a>
+    <a href="/properties.html">Properties</a>
+    <a href="/contact.html" aria-current="page">Contact</a>
+  </nav>
+</header>
+<main class="contact-page-main">
+  <div class="contact-page-wrap">
+    <div class="contact-page-heading">
+      <span class="eyebrow">WE'RE HERE TO HELP</span>
+      <h1>Loan Enquiry</h1>
+      <p>Share your details and our team can help you explore the right option.</p>
+    </div>
+    <section class="contact-page-card" aria-label="Loan enquiry form">
+      <form id="leadForm">
+        <input id="name" type="text" placeholder="Full Name" autocomplete="name" required>
+        <input id="mobile" type="tel" placeholder="Mobile Number" autocomplete="tel" inputmode="tel" required>
+        <input id="email" type="email" placeholder="Email (Optional)" autocomplete="email">
+        <select id="loanType" aria-label="Select Loan Type" required>
+          <option value="">Select Loan Type</option>
+          <option>Home Loan</option>
+          <option>Business Loan</option>
+          <option>Loan Against Property</option>
+          <option>Real Estate</option>
+        </select>
+        <input id="propertyName" type="text" placeholder="Property Name (Optional)">
+        <input id="budget" type="number" min="0" placeholder="Loan Amount (₹)">
+        <input id="city" type="text" placeholder="City" autocomplete="address-level2">
+        <textarea id="message" placeholder="Tell us your requirement" rows="4"></textarea>
+        <button type="submit">Submit Enquiry <span aria-hidden="true">↗</span></button>
+      </form>
+      <p class="contact-page-note"><span>◆</span> Your enquiry details are used to respond to your request.</p>
+    </section>
+  </div>
+</main>
+<script src="/app.js?v=20261027-contact-page"></script>
+</body>
+</html>
