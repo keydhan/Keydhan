@@ -126,3 +126,19 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
  .nav a{font-size:13px;padding:9px 10px;min-height:42px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.stat{transition:none}.stat:hover{transform:none}}
+
+
+/* Dashboard table fits small phones without clipping key columns */
+@media(max-width:480px){
+  .tablewrap table:has(#recent){min-width:0;width:100%;table-layout:fixed}
+  .tablewrap table:has(#recent) th,
+  .tablewrap table:has(#recent) td{padding:10px 6px;font-size:12px;overflow-wrap:anywhere}
+  .tablewrap table:has(#recent) th:nth-child(1),
+  .tablewrap table:has(#recent) td:nth-child(1){width:30%}
+  .tablewrap table:has(#recent) th:nth-child(2),
+  .tablewrap table:has(#recent) td:nth-child(2){width:30%}
+  .tablewrap table:has(#recent) th:nth-child(3),
+  .tablewrap table:has(#recent) td:nth-child(3){width:40%}
+  .tablewrap table:has(#recent) th:nth-child(4),
+  .tablewrap table:has(#recent) td:nth-child(4){display:none}
+}
