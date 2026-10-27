@@ -286,16 +286,24 @@ e.preventDefault();
 
 const mobileField=document.getElementById("mobile");
 const emailField=document.getElementById("email");
+const mobileError=document.getElementById("mobileError");
 const mobileValue=mobileField.value.replace(/\s+/g,"");
 const emailValue=emailField.value.trim();
 const validIndianMobile=/^[6-9]\d{9}$/.test(mobileValue);
 const validEmail=!emailValue||/^[A-Za-z0-9.!#$%&'*+\/=?^_`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?)+$/.test(emailValue);
 
-mobileField.setCustomValidity(validIndianMobile?"":"Enter a valid 10-digit Indian mobile number starting with 6, 7, 8 or 9.");
-emailField.setCustomValidity(validEmail?"":"Enter a valid email address, for example name@example.com.");
-if(!validIndianMobile||!validEmail){
-  if(!validIndianMobile)mobileField.reportValidity();
-  else emailField.reportValidity();
+mobileField.setCustomValidity("");
+emailField.setCustomValidity("");
+mobileError.hidden=validIndianMobile;
+mobileField.setAttribute("aria-invalid",String(!validIndianMobile));
+if(!validIndianMobile){
+  mobileError.textContent="Please enter a valid mobile number.";
+  mobileField.focus();
+  return;
+}
+if(!validEmail){
+  emailField.setCustomValidity("Please enter a valid email address.");
+  emailField.reportValidity();
   return;
 }
 mobileField.value=mobileValue;
