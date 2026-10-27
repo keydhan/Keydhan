@@ -25,7 +25,7 @@
 
 <meta name="description" content="Home Loan, Business Loan, LAP & Real Estate">
 
-<link rel="stylesheet" href="style.css?v=20261027-emi-table-overflow-fix">
+<link rel="stylesheet" href="style.css?v=20261027-emi-reset">
 
 <!-- Added Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -140,9 +140,10 @@ Key<span>Dhan</span><sup>™</sup>
 <option value="y">Years</option>
 </select>
 
-<button onclick="calc()">
-Calculate EMI
-</button>
+<div class="emi-actions">
+<button class="emi-calculate-btn" onclick="calc()" type="button">Calculate EMI</button>
+<button class="emi-reset-btn" onclick="resetEMI()" type="button"><span aria-hidden="true">↺</span> Reset</button>
+</div>
 
 <div id="results" class="emi-results">
 
