@@ -584,3 +584,16 @@ header{isolation:isolate}header .menu-btn{align-items:center;justify-content:cen
  #calculator #chart.emi-amortisation-table table{min-width:540px;font-size:12px}
  #calculator #chart.emi-amortisation-table th,#calculator #chart.emi-amortisation-table td{padding:9px 8px}
 }
+
+
+/* EMI calculate/reset actions */
+#calculator .emi-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;width:100%;margin:4px 0 0}
+#calculator .emi-actions button{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:54px;padding:14px 22px;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer;transition:transform .18s,background .18s,border-color .18s,box-shadow .18s}
+#calculator .emi-actions .emi-calculate-btn{flex:1 1 210px;border:1px solid rgba(255,232,151,.55);background:linear-gradient(135deg,#f3d65e,#d0aa30);color:#10151d;box-shadow:0 8px 22px rgba(212,175,55,.13)}
+#calculator .emi-actions .emi-reset-btn{flex:0 0 auto;min-width:116px;border:1px solid rgba(212,175,55,.42);background:linear-gradient(145deg,#142238,#0a1423);color:#e7c958}
+#calculator .emi-actions button:hover{transform:translateY(-2px)}
+#calculator .emi-actions .emi-reset-btn:hover{border-color:#d4af37;background:#172840;box-shadow:0 8px 20px rgba(212,175,55,.09)}
+#calculator .emi-actions button:focus-visible{outline:2px solid #f0d15b;outline-offset:3px}
+@media(min-width:769px){#calculator .card:has(#results[style*="block"]) .emi-actions{grid-column:1}#calculator .card:has(#results[style*="block"]) .emi-actions button{width:100%}}
+@media(max-width:768px){#calculator .emi-actions{gap:10px}#calculator .emi-actions .emi-calculate-btn{flex:1 1 160px}#calculator .emi-actions .emi-reset-btn{min-width:104px;padding:14px 16px}}
+@media(max-width:380px){#calculator .emi-actions{gap:8px}#calculator .emi-actions .emi-calculate-btn{flex-basis:135px;padding:13px 12px;font-size:14px}#calculator .emi-actions .emi-reset-btn{min-width:88px;padding:13px 11px;font-size:14px}}
