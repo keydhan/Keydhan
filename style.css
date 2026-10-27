@@ -530,3 +530,39 @@ header{isolation:isolate}header .menu-btn{align-items:center;justify-content:cen
 #calculator #results p{margin:0}
 @media(min-width:900px){#calculator>.card{max-width:920px;margin-left:auto;margin-right:auto;padding:30px}#calculator #results.emi-results{display:none}#calculator .card:has(#results[style*="block"]){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:26px;align-items:start}#calculator .card:has(#results[style*="block"]) #results{grid-column:2;grid-row:1 / span 6;margin-top:0}#calculator .card:has(#results[style*="block"]) #loan,#calculator .card:has(#results[style*="block"]) #rate,#calculator .card:has(#results[style*="block"]) #tenure,#calculator .card:has(#results[style*="block"]) #type,#calculator .card:has(#results[style*="block"]) button:not(.emi-amortisation-btn){grid-column:1}}
 @media(max-width:600px){#calculator #results.emi-results{margin-top:22px;border-radius:18px}.emi-results-heading{padding:15px 14px 12px}.emi-kicker{font-size:9px}.emi-status{font-size:8px}.emi-highlight{margin:12px;padding:18px 15px}.emi-metrics{gap:8px;padding:0 12px 12px}.emi-metric{padding:12px 10px;gap:7px}.emi-metric>span{font-size:10px}.emi-metric strong{font-size:14px}.emi-chart-card{margin:0 12px 12px;padding:14px 12px}.emi-chart-canvas{max-width:270px;min-height:150px}.emi-amortisation-btn{width:calc(100% - 24px);margin:0 12px 12px;padding:14px;font-size:12px}#calculator #chart.emi-amortisation-table{margin:0 12px 12px}}
+
+/* Final polish: calculator form and post-calculation dashboard */
+#calculator>.card{max-width:1120px;margin-left:auto;margin-right:auto}
+#calculator #loan,#calculator #rate,#calculator #tenure,#calculator #type{min-width:0;width:100%;box-sizing:border-box}
+#calculator .card>button:not(.emi-amortisation-btn){display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:15px 25px;border:1px solid rgba(255,231,145,.5);border-radius:15px;background:linear-gradient(135deg,#f0d15b,#d0aa30);color:#10151d;font-size:17px;font-weight:800;box-shadow:0 10px 25px rgba(212,175,55,.13);transition:transform .2s,box-shadow .2s}
+#calculator .card>button:not(.emi-amortisation-btn):hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(212,175,55,.2)}
+#calculator #results.emi-results{scroll-margin-top:100px}
+.emi-highlight{position:relative}
+.emi-highlight:after{content:"₹";position:absolute;right:17px;top:12px;color:rgba(229,195,73,.12);font-size:76px;font-weight:900;line-height:1;pointer-events:none}
+.emi-metric{transition:border-color .2s,transform .2s}
+.emi-metric:hover{border-color:rgba(212,175,55,.32);transform:translateY(-1px)}
+.emi-chart-canvas{min-height:0;aspect-ratio:1.35;max-width:380px}
+.emi-chart-canvas canvas{width:100%!important;height:auto!important;max-height:300px}
+.emi-amortisation-table{max-width:100%;overflow:auto;border-radius:0 0 16px 16px}
+.emi-amortisation-table table{min-width:560px}
+.emi-amortisation-table th,.emi-amortisation-table td{white-space:nowrap}
+@media(min-width:769px){
+ #calculator .card:has(#results[style*="block"]){grid-template-columns:minmax(280px,.82fr) minmax(0,1.18fr);gap:28px;padding:28px}
+ #calculator .card:has(#results[style*="block"]) #results{grid-column:2;grid-row:1 / span 6;min-width:0}
+ #calculator .card:has(#results[style*="block"]) #loan,#calculator .card:has(#results[style*="block"]) #rate,#calculator .card:has(#results[style*="block"]) #tenure,#calculator .card:has(#results[style*="block"]) #type,#calculator .card:has(#results[style*="block"]) button:not(.emi-amortisation-btn){grid-column:1}
+}
+@media(max-width:768px){
+ #calculator>.card{padding:18px 14px}
+ #calculator .card>button:not(.emi-amortisation-btn){width:100%;min-height:54px;margin-top:6px}
+ #calculator #results.emi-results{margin-top:24px}
+ .emi-highlight:after{font-size:62px;right:12px;top:12px}
+ .emi-amount{font-size:clamp(29px,8vw,39px)}
+ .emi-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .emi-chart-canvas{max-width:290px;aspect-ratio:1.2}
+}
+@media(max-width:390px){
+ .emi-results-heading{align-items:flex-start;flex-direction:column}
+ .emi-metric{padding:11px 9px}
+ .emi-metric strong{font-size:13px}
+ .emi-chart-canvas{max-width:250px}
+}
