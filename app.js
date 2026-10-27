@@ -262,6 +262,20 @@ if(e.key==="Enter") calc();
 
 /* ---------- LEAD FORM API ---------- */
 
+const enquiryTypeField=document.getElementById("loanType");
+const propertyNameField=document.getElementById("propertyName");
+function syncPropertyNameField(){
+  if(!enquiryTypeField||!propertyNameField)return;
+  const isRealEstate=enquiryTypeField.value.trim().toLowerCase()==="real estate";
+  propertyNameField.hidden=!isRealEstate;
+  propertyNameField.disabled=!isRealEstate;
+  if(!isRealEstate)propertyNameField.value="";
+}
+if(enquiryTypeField&&propertyNameField){
+  enquiryTypeField.addEventListener("change",syncPropertyNameField);
+  syncPropertyNameField();
+}
+
 const form=document.getElementById("leadForm");
 
 if(form){
