@@ -1,0 +1,1 @@
+async function load(){try{const a=(await api('/admin/analytics')).analytics;Object.keys(a).forEach(k=>{if($(k))$(k).textContent=a[k]});$('updated').textContent='Updated '+new Date().toLocaleString();hideNotice()}catch(e){showError(e)}}$('reload').onclick=load;load();
