@@ -128,7 +128,7 @@
     const description=esc(p.description||p.desc||"");
     const phone=String(p.whatsapp||s.contactPhone||"").replace(/[^0-9]/g,"");
     const enquiryText=encodeURIComponent("Hello KeyDhan, I am interested in "+(p.title||"this property")+" ("+formatPrice(p.price)+"). Please share more details.");
-    const enquiryHref=phone?'https://wa.me/'+esc(phone)+'?text='+enquiryText':'+'/#contact';
+    const enquiryHref=phone?'https://wa.me/'+esc(phone)+'?text='+enquiryText:'/#contact';
     return '<article class="card property-card">'+imageBlock+'<div class="property-content"><div class="property-title">'+title+'</div><div class="property-price">'+price+'</div><div class="property-location"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="1.8"/></svg><span>'+location+'</span></div><div class="property-meta">'+(beds?'<span class="property-detail">'+beds+'</span>':'')+(type?'<span class="property-detail">'+type+'</span>':'')+(p.featured?'<span class="property-badge">★ Featured</span>':'')+'</div>'+(description?'<p class="property-desc">'+description+'</p>':'')+'<div class="property-actions"><a class="btn" target="_blank" rel="noopener noreferrer" href="'+enquiryHref+'">Enquire Now <span aria-hidden="true">↗</span></a></div></div></article>';
    }).join("");
   }catch(e){status.textContent="Properties are temporarily unavailable. Please try again shortly.";console.error("KeyDhan properties page:",e);}
