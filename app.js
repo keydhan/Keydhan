@@ -112,6 +112,21 @@ drawPie(P,interest);
 
 }
 
+function resetEMI(){
+  ["loan","rate","tenure"].forEach(id=>{const field=document.getElementById(id);if(field)field.value="";});
+  const type=document.getElementById("type");
+  if(type)type.value="m";
+  const resultPanel=document.getElementById("results");
+  const schedule=document.getElementById("chart");
+  if(resultPanel)resultPanel.style.display="none";
+  if(schedule)schedule.style.display="none";
+  const rows=document.getElementById("rows");
+  if(rows)rows.innerHTML="";
+  if(typeof chart!=="undefined"&&chart){chart.destroy();chart=null;}
+  const loan=document.getElementById("loan");
+  if(loan)loan.focus({preventScroll:true});
+}
+
 /* ---------- ELEMENT SHORTCUTS ---------- */
 
 const results=document.getElementById("results");
