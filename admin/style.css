@@ -142,3 +142,37 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   .tablewrap table:has(#recent) th:nth-child(4),
   .tablewrap table:has(#recent) td:nth-child(4){display:none}
 }
+
+
+/* Customer Leads: convert the wide data table into readable cards on phones */
+@media(max-width:600px){
+  .panel:has(#rows) .tablewrap{overflow:visible;border:0;border-radius:0;background:transparent}
+  .panel:has(#rows) .tablewrap table,
+  .panel:has(#rows) .tablewrap tbody{display:block;width:100%;min-width:0}
+  .panel:has(#rows) .tablewrap thead{display:none}
+  .panel:has(#rows) .tablewrap tbody tr{
+    display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 12px;
+    margin:0 0 12px;padding:12px;border:1px solid #2b3c52;border-radius:14px;
+    background:linear-gradient(145deg,#14243a,#0b1829);box-shadow:0 5px 16px rgba(0,0,0,.12);
+  }
+  .panel:has(#rows) .tablewrap tbody tr:last-child{margin-bottom:0}
+  .panel:has(#rows) .tablewrap tbody td{
+    display:block;min-width:0;width:auto;padding:9px 2px;border-bottom:1px solid rgba(155,169,187,.15);
+    font-size:14px;line-height:1.4;overflow-wrap:anywhere;word-break:break-word;
+  }
+  .panel:has(#rows) .tablewrap tbody td:nth-child(1){grid-column:1/-1;color:#9ba9bb;font-size:12px}
+  .panel:has(#rows) .tablewrap tbody td:nth-child(1)::before{content:"DATE  ";color:#d4af37;font-weight:800;letter-spacing:.06em}
+  .panel:has(#rows) .tablewrap tbody td:nth-child(2)::before{content:"NAME";display:block;margin-bottom:4px;color:#9ba9bb;font-size:10px;font-weight:800;letter-spacing:.08em}
+  .panel:has(#rows) .tablewrap tbody td:nth-child(3){grid-column:1/-1}
+  .panel:has(#rows) .tablewrap tbody td:nth-child(3)::before{content:"PHONE / EMAIL";display:block;margin-bottom:4px;color:#9ba9bb;font-size:10px;font-weight:800;letter-spacing:.08em}
+  .panel:has(#rows) .tablewrap tbody td:nth-child(4)::before{content:"INTEREST";display:block;margin-bottom:4px;color:#9ba9bb;font-size:10px;font-weight:800;letter-spacing:.08em}
+  .panel:has(#rows) .tablewrap tbody td:nth-child(5)::before{content:"MESSAGE";display:block;margin-bottom:4px;color:#9ba9bb;font-size:10px;font-weight:800;letter-spacing:.08em}
+  .panel:has(#rows) .tablewrap tbody td:nth-child(6)::before{content:"STATUS";display:block;margin-bottom:5px;color:#9ba9bb;font-size:10px;font-weight:800;letter-spacing:.08em}
+  .panel:has(#rows) .tablewrap tbody td:nth-child(7)::before{content:"ACTION";display:block;margin-bottom:5px;color:#9ba9bb;font-size:10px;font-weight:800;letter-spacing:.08em}
+  .panel:has(#rows) .tablewrap tbody td select{min-width:0;width:100%;padding:9px 6px;font-size:14px}
+  .panel:has(#rows) .tablewrap tbody td button{width:100%;padding:9px 8px;font-size:13px}
+  .panel:has(#rows) .tablewrap tbody td.empty{grid-column:1/-1;text-align:center;padding:18px}
+  .panel:has(#rows) .toolbar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+  .panel:has(#rows) .toolbar input{min-width:0;width:100%;max-width:none;grid-column:1/-1}
+  .panel:has(#rows) .toolbar button{width:auto;justify-self:start}
+}
