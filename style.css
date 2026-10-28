@@ -624,3 +624,18 @@ footer.site-footer{padding:clamp(34px,5vw,52px) 18px;color:#9ca3af;border-top:1p
 .site-footer .footer-copyright-brand sup{position:relative;top:-.42em;margin-left:1px;color:var(--gold);font-size:.34em;font-weight:800;letter-spacing:0}
 .site-footer .footer-copyright{column-gap:4px}
 .site-footer .footer-copyright .footer-rights{margin-left:0}
+
+
+/* Raise the trademark clearly above the KeyDhan wordmark */
+.site-footer .footer-brand{align-items:baseline}
+.site-footer .footer-brand .footer-trademark,
+.site-footer .footer-copyright-brand .footer-trademark{
+ position:relative;
+ top:-.72em;
+ margin-left:2px;
+ color:var(--gold);
+ font-size:.34em;
+ line-height:1;
+ font-weight:800;
+ vertical-align:baseline;
+}
