@@ -597,3 +597,45 @@ header{isolation:isolate}header .menu-btn{align-items:center;justify-content:cen
 @media(min-width:769px){#calculator .card:has(#results[style*="block"]) .emi-actions{grid-column:1}#calculator .card:has(#results[style*="block"]) .emi-actions button{width:100%}}
 @media(max-width:768px){#calculator .emi-actions{gap:10px}#calculator .emi-actions .emi-calculate-btn{flex:1 1 160px}#calculator .emi-actions .emi-reset-btn{min-width:104px;padding:14px 16px}}
 @media(max-width:380px){#calculator .emi-actions{gap:8px}#calculator .emi-actions .emi-calculate-btn{flex-basis:135px;padding:13px 12px;font-size:14px}#calculator .emi-actions .emi-reset-btn{min-width:88px;padding:13px 11px;font-size:14px}}
+
+
+/* Premium footer branding: match the header's two-tone KeyDhan wordmark */
+footer.site-footer{padding:clamp(34px,5vw,52px) 18px;color:#9ca3af;border-top:1px solid rgba(212,175,55,.16);text-align:center}
+.site-footer .footer-brand{display:flex;align-items:baseline;justify-content:center;margin:0 0 10px;font-size:clamp(27px,4vw,36px);font-weight:800;letter-spacing:-.035em;line-height:1.15}
+.footer-brand-key{color:#f7f8fc}
+.footer-brand-dhan{color:var(--gold)}
+.site-footer .footer-brand sup,.site-footer .footer-copyright sup{position:relative;top:-.42em;margin-left:1px;color:var(--gold);font-size:.34em;font-weight:800;letter-spacing:0}
+.site-footer .footer-email{margin:0 0 9px}
+.site-footer .footer-email a{display:inline-flex;align-items:center;justify-content:center;gap:9px;color:#aeb7c8;text-decoration:none;font-size:clamp(15px,2.6vw,20px);transition:color .2s}
+.site-footer .footer-email a:hover,.site-footer .footer-email a:focus-visible{color:#f4d66b}
+.site-footer .footer-mail-icon{display:block;width:1.05em;height:1.05em;flex:0 0 auto;color:var(--gold)}
+.site-footer .footer-copyright{display:flex;align-items:baseline;justify-content:center;flex-wrap:wrap;gap:0 4px;margin:0;color:#929bad;font-size:clamp(12px,2.2vw,16px);line-height:1.7}
+.site-footer .footer-copyright .footer-brand-key{color:#d9dee8}
+.site-footer .footer-copyright .footer-brand-dhan{color:var(--gold)}
+.site-footer .footer-rights{margin-left:2px}
+@media(max-width:480px){.site-footer{padding:32px 14px}.site-footer .footer-brand{margin-bottom:9px}.site-footer .footer-copyright{max-width:340px;margin:0 auto;column-gap:3px;line-height:1.8}.site-footer .footer-email a{gap:8px}}
+@media(prefers-reduced-motion:reduce){.site-footer .footer-email a{transition:none}}
+
+
+/* Keep KeyDhan as one unbroken word in the footer and copyright */
+.site-footer .footer-brand{gap:0}
+.site-footer .footer-brand>span,.site-footer .footer-copyright-brand>span{color:var(--gold)}
+.site-footer .footer-copyright-brand{display:inline-flex;align-items:baseline;gap:0;white-space:nowrap;color:#d9dee8}
+.site-footer .footer-copyright-brand sup{position:relative;top:-.42em;margin-left:1px;color:var(--gold);font-size:.34em;font-weight:800;letter-spacing:0}
+.site-footer .footer-copyright{column-gap:4px}
+.site-footer .footer-copyright .footer-rights{margin-left:0}
+
+
+/* Raise the trademark clearly above the KeyDhan wordmark */
+.site-footer .footer-brand{align-items:baseline}
+.site-footer .footer-brand .footer-trademark,
+.site-footer .footer-copyright-brand .footer-trademark{
+ position:relative;
+ top:-.72em;
+ margin-left:2px;
+ color:var(--gold);
+ font-size:.34em;
+ line-height:1;
+ font-weight:800;
+ vertical-align:baseline;
+}
