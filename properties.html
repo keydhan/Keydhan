@@ -44,6 +44,27 @@
 @media(max-width:950px){#propertyGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.properties-wrap{padding-left:20px;padding-right:20px}}
 @media(max-width:600px){.properties-intro{padding:42px 17px 20px}.properties-wrap{padding:10px 15px 48px}.properties-toolbar{padding:12px 14px;margin-bottom:16px;align-items:flex-start;flex-direction:column;gap:4px}#propertyGrid{grid-template-columns:minmax(0,1fr);gap:17px}#propertyGrid .property-card{border-radius:18px}.property-visual{height:195px}.property-content{padding:18px}#propertyGrid .property-title{font-size:20px}#propertyGrid .property-price{font-size:25px}.properties-sort-note{font-size:11px}}
 @media(prefers-reduced-motion:reduce){#propertyGrid .property-card{transition:none}#propertyGrid .property-card:hover{transform:none}}
+
+/* Properties hero: remove the stray empty pill/decorative element above the eyebrow */
+.properties-intro::before,
+.properties-intro::after,
+.properties-intro > :empty {
+  display: none !important;
+  content: none !important;
+}
+.properties-intro {
+  background: radial-gradient(ellipse at top, rgba(212,175,55,.10), transparent 65%);
+}
+.properties-intro .eyebrow {
+  position: relative;
+  margin-top: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  line-height: 1.5;
+}
+
 </style>
 </head>
 <body>
