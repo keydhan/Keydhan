@@ -19,3 +19,6 @@ document.querySelectorAll('.nav a').forEach(link=>link.addEventListener('click',
   if(nav&&button&&window.matchMedia('(max-width: 800px)').matches){nav.classList.remove('nav-open');button.setAttribute('aria-expanded','false');const label=button.querySelector('.menu-label');if(label)label.textContent='Menu';const icon=button.querySelector('.menu-icon');if(icon)icon.textContent='☰';}
 }));
 
+
+// Explicitly wire the API-key dialog trigger on every admin page.
+document.addEventListener('click',function(event){const button=event.target.closest('#apiKeyButton');if(button){event.preventDefault();setKey();}});
