@@ -209,3 +209,16 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .lead-actions summary{font-size:12px}
 @media(max-width:800px){.lead-overview{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:14px}.lead-stat{padding:14px;border-radius:16px}.lead-stat strong{font-size:28px}.lead-stat small{font-size:10px}}
 @media(max-width:480px){.lead-overview{gap:8px}.lead-stat{padding:12px 12px 12px 15px}.lead-stat span{font-size:12px}.lead-stat strong{font-size:25px}.lead-stat:after{top:12px;bottom:12px}.lead-view{width:100%;margin:0 0 7px}.lead-actions{width:100%}.lead-actions summary{width:100%}.lead-action-menu{left:0;right:auto;width:100%}}
+
+
+/* Option 12: compact notification control and tap-to-call links; existing admin navigation remains unchanged */
+.top-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.top-actions #apiKeyButton{white-space:nowrap}
+.lead-notifications{position:relative;display:inline-flex;align-items:center;justify-content:center;width:44px;min-width:44px;height:44px;padding:10px;border:1px solid #34465e;border-radius:12px;background:#14243a;color:#f5f7fb;box-shadow:0 4px 14px rgba(0,0,0,.16)}
+.lead-notifications svg{width:22px;height:22px;display:block}
+.notification-count{position:absolute;top:-5px;right:-5px;min-width:19px;height:19px;padding:0 5px;display:flex;align-items:center;justify-content:center;border:2px solid #07101d;border-radius:999px;background:#d94343;color:#fff;font-size:10px;font-weight:800;line-height:1}
+.lead-phone{color:#f5d15a;font-weight:750;text-decoration:underline;text-decoration-color:rgba(245,209,90,.35);text-underline-offset:3px;overflow-wrap:anywhere}
+.lead-phone:focus-visible,.lead-email:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:3px}
+.lead-email{color:#c9d6e7;overflow-wrap:anywhere}
+@media(max-width:800px){.top-actions{flex-wrap:nowrap;gap:7px}.top-actions #apiKeyButton{width:auto;max-width:190px;min-height:42px;padding:9px 10px;font-size:12px;white-space:normal}.top-actions .lead-notifications{flex:0 0 44px;width:44px}}
+@media(max-width:480px){.top-actions{gap:6px}.top-actions #apiKeyButton{max-width:150px;font-size:11px;padding:8px}.lead-notifications{height:42px;min-width:42px;width:42px}}
