@@ -13,6 +13,14 @@ function syncPreview(){
  const copyright=validHex($('footerCopyrightDhanColorHex').value);
  $('previewMainDhan').style.color=main;
  $('previewCopyrightDhan').style.color=copyright;
+ syncLiveFooterPreview();
+}
+function syncLiveFooterPreview(){
+ const email=$('footerEmail').value.trim()||$('contactEmail').value.trim()||loadedSettings.contactEmail||'Contact email';
+ $('previewLiveEmailText').textContent=email;
+ $('previewLiveEmail').style.display=$('footerShowEmail').checked?'flex':'none';
+ $('previewLiveCopyright').style.display=$('footerShowCopyright').checked?'block':'none';
+ $('previewLiveCopyright').innerHTML='© '+escapePreview($('footerCopyrightYear').value.trim()||'2026')+' <span>'+escapePreview($('footerBrandKey').value.trim()||'Key')+'</span><span style="color:'+validHex($('footerCopyrightDhanColorHex').value)+';font-weight:700">'+escapePreview($('footerBrandDhan').value.trim()||'Dhan')+'</span><sup>™</sup>. '+escapePreview($('footerRightsText').value.trim()||'All Rights Reserved.');
 }
 function wireColorPair(colorId,hexId){
  const color=$(colorId),hex=$(hexId);
@@ -47,6 +55,9 @@ function renderFooterPreview(){
  $('closeFooterPreview').focus();
 }
 $('previewFooterButton').addEventListener('click',renderFooterPreview);
+['footerEmail','contactEmail','footerCopyrightYear','footerRightsText','footerBrandKey','footerBrandDhan','footerShowEmail','footerShowCopyright','footerCopyrightDhanColorHex'].forEach(id=>{
+ const el=$(id);el.addEventListener('input',syncLiveFooterPreview);el.addEventListener('change',syncLiveFooterPreview);
+});
 $('closeFooterPreview').addEventListener('click',()=>$('footerPreviewOverlay').classList.remove('open'));
 $('footerPreviewOverlay').addEventListener('click',e=>{if(e.target===$('footerPreviewOverlay'))$('footerPreviewOverlay').classList.remove('open')});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')$('footerPreviewOverlay').classList.remove('open')});
@@ -66,6 +77,7 @@ function putFooter(f={}){
  $('footerLinkedIn').value=v.linkedin||'';
  $('footerShowEmail').checked=v.showEmail!==false;
  $('footerShowCopyright').checked=v.showCopyright!==false;
+ syncLiveFooterPreview();
 }
 function readFooter(){
  return {
