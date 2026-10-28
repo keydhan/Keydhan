@@ -209,3 +209,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .lead-actions summary{font-size:12px}
 @media(max-width:800px){.lead-overview{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:14px}.lead-stat{padding:14px;border-radius:16px}.lead-stat strong{font-size:28px}.lead-stat small{font-size:10px}}
 @media(max-width:480px){.lead-overview{gap:8px}.lead-stat{padding:12px 12px 12px 15px}.lead-stat span{font-size:12px}.lead-stat strong{font-size:25px}.lead-stat:after{top:12px;bottom:12px}.lead-view{width:100%;margin:0 0 7px}.lead-actions{width:100%}.lead-actions summary{width:100%}.lead-action-menu{left:0;right:auto;width:100%}}
+
+/* Customer Leads: accessible gold tap-to-call action */
+.panel:has(#rows) .lead-phone{display:inline-block;vertical-align:middle;overflow-wrap:anywhere}
+.panel:has(#rows) .lead-call{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;margin-left:9px;width:34px;height:34px;border:1px solid rgba(212,175,55,.42);border-radius:10px;background:rgba(212,175,55,.12);color:var(--gold);transition:background .15s ease,transform .15s ease}
+.panel:has(#rows) .lead-call svg{width:18px;height:18px;fill:currentColor}
+.panel:has(#rows) .lead-call:hover{background:rgba(212,175,55,.24);transform:translateY(-1px)}
+.panel:has(#rows) .lead-call:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+@media(max-width:600px){.panel:has(#rows) .lead-call{width:36px;height:36px;margin-left:8px}}
