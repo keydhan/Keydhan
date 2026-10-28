@@ -2,6 +2,7 @@ const businessIds=['businessName','contactEmail','contactPhone','whatsapp','addr
 const footerIds=['footerBrandKey','footerBrandDhan','footerCopyrightYear','footerRightsText','footerInstagram','footerFacebook','footerLinkedIn'];
 const footerDefaults={brandKey:'Key',brandDhan:'Dhan',copyrightYear:'2026',rightsText:'All Rights Reserved.',showEmail:true,showCopyright:true,instagram:'',facebook:'',linkedin:''};
 let loadedSettings={};
+let loadedContent={};
 function putFooter(f={}){
  const v={...footerDefaults,...f};
  $('footerBrandKey').value=v.brandKey;
@@ -32,7 +33,9 @@ async function load(){
   const d=await api('/admin/settings');
   loadedSettings=d.settings||{};
   businessIds.forEach(id=>$(id).value=loadedSettings[id]||'');
-  putFooter(loadedSettings.footer||{});
+  const contentData=await api('/admin/content');
+  loadedContent=contentData.content||{};
+  putFooter(loadedContent.footer||{});
   hideNotice();
  }catch(e){showError(e)}
 }
@@ -49,10 +52,10 @@ $('settingsForm').onsubmit=async e=>{
 $('footerForm').onsubmit=async e=>{
  e.preventDefault();
  const btn=$('saveFooter');btn.disabled=true;
- const s={...loadedSettings,footer:readFooter()};
+ const c={...loadedContent,footer:readFooter()};
  try{
-  await api('/admin/settings',{method:'PUT',body:JSON.stringify(s)});
-  loadedSettings=s;toast('Footer settings saved and published');hideNotice();
+  await api('/admin/content',{method:'PUT',body:JSON.stringify(c)});
+  loadedContent=c;toast('Footer settings saved and published');hideNotice();
  }catch(e){showError(e)}
  finally{btn.disabled=false}
 };
