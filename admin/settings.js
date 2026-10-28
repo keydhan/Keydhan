@@ -22,6 +22,34 @@ function wireColorPair(colorId,hexId){
 }
 wireColorPair('footerBrandDhanColor','footerBrandDhanColorHex');
 wireColorPair('footerCopyrightDhanColor','footerCopyrightDhanColorHex');
+
+function escapePreview(value){return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
+function renderFooterPreview(){
+ const f=readFooter();
+ const overlay=$('footerPreviewOverlay');
+ $('previewPublicBrand').innerHTML='<span>'+escapePreview(f.brandKey)+'</span><span class="dhan" style="color:'+validHex(f.brandDhanColor)+'">'+escapePreview(f.brandDhan)+'</span><sup style="color:'+validHex(f.brandDhanColor)+'">™</sup>';
+ const email=$('previewPublicEmail');
+ email.textContent=f.showEmail?($('contactEmail').value.trim()||loadedSettings.contactEmail||'Contact email'): '';
+ email.style.display=f.showEmail?'block':'none';
+ const copyright=$('previewPublicCopyright');
+ copyright.style.display=f.showCopyright?'block':'none';
+ copyright.innerHTML='© '+escapePreview(f.copyrightYear)+' <span> '+escapePreview(f.brandKey)+'</span><span style="color:'+validHex(f.copyrightDhanColor)+';font-weight:700">'+escapePreview(f.brandDhan)+'</span><sup>™</sup>. '+escapePreview(f.rightsText);
+ const socials=$('previewPublicSocials');
+ socials.innerHTML='';
+ [['Instagram',f.instagram],['Facebook',f.facebook],['LinkedIn',f.linkedin]].forEach(([label,url])=>{
+  if(!url)return;
+  try{const parsed=new URL(url);if(parsed.protocol!=='https:'&&parsed.protocol!=='http:')return;
+   const a=document.createElement('a');a.href=parsed.href;a.target='_blank';a.rel='noopener noreferrer';a.textContent=label;socials.appendChild(a);
+  }catch(_){}
+ });
+ overlay.classList.add('open');
+ $('closeFooterPreview').focus();
+}
+$('previewFooterButton').addEventListener('click',renderFooterPreview);
+$('closeFooterPreview').addEventListener('click',()=>$('footerPreviewOverlay').classList.remove('open'));
+$('footerPreviewOverlay').addEventListener('click',e=>{if(e.target===$('footerPreviewOverlay'))$('footerPreviewOverlay').classList.remove('open')});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')$('footerPreviewOverlay').classList.remove('open')});
+
 function putFooter(f={}){
  const v={...footerDefaults,...f};
  $('footerBrandKey').value=v.brandKey;
