@@ -2,15 +2,15 @@
 (async function(){
   const footer=document.querySelector('footer.site-footer');
   if(!footer)return;
-  const API='https://admin-api.keydhan.com/api/settings';
+  const API='https://admin-api.keydhan.com/api';
   const setText=(selector,value)=>{const el=footer.querySelector(selector);if(el&&typeof value==='string')el.textContent=value;};
   const safeUrl=value=>{try{const u=new URL(value);return ['https:','http:'].includes(u.protocol)?u.href:'';}catch{return '';}};
   try{
-    const response=await fetch(API,{cache:'no-store',headers:{Accept:'application/json'}});
-    if(!response.ok)return;
-    const payload=await response.json();
-    const settings=payload.settings||{};
-    const cfg=settings.footer||{};
+    const [settingsResponse,contentResponse]=await Promise.all([fetch(API+'/settings',{cache:'no-store',headers:{Accept:'application/json'}}),fetch(API+'/content',{cache:'no-store',headers:{Accept:'application/json'}})]);
+    const settingsPayload=settingsResponse.ok?await settingsResponse.json():{};
+    const contentPayload=contentResponse.ok?await contentResponse.json():{};
+    const settings=settingsPayload.settings||{};
+    const cfg=(contentPayload.content||{}).footer||{};
     const key=footer.querySelector('.footer-brand-key');
     const dhan=footer.querySelector('.footer-brand-dhan');
     if(key&&typeof cfg.brandKey==='string'&&cfg.brandKey.trim())key.textContent=cfg.brandKey.trim();
