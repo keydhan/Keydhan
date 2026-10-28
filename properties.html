@@ -143,8 +143,7 @@ main > .key3d:empty,
    const pd=await pr.json(),cd=cr.ok?await cr.json():{},sd=sr.ok?await sr.json():{};
    const c=cd.content||{},s=sd.settings||{};
    if(c.propertiesTitle)document.getElementById("pageTitle").textContent=c.propertiesTitle;
-   const footer=document.querySelector("footer");
-   if(footer){if(s.businessName)footer.querySelector("h3").textContent=s.businessName;if(s.contactEmail)footer.querySelectorAll("p")[0].textContent=s.contactEmail;if(s.contactPhone){const phone=document.createElement("p");phone.textContent=s.contactPhone;footer.insertBefore(phone,footer.querySelectorAll("p")[1]||null);}}
+   // Standard footer is managed centrally by /footer.js; do not overwrite its markup here.
    const list=(Array.isArray(pd.properties)?pd.properties:[]).filter(p=>String(p.status||"published").toLowerCase()==="published").sort((a,b)=>dateValue(b)-dateValue(a));
    status.innerHTML='<strong>'+list.length+'</strong> published '+(list.length===1?'property':'properties');
    if(!list.length){grid.innerHTML='<div class="properties-empty"><strong>New properties are coming soon</strong>Our team is updating the latest listings. Please check back shortly.</div>';return;}
@@ -183,6 +182,6 @@ main > .key3d:empty,
 })();
 </script>
 
-<script src="/footer.js?v=20261028-central-footer"></script>
+<script src="/footer.js?v=20261028-central-footer-fix2"></script>
 </body>
 </html>
