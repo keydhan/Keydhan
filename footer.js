@@ -4,6 +4,7 @@
   if(!footer)return;
   const API='https://admin-api.keydhan.com/api';
   const setText=(selector,value)=>{const el=footer.querySelector(selector);if(el&&typeof value==='string')el.textContent=value;};
+  const safeHex=value=>/^#[0-9a-f]{6}$/i.test(String(value||''))?String(value).toUpperCase():'';
   const safeUrl=value=>{try{const u=new URL(value);return ['https:','http:'].includes(u.protocol)?u.href:'';}catch{return '';}};
   try{
     const [settingsResponse,contentResponse]=await Promise.all([fetch(API+'/settings',{cache:'no-store',headers:{Accept:'application/json'}}),fetch(API+'/content',{cache:'no-store',headers:{Accept:'application/json'}})]);
@@ -15,6 +16,11 @@
     const dhan=footer.querySelector('.footer-brand-dhan');
     if(key&&typeof cfg.brandKey==='string'&&cfg.brandKey.trim())key.textContent=cfg.brandKey.trim();
     if(dhan&&typeof cfg.brandDhan==='string'&&cfg.brandDhan.trim())dhan.textContent=cfg.brandDhan.trim();
+    const mainDhanColor=safeHex(cfg.brandDhanColor);
+    if(dhan&&mainDhanColor)dhan.style.color=mainDhanColor;
+    const copyrightDhan=footer.querySelector('.footer-copyright-brand .footer-brand-dhan');
+    const copyrightDhanColor=safeHex(cfg.copyrightDhanColor);
+    if(copyrightDhan&&copyrightDhanColor)copyrightDhan.style.color=copyrightDhanColor;
     const email=footer.querySelector('.footer-email');
     const emailLink=footer.querySelector('.footer-email a');
     const emailText=footer.querySelector('.footer-email a span');
