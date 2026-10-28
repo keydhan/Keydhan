@@ -1,6 +1,6 @@
 const businessIds=['businessName','contactEmail','contactPhone','whatsapp','address'];
-const footerIds=['footerBrandKey','footerBrandDhan','footerBrandDhanColor','footerCopyrightDhanColor','footerCopyrightYear','footerRightsText','footerInstagram','footerFacebook','footerLinkedIn'];
-const footerDefaults={brandKey:'Key',brandDhan:'Dhan',brandDhanColor:'#D4AF37',copyrightDhanColor:'#D4AF37',copyrightYear:'2026',rightsText:'All Rights Reserved.',showEmail:true,showCopyright:true,instagram:'',facebook:'',linkedin:''};
+const footerIds=['footerBrandKey','footerBrandDhan','footerBrandDhanColor','footerCopyrightDhanColor','footerEmail','footerCopyrightYear','footerRightsText','footerInstagram','footerFacebook','footerLinkedIn'];
+const footerDefaults={brandKey:'Key',brandDhan:'Dhan',brandDhanColor:'#D4AF37',copyrightDhanColor:'#D4AF37',footerEmail:'',copyrightYear:'2026',rightsText:'All Rights Reserved.',showEmail:true,showCopyright:true,instagram:'',facebook:'',linkedin:''};
 let loadedSettings={};
 let loadedContent={};
 function validHex(value,fallback='#D4AF37'){return /^#[0-9a-f]{6}$/i.test(String(value||''))?String(value).toUpperCase():fallback;}
@@ -29,8 +29,9 @@ function renderFooterPreview(){
  const overlay=$('footerPreviewOverlay');
  $('previewPublicBrand').innerHTML='<span>'+escapePreview(f.brandKey)+'</span><span class="dhan" style="color:'+validHex(f.brandDhanColor)+'">'+escapePreview(f.brandDhan)+'</span><sup style="color:'+validHex(f.brandDhanColor)+'">™</sup>';
  const email=$('previewPublicEmail');
- email.textContent=f.showEmail?($('contactEmail').value.trim()||loadedSettings.contactEmail||'Contact email'): '';
- email.style.display=f.showEmail?'block':'none';
+ const emailText=$('previewPublicEmailText');
+ emailText.textContent=f.showEmail?(f.footerEmail||$('contactEmail').value.trim()||loadedSettings.contactEmail||'Contact email'):'';
+ email.style.display=f.showEmail?'flex':'none';
  const copyright=$('previewPublicCopyright');
  copyright.style.display=f.showCopyright?'block':'none';
  copyright.innerHTML='© '+escapePreview(f.copyrightYear)+' <span> '+escapePreview(f.brandKey)+'</span><span style="color:'+validHex(f.copyrightDhanColor)+';font-weight:700">'+escapePreview(f.brandDhan)+'</span><sup>™</sup>. '+escapePreview(f.rightsText);
@@ -56,6 +57,7 @@ function putFooter(f={}){
  $('footerBrandDhan').value=v.brandDhan;
  setColorPair('footerBrandDhanColor','footerBrandDhanColorHex',v.brandDhanColor);
  setColorPair('footerCopyrightDhanColor','footerCopyrightDhanColorHex',v.copyrightDhanColor);
+ $('footerEmail').value=v.footerEmail||'';
  syncPreview();
  $('footerCopyrightYear').value=v.copyrightYear;
  $('footerRightsText').value=v.rightsText;
@@ -71,6 +73,7 @@ function readFooter(){
   brandDhan:$('footerBrandDhan').value.trim()||'Dhan',
   brandDhanColor:validHex($('footerBrandDhanColorHex').value),
   copyrightDhanColor:validHex($('footerCopyrightDhanColorHex').value),
+  footerEmail:$('footerEmail').value.trim(),
   copyrightYear:$('footerCopyrightYear').value.trim()||String(new Date().getFullYear()),
   rightsText:$('footerRightsText').value.trim()||'All Rights Reserved.',
   showEmail:$('footerShowEmail').checked,
