@@ -1,12 +1,34 @@
 const businessIds=['businessName','contactEmail','contactPhone','whatsapp','address'];
-const footerIds=['footerBrandKey','footerBrandDhan','footerCopyrightYear','footerRightsText','footerInstagram','footerFacebook','footerLinkedIn'];
-const footerDefaults={brandKey:'Key',brandDhan:'Dhan',copyrightYear:'2026',rightsText:'All Rights Reserved.',showEmail:true,showCopyright:true,instagram:'',facebook:'',linkedin:''};
+const footerIds=['footerBrandKey','footerBrandDhan','footerBrandDhanColor','footerCopyrightDhanColor','footerCopyrightYear','footerRightsText','footerInstagram','footerFacebook','footerLinkedIn'];
+const footerDefaults={brandKey:'Key',brandDhan:'Dhan',brandDhanColor:'#D4AF37',copyrightDhanColor:'#D4AF37',copyrightYear:'2026',rightsText:'All Rights Reserved.',showEmail:true,showCopyright:true,instagram:'',facebook:'',linkedin:''};
 let loadedSettings={};
 let loadedContent={};
+function validHex(value,fallback='#D4AF37'){return /^#[0-9a-f]{6}$/i.test(String(value||''))?String(value).toUpperCase():fallback;}
+function setColorPair(colorId,hexId,value){
+ const color=$(colorId),hex=$(hexId),safe=validHex(value);
+ color.value=safe;hex.value=safe;
+}
+function syncPreview(){
+ const main=validHex($('footerBrandDhanColorHex').value);
+ const copyright=validHex($('footerCopyrightDhanColorHex').value);
+ $('previewMainDhan').style.color=main;
+ $('previewCopyrightDhan').style.color=copyright;
+}
+function wireColorPair(colorId,hexId){
+ const color=$(colorId),hex=$(hexId);
+ color.addEventListener('input',()=>{hex.value=color.value.toUpperCase();syncPreview()});
+ hex.addEventListener('input',()=>{if(/^#[0-9a-f]{6}$/i.test(hex.value)){color.value=hex.value;syncPreview()}});
+ hex.addEventListener('change',()=>{if(!/^#[0-9a-f]{6}$/i.test(hex.value))hex.value=color.value.toUpperCase();else hex.value=hex.value.toUpperCase();syncPreview()});
+}
+wireColorPair('footerBrandDhanColor','footerBrandDhanColorHex');
+wireColorPair('footerCopyrightDhanColor','footerCopyrightDhanColorHex');
 function putFooter(f={}){
  const v={...footerDefaults,...f};
  $('footerBrandKey').value=v.brandKey;
  $('footerBrandDhan').value=v.brandDhan;
+ setColorPair('footerBrandDhanColor','footerBrandDhanColorHex',v.brandDhanColor);
+ setColorPair('footerCopyrightDhanColor','footerCopyrightDhanColorHex',v.copyrightDhanColor);
+ syncPreview();
  $('footerCopyrightYear').value=v.copyrightYear;
  $('footerRightsText').value=v.rightsText;
  $('footerInstagram').value=v.instagram||'';
@@ -19,6 +41,8 @@ function readFooter(){
  return {
   brandKey:$('footerBrandKey').value.trim()||'Key',
   brandDhan:$('footerBrandDhan').value.trim()||'Dhan',
+  brandDhanColor:validHex($('footerBrandDhanColorHex').value),
+  copyrightDhanColor:validHex($('footerCopyrightDhanColorHex').value),
   copyrightYear:$('footerCopyrightYear').value.trim()||String(new Date().getFullYear()),
   rightsText:$('footerRightsText').value.trim()||'All Rights Reserved.',
   showEmail:$('footerShowEmail').checked,
