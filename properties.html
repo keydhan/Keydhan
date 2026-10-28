@@ -9,6 +9,9 @@
 <link rel="stylesheet" href="/style.css?v=20261028-footer-fix">
 <style>
 .properties-intro{padding:58px 20px 24px;text-align:center;background:radial-gradient(ellipse at top,rgba(212,175,55,.13),transparent 65%)}
+/* Keep unexpected search/input widgets from injected scripts or stale cached markup out of the public intro. The intro only contains its eyebrow, title, and description. */
+.properties-intro> :not(.eyebrow):not(#pageTitle):not(p){display:none!important}
+.properties-intro input,.properties-intro form,.properties-intro [role="search"],.properties-intro .search,.properties-intro .search-bar{display:none!important}
 .properties-intro .eyebrow{display:inline-flex;align-items:center;gap:8px;margin-bottom:14px;color:var(--gold);font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}
 .properties-intro .eyebrow:before,.properties-intro .eyebrow:after{content:"";width:24px;height:1px;background:var(--gold);opacity:.7}
 .properties-intro h1{font-size:clamp(36px,5vw,54px);line-height:1.1;color:var(--gold);letter-spacing:-.035em;margin:0 0 14px}
