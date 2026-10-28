@@ -14,7 +14,7 @@
   const API='https://admin-api.keydhan.com/api';
   const safeHex=value=>/^#[0-9a-f]{6}$/i.test(String(value||''))?String(value).toUpperCase():'';
   const safeUrl=value=>{try{const u=new URL(value);return ['https:','http:'].includes(u.protocol)?u.href:'';}catch{return '';}};
-  const setBrand=(selector,value)=>{const el=footer.querySelector(selector);if(el&&typeof value==='string'&&value.trim())el.textContent=value.trim();};
+  const setBrand=(selector,value)=>{if(typeof value==='string'&&value.trim())footer.querySelectorAll(selector).forEach(el=>{el.textContent=value.trim();});};
   async function applySettings(){
     try{
       const [settingsResponse,contentResponse]=await Promise.all([
