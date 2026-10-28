@@ -43,7 +43,6 @@ $('settingsForm').onsubmit=async e=>{
  e.preventDefault();
  const s={...loadedSettings};
  businessIds.forEach(id=>s[id]=$(id).value.trim());
- s.footer=readFooter();
  try{
   await api('/admin/settings',{method:'PUT',body:JSON.stringify(s)});
   loadedSettings=s;toast('Settings saved');hideNotice();
