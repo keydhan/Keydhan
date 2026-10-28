@@ -6,7 +6,7 @@
 <meta name="description" content="Explore the latest published properties listed by KeyDhan.">
 <link rel="canonical" href="https://keydhan.com/properties.html">
 <title>Properties | KeyDhan™</title>
-<link rel="stylesheet" href="/style.css?v=20261028-footer-fix">
+<link rel="stylesheet" href="/style.css?v=20261028-properties-hero-menu-fix">
 <style>
 .properties-intro{padding:58px 20px 24px;text-align:center;background:radial-gradient(ellipse at top,rgba(212,175,55,.13),transparent 65%)}
 .properties-intro .eyebrow{display:inline-flex;align-items:center;gap:8px;margin-bottom:14px;color:var(--gold);font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}
@@ -45,10 +45,10 @@
 @media(max-width:600px){.properties-intro{padding:42px 17px 20px}.properties-wrap{padding:10px 15px 48px}.properties-toolbar{padding:12px 14px;margin-bottom:16px;align-items:flex-start;flex-direction:column;gap:4px}#propertyGrid{grid-template-columns:minmax(0,1fr);gap:17px}#propertyGrid .property-card{border-radius:18px}.property-visual{height:195px}.property-content{padding:18px}#propertyGrid .property-title{font-size:20px}#propertyGrid .property-price{font-size:25px}.properties-sort-note{font-size:11px}}
 @media(prefers-reduced-motion:reduce){#propertyGrid .property-card{transition:none}#propertyGrid .property-card:hover{transform:none}}
 
-/* Properties hero: remove the stray empty pill/decorative element above the eyebrow */
+/* Properties hero: remove unexpected decorative children while keeping the eyebrow and copy */
 .properties-intro::before,
 .properties-intro::after,
-.properties-intro > :empty {
+.properties-intro > :not(.eyebrow):not(h1):not(p) {
   display: none !important;
   content: none !important;
 }
@@ -57,7 +57,7 @@
 }
 .properties-intro .eyebrow {
   position: relative;
-  margin-top: 0;
+  margin: 0 0 14px;
   padding: 0;
   border: 0;
   border-radius: 0;
@@ -98,7 +98,7 @@
   <p class="footer-email"><a href="mailto:hello@keydhan.com" aria-label="Email hello@keydhan.com"><svg class="footer-mail-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m4 7 8 6 8-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>hello@keydhan.com</span></a></p>
   <p class="footer-copyright"><span>© 2026</span> <span class="footer-copyright-brand"><span class="footer-brand-key">Key</span><span class="footer-brand-dhan">Dhan</span><sup class="footer-trademark">™</sup></span><span class="footer-rights">. All Rights Reserved.</span></p>
 </footer>
-<script src="/app.js?v=20261028-footer-cms-fix"></script>
+<script src="/app.js?v=20261028-properties-hero-menu-fix"></script>
 <script>
 (function(){
  const API="https://admin-api.keydhan.com/api";
@@ -170,22 +170,7 @@
  load();
 })();
 </script>
-<script>
-(function(){
- const btn=document.getElementById("menuBtn"),menu=document.getElementById("menu");
- if(!btn||!menu)return;
- let backdrop=document.querySelector(".mobile-menu-backdrop");
- if(!backdrop){backdrop=document.createElement("div");backdrop.className="mobile-menu-backdrop";backdrop.setAttribute("aria-hidden","true");document.body.appendChild(backdrop);}
- const close=()=>{menu.classList.remove("show");backdrop.classList.remove("show");btn.setAttribute("aria-expanded","false");btn.setAttribute("aria-label","Open navigation menu");document.body.classList.remove("menu-open");};
- const open=()=>{menu.classList.add("show");backdrop.classList.add("show");btn.setAttribute("aria-expanded","true");btn.setAttribute("aria-label","Close navigation menu");document.body.classList.add("menu-open");};
- btn.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();menu.classList.contains("show")?close():open();});
- backdrop.addEventListener("click",close);
- menu.addEventListener("click",e=>{if(e.target.closest("a"))close();});
- document.addEventListener("keydown",e=>{if(e.key==="Escape")close();});
- document.addEventListener("click",e=>{if(menu.classList.contains("show")&&!menu.contains(e.target)&&!btn.contains(e.target))close();});
- window.addEventListener("resize",()=>{if(window.innerWidth>768)close();});
-})();
-</script>
+
 <script src="/footer.js?v=20261028-central-footer"></script>
 </body>
 </html>
