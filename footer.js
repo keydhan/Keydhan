@@ -28,7 +28,7 @@
       const year=copyright.querySelector(':scope > span:first-child');
       if(year&&cfg.copyrightYear)year.textContent='© '+String(cfg.copyrightYear).replace(/[^0-9]/g,'').slice(0,4);
       const rights=copyright.querySelector('.footer-rights');
-      if(rights&&typeof cfg.rightsText==='string')rights.textContent=cfg.rightsText.trim().replace(/^\.?\s*/,'');
+      if(rights){const rightsText=typeof cfg.rightsText==='string'&&cfg.rightsText.trim()?cfg.rightsText.trim():'All Rights Reserved.';rights.textContent='. '+rightsText;}
     }
     const socials=[['Instagram',cfg.instagram],['Facebook',cfg.facebook],['LinkedIn',cfg.linkedin]].map(([label,url])=>({label,url:safeUrl(url)})).filter(x=>x.url);
     let social=footer.querySelector('.footer-social-links');
