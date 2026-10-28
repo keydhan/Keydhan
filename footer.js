@@ -24,7 +24,8 @@
     const email=footer.querySelector('.footer-email');
     const emailLink=footer.querySelector('.footer-email a');
     const emailText=footer.querySelector('.footer-email a span');
-    const emailValue=typeof settings.contactEmail==='string'?settings.contactEmail.trim():'';
+    const configuredFooterEmail=typeof cfg.footerEmail==='string'?cfg.footerEmail.trim():'';
+    const emailValue=configuredFooterEmail||(typeof settings.contactEmail==='string'?settings.contactEmail.trim():'');
     if(email&&cfg.showEmail===false)email.hidden=true;
     else if(email&&emailValue&&emailLink&&emailText){email.hidden=false;emailText.textContent=emailValue;emailLink.href='mailto:'+emailValue;emailLink.setAttribute('aria-label','Email '+emailValue);}
     const copyright=footer.querySelector('.footer-copyright');
