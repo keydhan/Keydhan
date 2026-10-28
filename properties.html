@@ -6,7 +6,7 @@
 <meta name="description" content="Explore the latest published properties listed by KeyDhan.">
 <link rel="canonical" href="https://keydhan.com/properties.html">
 <title>Properties | KeyDhan™</title>
-<link rel="stylesheet" href="/style.css?v=20261028-properties-empty-pill-fix2">
+<link rel="stylesheet" href="/style.css?v=20261028-properties-empty-pagination-fix3">
 <style>
 .properties-intro{padding:58px 20px 24px;text-align:center;background:radial-gradient(ellipse at top,rgba(212,175,55,.13),transparent 65%)}
 .properties-intro .eyebrow{display:inline-flex;align-items:center;gap:8px;margin-bottom:14px;color:var(--gold);font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}
@@ -167,7 +167,7 @@ main > .key3d:empty,
     return '<article class="card property-card">'+imageBlock+'<div class="property-content"><div class="property-title">'+title+'</div><div class="property-price">'+price+'</div><div class="property-location"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="1.8"/></svg><span>'+location+'</span></div><div class="property-meta">'+(beds?'<span class="property-detail">'+beds+'</span>':'')+(type?'<span class="property-detail">'+type+'</span>':'')+(p.featured?'<span class="property-badge">★ Featured</span>':'')+'</div>'+(description?'<p class="property-desc">'+description+'</p>':'')+'<div class="property-actions"><a class="btn" target="_blank" rel="noopener noreferrer" href="'+enquiryHref+'">Enquire Now <span aria-hidden="true">↗</span></a></div></div></article>';
    }).join("");
    let pager=document.getElementById("propertiesPagination");if(!pager){pager=document.createElement("nav");pager.id="propertiesPagination";pager.className="properties-pagination";pager.setAttribute("aria-label","Property pages");grid.after(pager);}
-   if(totalPages<=1){pager.innerHTML="";return;}
+   if(totalPages<=1){pager.remove();return;}
    let controls='<button type="button" data-page="'+(page-1)+'" '+(page===1?"disabled":"")+' aria-label="Previous page">‹ Prev</button>';
    const from=Math.max(1,page-2),to=Math.min(totalPages,page+2);if(from>1){controls+='<button type="button" data-page="1">1</button>';if(from>2)controls+="<span>…</span>";}
    for(let n=from;n<=to;n++)controls+='<button type="button" data-page="'+n+'" '+(n===page?'aria-current="page"':"")+'>'+n+'</button>';
