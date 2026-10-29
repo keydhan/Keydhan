@@ -7,6 +7,11 @@
       '<h3 class="footer-brand"><span class="footer-brand-key">Key</span><span class="footer-brand-dhan">Dhan</span><sup class="footer-trademark">™</sup></h3>'+
       '<p class="footer-email"><a href="mailto:hello@keydhan.com" aria-label="Email hello@keydhan.com"><svg class="footer-mail-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m4 7 8 6 8-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>hello@keydhan.com</span></a></p>'+
       '<p class="footer-copyright"><span>© 2026</span> <span class="footer-copyright-brand"><span class="footer-brand-key">Key</span><span class="footer-brand-dhan">Dhan</span><sup class="footer-trademark">™</sup></span><span class="footer-rights">. All Rights Reserved.</span></p>'+
+      '<nav class="footer-legal-links" aria-label="Legal information" style="display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:14px;margin:14px auto 0;font-size:13px">'+
+      '<a href="/privacy-policy.html" style="color:var(--gold);text-decoration:none">Privacy Policy</a>'+
+      '<a href="/terms-and-conditions.html" style="color:var(--gold);text-decoration:none">Terms &amp; Conditions</a>'+
+      '<a href="/disclaimer.html" style="color:var(--gold);text-decoration:none">Disclaimer</a>'+
+      '</nav>'+
       '</footer>';
     footer=mount.querySelector('footer.site-footer');
   }
