@@ -90,8 +90,6 @@ function getLocalToday(){
   const now=new Date();
   return now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
 }
-const disbursementDateField=document.getElementById("disbursementDate");
-if(disbursementDateField)disbursementDateField.value=getLocalToday();
 
 /* ---------- EMI FIELD LABELS ---------- */
 const tenureUnitField=document.getElementById("type");
@@ -130,18 +128,8 @@ return;
 }
 
 const r=R/1200;
-const disbursementValue=document.getElementById("disbursementDate")?.value;
-if(!disbursementValue){
-  alert("Please select the loan disbursement date.");
-  document.getElementById("disbursementDate")?.focus();
-  return;
-}
-
-const disbursement=new Date(disbursementValue+"T00:00:00");
-if(Number.isNaN(disbursement.getTime())){
-  alert("Please select a valid disbursement date.");
-  return;
-}
+// The disbursement date is automatic and uses the user's current local date.
+const disbursement=new Date(getLocalToday()+"T00:00:00");
 
 const EMI=P*r*Math.pow(1+r,N)/(Math.pow(1+r,N)-1);
 const total=EMI*N;
@@ -187,8 +175,6 @@ window.resetEMI = function resetEMI(){
   });
   const type=document.getElementById("type");
   if(type)type.value="m";
-  const disbursementField=document.getElementById("disbursementDate");
-  if(disbursementField)disbursementField.value=getLocalToday();
   const resultPanel=document.getElementById("results");
   const schedule=document.getElementById("chart");
   if(resultPanel)resultPanel.style.display="none";
