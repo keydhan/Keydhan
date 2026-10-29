@@ -62,6 +62,29 @@ maximumFractionDigits:2
 
 }
 
+/* ---------- INDIAN LOAN AMOUNT FORMATTING ---------- */
+const loanAmountField=document.getElementById("loan");
+function formatIndianAmount(value){
+  const digits=String(value??"").replace(/\D/g,"");
+  return digits ? Number(digits).toLocaleString("en-IN",{maximumFractionDigits:0,useGrouping:true}) : "";
+}
+if(loanAmountField){
+  loanAmountField.addEventListener("input",()=>{
+    const field=loanAmountField;
+    const cursor=field.selectionStart??field.value.length;
+    const digitsBeforeCursor=field.value.slice(0,cursor).replace(/\D/g,"").length;
+    const digits=field.value.replace(/\D/g,"");
+    const formatted=formatIndianAmount(digits);
+    field.value=formatted;
+    let nextCursor=0,seen=0;
+    while(nextCursor<formatted.length&&seen<digitsBeforeCursor){
+      if(/\d/.test(formatted[nextCursor]))seen++;
+      nextCursor++;
+    }
+    field.setSelectionRange(nextCursor,nextCursor);
+  });
+}
+
 /* ---------- EMI ---------- */
 
 let chart=null;
