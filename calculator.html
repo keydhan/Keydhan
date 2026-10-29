@@ -114,8 +114,8 @@
       <div class="advanced-field"><label for="advTenure">Tenure</label><input id="advTenure" type="text" inputmode="numeric" autocomplete="off" placeholder="Enter tenure" required></div>
       <div class="advanced-field"><label for="advTenureUnit">Tenure Unit</label><select id="advTenureUnit"><option value="m">Months</option><option value="y">Years</option></select></div>
       <div class="advanced-field"><label for="advPf">Processing Fee / PF (%)</label><input id="advPf" type="number" min="0" max="100" step="0.01" inputmode="decimal" placeholder="Enter PF percentage" required></div>
-      <div class="advanced-field"><label for="advInsurance">Insurance Amount (₹)</label><input id="advInsurance" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Enter insurance amount (₹)" required></div>
-      <div class="advanced-field adv-old-loan-field" id="advOldLoanWrap" hidden><label for="advOldLoan">Old Loan Principal Amount (₹) — Required for Top-up</label><input id="advOldLoan" type="number" min="1" step="0.01" inputmode="decimal" placeholder="Enter outstanding principal"></div>
+      <div class="advanced-field"><label for="advInsurance">Insurance Amount (₹)</label><input id="advInsurance" type="text" inputmode="decimal" autocomplete="off" placeholder="Enter insurance amount (₹)" required></div>
+      <div class="advanced-field adv-old-loan-field" id="advOldLoanWrap" hidden><label for="advOldLoan">Old Loan Principal Amount (₹) — Required for Top-up</label><input id="advOldLoan" type="text" inputmode="decimal" autocomplete="off" placeholder="Enter outstanding principal"></div>
     </div>
     
     <div class="advanced-actions"><button type="button" class="emi-calculate-btn" id="advCalculate">Calculate Advanced EMI</button><button type="button" class="emi-reset-btn" id="advReset">↺ Reset</button></div>
@@ -132,6 +132,6 @@
 <div data-keydhan-footer></div>
 <script src="/footer.js?v=20270127-mobile-legal-fix"></script>
 <script src="/app.js?v=20261029-pre-emi-results-fix"></script>
-<script src="/advanced-calculator.js?v=20261030-pf-label-cleanup"></script>
+<script src="/advanced-calculator.js?v=20261030-amount-commas"></script>
 </body>
 </html>
