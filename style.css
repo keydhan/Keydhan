@@ -769,3 +769,20 @@ footer.site-footer{padding:clamp(34px,5vw,52px) 18px;color:#9ca3af;border-top:1p
 .advanced-copy-status{min-height:20px;padding:0 16px 8px;color:#f4d46a;font-size:13px}
 .advanced-footnote{padding:0 16px 18px;color:#8f9db1;font-size:11px;line-height:1.6}
 @media(max-width:600px){.calculator-page{padding-top:8px}.calculator-page #calculator{padding-top:18px}.advanced-fields{grid-template-columns:minmax(0,1fr)}.advanced-card{padding:16px 12px}.advanced-result-head{padding:15px 13px}.advanced-net{margin:12px;padding:16px}.advanced-results-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:0 12px 12px}.advanced-net-copy{align-items:flex-start}.advanced-net{margin:12px;padding:16px}.advanced-net .advanced-copy-btn{padding:9px 10px;font-size:13px}.advanced-result-row{min-height:88px;padding:12px}.advanced-result-emi{min-height:125px;padding:17px}.advanced-actions{flex-direction:row;gap:8px}.advanced-actions button{width:50%;min-width:0;min-height:54px;padding:10px 6px;font-size:13px;line-height:1.25}.advanced-result-row{padding:13px 6px}.advanced-result-row span{font-size:12px}.advanced-result-row strong{font-size:14px}}
+
+
+/* Advanced EMI form: comfortable, readable sizing aligned with the main EMI calculator */
+.advanced-fields{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:18px;row-gap:20px}
+.advanced-field{gap:10px}
+.advanced-field label{font-size:14px;line-height:1.4}
+.advanced-field input,.advanced-field select{min-height:58px;padding:15px 16px;border-radius:14px;font-size:17px}
+.advanced-actions{gap:12px;margin-top:20px}
+.advanced-actions button{min-height:58px;padding:14px 16px;font-size:16px;line-height:1.25}
+@media(max-width:600px){
+  .advanced-card{padding:20px 16px}
+  .advanced-fields{grid-template-columns:minmax(0,1fr);row-gap:20px}
+  .advanced-field label{font-size:15px}
+  .advanced-field input,.advanced-field select{min-height:60px;padding:16px;font-size:18px}
+  .advanced-actions{gap:10px;margin-top:22px}
+  .advanced-actions button{flex:1 1 0;width:auto;min-width:0;min-height:60px;padding:12px 10px;font-size:14px;line-height:1.25;white-space:normal}
+}
