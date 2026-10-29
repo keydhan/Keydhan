@@ -711,3 +711,26 @@ footer.site-footer{padding:clamp(34px,5vw,52px) 18px;color:#9ca3af;border-top:1p
 /* EMI loan amount rupee prefix */
 #calculator .emi-loan-field input{padding-left:43px}
 #calculator .emi-rupee-prefix{position:absolute;left:16px;top:17px;color:#d9b83f;font-size:19px;line-height:1.4;font-weight:700;pointer-events:none}
+
+
+/* Prevent EMI pie chart from overflowing its card on mobile */
+#calculator .emi-chart-canvas{
+  position:relative;
+  width:100%;
+  max-width:100%;
+  height:clamp(220px, 68vw, 320px);
+  min-height:0;
+  aspect-ratio:auto;
+  overflow:hidden;
+}
+#calculator .emi-chart-canvas canvas{
+  display:block;
+  width:100%!important;
+  height:100%!important;
+  max-width:100%!important;
+  max-height:100%!important;
+}
+@media(max-width:600px){
+  #calculator .emi-chart-card{min-width:0;overflow:hidden}
+  #calculator .emi-chart-canvas{height:clamp(210px, 62vw, 270px);margin-top:12px}
+}
