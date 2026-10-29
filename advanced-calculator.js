@@ -10,14 +10,14 @@
  const formatLoanInput=input=>{
   const digits=String(input.value||"").replace(/,/g,"").replace(/[^0-9.]/g,"");
   const parts=digits.split(".");
-  const whole=(parts.shift()||"").replace(/^0+(?=\\d)/,"");
-  const decimal=parts.length?"."+parts.join("").replace(/\\./g,""):"";
+  const whole=(parts.shift()||"").replace(/^0+(?=\d)/,"");
+  const decimal=parts.length?"."+parts.join("").replace(/\./g,""):"";
   input.value=whole?Number(whole).toLocaleString("en-IN")+decimal:(decimal? "0"+decimal:"");
  };
  const stripLeadingZeros=input=>{
   const value=String(input.value||"");
   if(!value)return;
-  const normalized=value.replace(/^0+(?=\\d)/,"");
+  const normalized=value.replace(/^0+(?=\d)/,"");
   if(normalized!==value)input.value=normalized;
  };
  const advLoanInput=$("advLoan"),pfInput=$("advPf"),insuranceInput=$("advInsurance");
