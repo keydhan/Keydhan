@@ -49,7 +49,24 @@
   rows.push(["After Deduction — Final Loan Amount Disbursed",money(net)],["EMI",money(emi)],["First EMI Date",dateText(firstEmi)]);
   $("advNetDisbursed").textContent=money(net);
   $("advResultRows").innerHTML=rows.map(([label,value])=>makeRow(label,value)).join("");
-  copyText="KEYDHAN™ — ADVANCED EMI CALCULATION\n\nLoan amount: "+money(P)+"\n\nDeduction\n1. PF ("+pfPercent+"%): "+money(pf)+"\n2. PF GST (18%): "+money(gst)+"\n3. Total PF including GST: "+money(pfIncludingGst)+"\n4. Pre-EMI: "+money(preEmi)+(days?" ("+days+" days)":" (0 days)")+"\n5. Stamp paper: "+money(stamp)+"\n6. Insurance: "+money(insurance)+(loanType.value==="topup"?"\n7. Old loan amount (principal): "+money(old):"")+"\n"+(loanType.value==="topup"?"8":"7")+". After deduction final loan amount disbursed: "+money(net)+"\n"+(loanType.value==="topup"?"9":"8")+". EMI: "+money(emi)+"\n"+(loanType.value==="topup"?"10":"9")+". First EMI Date: "+dateText(firstEmi)+"\n\nInterest rate: "+annualRate.toFixed(2)+"% p.a.\nTenure: "+months+" months";
+  const copyRows=[
+   "Loan amount: "+money(P),
+   "",
+   "Deduction",
+   "1. Total PF including GST: "+money(pfIncludingGst),
+   "2. Pre-EMI: "+money(preEmi)+(days?" ("+days+" days)":" (0 days)"),
+   "3. Stamp paper: "+money(stamp),
+   "4. Insurance: "+money(insurance)
+  ];
+  if(loanType.value==="topup")copyRows.push("5. Old loan amount (principal): "+money(old));
+  copyRows.push(
+   (loanType.value==="topup"?"6":"5")+". After deduction final loan amount disbursed: "+money(net),
+   (loanType.value==="topup"?"7":"6")+". EMI: "+money(emi),
+   (loanType.value==="topup"?"8":"7")+". First EMI Date: "+dateText(firstEmi),
+   "",
+   "Tenure: "+months+" months"
+  );
+  copyText=copyRows.join("\\n");
   $("advCopyStatus").textContent="";results.hidden=false;results.scrollIntoView({behavior:"smooth",block:"start"});
  });
  $("advReset").addEventListener("click",()=>{
