@@ -14,7 +14,7 @@
   let months=Number($("advTenure").value);if($("advTenureUnit").value==="y")months*=12;
   const pf=Number($("advPf").value),insurance=Number($("advInsurance").value);
   const old=loanType.value==="topup"?Number(oldLoan.value):0;
-  const fields=[ $("advLoan"),$("advRate"),$("advTenure"),$("advPf"),$("advInsurance") ];
+  const fields=[ $("advLoan"),$("advRate"),$("advTenure"),$("advPf"),$("advInsurance"),oldLoan ];
   fields.forEach(f=>f.setCustomValidity(""));
   if(!(P>0)){ $("advLoan").setCustomValidity("Enter a loan amount greater than zero.");$("advLoan").reportValidity();return;}
   if(!(annualRate>0)){ $("advRate").setCustomValidity("Enter an annual interest rate greater than zero.");$("advRate").reportValidity();return;}
@@ -34,10 +34,10 @@
   }
   const preEmi=P*(annualRate/1200)*(days/30),gst=pf*.18,stamp=100;
   const net=P-pf-gst-preEmi-stamp-insurance-old;
+  if(net<0){alert("Total deductions exceed the loan amount. Please check PF, insurance and old loan principal.");return;}
   const rows=[
    ["Loan Amount",money(P)],
-   ["PF (before GST)",money(pf)],
-   ["PF GST (18%)",money(gst)],
+   ["PF (including 18% GST)",money(pf+gst)],
    ["Pre-EMI"+(days?" ("+days+" days)": " (0 days)") ,money(preEmi)],
    ["Stamp Paper",money(stamp)],
    ["Insurance",money(insurance)]
