@@ -85,6 +85,14 @@ if(loanAmountField){
   });
 }
 
+/* ---------- LOCAL DATE DEFAULT ---------- */
+function getLocalToday(){
+  const now=new Date();
+  return now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
+}
+const disbursementDateField=document.getElementById("disbursementDate");
+if(disbursementDateField)disbursementDateField.value=getLocalToday();
+
 /* ---------- EMI FIELD LABELS ---------- */
 const tenureUnitField=document.getElementById("type");
 const tenureLabelField=document.getElementById("tenureLabel");
@@ -122,26 +130,52 @@ return;
 }
 
 const r=R/1200;
+const disbursementValue=document.getElementById("disbursementDate")?.value;
+if(!disbursementValue){
+  alert("Please select the loan disbursement date.");
+  document.getElementById("disbursementDate")?.focus();
+  return;
+}
+
+const disbursement=new Date(disbursementValue+"T00:00:00");
+if(Number.isNaN(disbursement.getTime())){
+  alert("Please select a valid disbursement date.");
+  return;
+}
 
 const EMI=P*r*Math.pow(1+r,N)/(Math.pow(1+r,N)-1);
-
 const total=EMI*N;
 const interest=total-P;
-
 const flatYear=((interest/P)/(N/12))*100;
 const flatMonth=flatYear/12;
+
+// KeyDhan bank rule: disbursement on/before the 5th has no Pre-EMI;
+// after the 5th, charge interest until the next month's 5th on a 30-day basis.
+let preEmiDays=0;
+let firstEmiDate;
+if(disbursement.getDate()<=5){
+  firstEmiDate=new Date(disbursement.getFullYear(),disbursement.getMonth()+1,5);
+}else{
+  const cutoffDate=new Date(disbursement.getFullYear(),disbursement.getMonth()+1,5);
+  preEmiDays=Math.max(0,Math.round((Date.UTC(cutoffDate.getFullYear(),cutoffDate.getMonth(),cutoffDate.getDate())-Date.UTC(disbursement.getFullYear(),disbursement.getMonth(),disbursement.getDate()))/86400000));
+  firstEmiDate=new Date(disbursement.getFullYear(),disbursement.getMonth()+2,5);
+}
+const preEmiAmount=P*(R/1200)*(preEmiDays/30);
+const formatDate=d=>d.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"});
 
 emi.innerText=money(EMI);
 interestEl.innerText=money(interest);
 totalEl.innerText=money(total);
 flatM.innerText=flatMonth.toFixed(2)+"%";
 flatY.innerText=flatYear.toFixed(2)+"%";
+document.getElementById("preEmi").innerText=money(preEmiAmount);
+document.getElementById("preEmiDays").innerText=preEmiDays===0?"No Pre-EMI (0 days)":preEmiDays+" day"+(preEmiDays===1?"":"s")+" · 30-day basis";
+document.getElementById("emiDate").innerText=formatDate(firstEmiDate);
 
 results.style.display="block";
 chartBox.style.display="none";
 
 createAmortisation(P,r,EMI,N);
-
 drawPie(P,interest);
 
 }
@@ -153,6 +187,8 @@ window.resetEMI = function resetEMI(){
   });
   const type=document.getElementById("type");
   if(type)type.value="m";
+  const disbursementField=document.getElementById("disbursementDate");
+  if(disbursementField)disbursementField.value=getLocalToday();
   const resultPanel=document.getElementById("results");
   const schedule=document.getElementById("chart");
   if(resultPanel)resultPanel.style.display="none";
