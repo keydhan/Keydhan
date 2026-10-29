@@ -156,9 +156,12 @@ interestEl.innerText=money(interest);
 totalEl.innerText=money(total);
 flatM.innerText=flatMonth.toFixed(2)+"%";
 flatY.innerText=flatYear.toFixed(2)+"%";
-document.getElementById("preEmi").innerText=money(preEmiAmount);
-document.getElementById("preEmiDays").innerText=preEmiDays===0?"No Pre-EMI (0 days)":preEmiDays+" day"+(preEmiDays===1?"":"s")+" · 30-day basis";
-document.getElementById("emiDate").innerText=formatDate(firstEmiDate);
+const preEmiValue=document.getElementById("preEmi");
+const preEmiDaysValue=document.getElementById("preEmiDays");
+const emiDateValue=document.getElementById("emiDate");
+if(preEmiValue) preEmiValue.textContent=money(preEmiAmount);
+if(preEmiDaysValue) preEmiDaysValue.textContent=preEmiDays===0?"No Pre-EMI (0 days)":preEmiDays+" day"+(preEmiDays===1?"":"s")+" · 30-day basis";
+if(emiDateValue) emiDateValue.textContent=formatDate(firstEmiDate);
 
 results.style.display="block";
 chartBox.style.display="none";
