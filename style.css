@@ -740,3 +740,36 @@ footer.site-footer{padding:clamp(34px,5vw,52px) 18px;color:#9ca3af;border-top:1p
 #calculator .emi-metric small{color:#91a0b6;font-size:10px;line-height:1.45;overflow-wrap:anywhere}
 #calculator .emi-date-metric strong{color:#f4d46a}
 @media(max-width:600px){#calculator .emi-date-metric strong{font-size:13px}#calculator .emi-metric small{font-size:9px}}
+
+/* Dedicated Calculator page and advanced EMI calculator */
+.calculator-page{padding-top:18px}
+.calculator-page #calculator{padding-top:22px}
+.calculator-page .advanced-intro{text-align:center;max-width:760px;margin:18px auto 26px;padding:0 18px}
+.calculator-page .advanced-intro h2{margin:10px 0;font-size:clamp(26px,4vw,38px)}
+.calculator-page .advanced-intro p{color:var(--muted);line-height:1.6}
+.advanced-calculator-section{padding-top:12px}
+.advanced-card{max-width:1120px;margin:0 auto;padding:clamp(18px,3vw,30px);border:1px solid rgba(212,175,55,.22);border-radius:24px;background:linear-gradient(155deg,rgba(11,24,42,.98),rgba(4,11,22,.99));}
+.advanced-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.advanced-field{display:flex;flex-direction:column;gap:8px;min-width:0}
+.advanced-field label{font-size:13px;font-weight:700;color:#e7c95e}
+.advanced-field input,.advanced-field select{width:100%;min-width:0;min-height:52px;padding:13px 14px;border:1px solid rgba(148,163,184,.24);border-radius:13px;background:#0b1627;color:#fff;font:inherit;outline:none}
+.advanced-field input:focus,.advanced-field select:focus{border-color:#d4af37;box-shadow:0 0 0 3px rgba(212,175,55,.12)}
+.advanced-field[hidden]{display:none!important}
+.advanced-note{margin:18px 0;color:#aab7ca;font-size:12px;line-height:1.7}
+.advanced-actions{display:flex;gap:12px;flex-wrap:wrap}
+.advanced-actions button{flex:1;min-width:180px;cursor:pointer}
+.advanced-results{margin-top:26px;border:1px solid rgba(212,175,55,.24);border-radius:20px;overflow:hidden;background:rgba(2,8,20,.58)}
+.advanced-results[hidden]{display:none}
+.advanced-result-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;border-bottom:1px solid rgba(148,163,184,.14)}
+.advanced-result-head h3{margin-top:6px;font-size:20px}
+.advanced-copy-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 14px;border:1px solid rgba(212,175,55,.4);border-radius:12px;background:#111e30;color:#f5d76e;font-weight:800;cursor:pointer}
+.advanced-net{display:flex;flex-direction:column;gap:8px;margin:16px;padding:20px;border:1px solid rgba(212,175,55,.28);border-radius:16px;background:linear-gradient(130deg,rgba(212,175,55,.13),rgba(10,24,42,.8))}
+.advanced-net span{color:#e7c95e;font-size:13px;font-weight:700}
+.advanced-net strong{font-size:clamp(24px,4vw,34px);color:#f6d96d;overflow-wrap:anywhere}
+.advanced-results-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:0 16px 16px}
+.advanced-result-row{display:flex;flex-direction:column;justify-content:space-between;gap:9px;min-width:0;padding:14px;border:1px solid rgba(148,163,184,.15);border-radius:13px;background:#0b1627}
+.advanced-result-row span{font-size:12px;color:#b4c0d2;line-height:1.5}
+.advanced-result-row strong{font-size:15px;color:#f4d46a;overflow-wrap:anywhere}
+.advanced-copy-status{min-height:20px;padding:0 16px 8px;color:#f4d46a;font-size:13px}
+.advanced-footnote{padding:0 16px 18px;color:#8f9db1;font-size:11px;line-height:1.6}
+@media(max-width:600px){.calculator-page{padding-top:8px}.calculator-page #calculator{padding-top:18px}.advanced-fields,.advanced-results-grid{grid-template-columns:minmax(0,1fr)}.advanced-card{padding:16px 12px}.advanced-result-head{padding:15px 13px}.advanced-net{margin:12px;padding:16px}.advanced-results-grid{padding:0 12px 12px}.advanced-actions{flex-direction:column}.advanced-actions button{width:100%;min-width:0}.advanced-result-row{padding:13px}}
