@@ -22,15 +22,16 @@
  };
  const advLoanInput=$("advLoan"),pfInput=$("advPf"),insuranceInput=$("advInsurance");
  advLoanInput.addEventListener("input",()=>formatLoanInput(advLoanInput));
- [pfInput,insuranceInput,oldLoan].forEach(input=>input.addEventListener("input",()=>stripLeadingZeros(input)));
+ [insuranceInput,oldLoan].forEach(input=>input.addEventListener("input",()=>formatLoanInput(input)));
+ pfInput.addEventListener("input",()=>stripLeadingZeros(pfInput));
  loanType.addEventListener("change",toggleOld);toggleOld();
  const makeRow=(label,value)=>'<div class="advanced-result-row'+(label==="EMI"?" advanced-result-emi":label==="First EMI Date"?" advanced-result-date":label==="Tenure"?" advanced-result-tenure":"")+'"><span>'+label+'</span><strong>'+value+'</strong></div>';
  let copyText="";
  $("advCalculate").addEventListener("click",()=>{
   const P=Number($("advLoan").value.replace(/,/g,"")),annualRate=Number($("advRate").value);
   let months=Number($("advTenure").value);if($("advTenureUnit").value==="y")months*=12;
-  const pfPercent=Number($("advPf").value),insurance=Number($("advInsurance").value);
-  const old=loanType.value==="topup"?Number(oldLoan.value):0;
+  const pfPercent=Number($("advPf").value),insurance=Number($("advInsurance").value.replace(/,/g,""));
+  const old=loanType.value==="topup"?Number(oldLoan.value.replace(/,/g,"")):0;
   const fields=[ $("advLoan"),$("advRate"),$("advTenure"),$("advPf"),$("advInsurance"),oldLoan ];
   fields.forEach(f=>f.setCustomValidity(""));
   if(!pfInput.value.trim()){pfInput.setCustomValidity("Enter the Processing Fee / PF percentage.");pfInput.reportValidity();return;}
