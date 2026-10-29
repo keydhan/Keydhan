@@ -130,11 +130,11 @@ Key<span>Dhan</span><sup>™</sup>
 
 <div class="card">
 
-<div class="emi-field emi-loan-field"><span class="emi-rupee-prefix" aria-hidden="true">₹</span><input id="loan" type="text" inputmode="numeric" autocomplete="off" placeholder=" " aria-label="Loan Amount"><label for="loan" class="emi-field-label">Loan Amount</label></div>
+<div class="emi-field emi-loan-field"><label for="loan" class="emi-field-label">Loan Amount (₹)</label><div class="emi-input-wrap"><span class="emi-rupee-prefix" aria-hidden="true">₹</span><input id="loan" type="text" inputmode="numeric" autocomplete="off" placeholder="Enter loan amount" aria-label="Loan Amount"></div></div>
 
-<div class="emi-field emi-rate-field"><input id="rate" type="number" step="0.01" placeholder=" " aria-label="Interest Rate"><span class="emi-percent-suffix" aria-hidden="true">%</span><label for="rate" class="emi-field-label">Reducing Rate</label></div>
+<div class="emi-field emi-rate-field"><label for="rate" class="emi-field-label">Reducing Interest Rate (% p.a.)</label><div class="emi-input-wrap"><input id="rate" type="number" step="0.01" placeholder="Enter annual rate" aria-label="Interest Rate"><span class="emi-percent-suffix" aria-hidden="true">%</span></div></div>
 
-<div class="emi-field"><input id="tenure" type="number" min="1" step="1" placeholder=" " aria-label="Loan Tenure"><label for="tenure" class="emi-field-label" id="tenureLabel">Tenure in Months</label></div>
+<div class="emi-field"><label for="tenure" class="emi-field-label" id="tenureLabel">Tenure in Months</label><input id="tenure" type="number" min="1" step="1" placeholder="Enter tenure" aria-label="Loan Tenure"></div>
 
 <select id="type" aria-label="Tenure unit">
 <option value="m">Months</option>
