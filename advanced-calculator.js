@@ -63,9 +63,9 @@
   if(loanType.value==="topup")copyRows.push("5. Old loan amount (Principal): "+moneyWhole(old));
   copyRows.push(
    "",
-   "After deduction final loan amount disbursed: "+moneyTrim(net),
+   "After deduction final loan amount disbursed: *"+moneyTrim(net)+"*",
    "",
-   "EMI: "+money(emi),
+   "EMI: *"+money(emi)+"*",
    "First EMI Date: "+dateText(firstEmi),
    "Tenure: "+months+" months"
   );
