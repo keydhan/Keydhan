@@ -92,7 +92,7 @@
  });
  $("advReset").addEventListener("click",()=>{
   ["advLoan","advRate","advTenure","advOldLoan"].forEach(id=>$(id).value="");
-  $("advPf").value="0";$("advInsurance").value="0";$("advTenureUnit").value="m";loanType.value="fresh";toggleOld();results.hidden=true;copyText="";$("advCopyStatus").textContent="";
+  $("advPf").value="";$("advInsurance").value="";$("advTenureUnit").value="m";loanType.value="fresh";toggleOld();results.hidden=true;copyText="";$("advCopyStatus").textContent="";
  });
  $("advCopy").addEventListener("click",async()=>{
   if(!copyText){$("advCopyStatus").textContent="Calculate first, then copy the result.";return;}
