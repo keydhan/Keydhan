@@ -64,7 +64,8 @@
    ["Insurance",money(insurance)]
   ];
   if(loanType.value==="topup")rows.push(["Old Loan Principal Amount",money(old)]);
-  rows.push(["Estimated Monthly EMI",money(emi)],["First EMI Date",dateText(firstEmi)],["Tenure",months+" months"]);
+  const tenureYears=months/12;const tenureText=Number.isInteger(tenureYears)?tenureYears+" years":Number(tenureYears.toFixed(2))+" years";
+  rows.push(["Estimated Monthly EMI",money(emi)],["First EMI Date",dateText(firstEmi)],["Tenure",tenureText]);
   $("advNetDisbursed").textContent=money(net);
   $("advResultRows").innerHTML=rows.map(([label,value])=>makeRow(label,value)).join("");
   const moneyWhole=value=>"₹"+Number(value).toLocaleString("en-IN",{maximumFractionDigits:0});
@@ -84,7 +85,7 @@
    "",
    "EMI: *"+money(emi)+"*",
    "First EMI Date: "+dateText(firstEmi),
-   "Tenure: "+months+" months"
+   "Tenure: "+(Number.isInteger(months/12)?(months/12)+" years":Number((months/12).toFixed(2))+" years")
   );
   copyText=copyRows.join("\n");
   $("advCopyStatus").textContent="";results.hidden=false;results.scrollIntoView({behavior:"smooth",block:"start"});
