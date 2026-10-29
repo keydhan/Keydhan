@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="KeyDhan EMI and Advanced EMI Calculator with PF, GST, Pre-EMI, insurance and net disbursement estimate.">
+<link rel="canonical" href="https://keydhan.com/calculator.html">
+<title>EMI Calculator | KeyDhan™</title>
+<link rel="stylesheet" href="/style.css?v=20261029-advanced-calculator">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<header>
+  <a class="logo" href="/" aria-label="KeyDhan Home" style="text-decoration:none;color:inherit">Key<span>Dhan</span><sup>™</sup></a>
+  <button class="menu-btn" id="menuBtn" type="button" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+  <nav id="menu">
+    <a href="/">Home</a>
+    <a href="/#services">Services</a>
+    <a href="/calculator.html" aria-current="page">Calculator</a>
+    <a href="/properties.html">Properties</a>
+    <a href="/business-services.html">Business Services</a>
+    <a href="/contact.html">Contact</a>
+  </nav>
+</header>
+<main class="calculator-page">
+<section id="calculator" class="section">
+
+<h2>EMI Calculator</h2>
+
+<div class="card">
+
+<div class="emi-field emi-loan-field"><span class="emi-rupee-prefix" aria-hidden="true">₹</span><input id="loan" type="text" inputmode="numeric" autocomplete="off" placeholder=" " aria-label="Loan Amount"><label for="loan" class="emi-field-label">Loan Amount</label></div>
+
+<div class="emi-field emi-rate-field"><input id="rate" type="number" step="0.01" placeholder=" " aria-label="Interest Rate"><span class="emi-percent-suffix" aria-hidden="true">%</span><label for="rate" class="emi-field-label">Reducing Rate</label></div>
+
+<div class="emi-field"><input id="tenure" type="number" min="1" step="1" placeholder=" " aria-label="Loan Tenure"><label for="tenure" class="emi-field-label" id="tenureLabel">Tenure in Months</label></div>
+
+<select id="type" aria-label="Tenure unit">
+<option value="m">Months</option>
+<option value="y">Years</option>
+</select>
+
+<div class="emi-actions">
+<button class="emi-calculate-btn" onclick="calc()" type="button">Calculate EMI</button>
+<button class="emi-reset-btn" onclick="resetEMI()" type="button"><span aria-hidden="true">↺</span> Reset</button>
+</div>
+
+<div id="results" class="emi-results">
+
+<div class="emi-results-heading">
+  <span class="emi-kicker">YOUR LOAN SUMMARY</span>
+  <span class="emi-status"><i></i> ESTIMATE READY</span>
+</div>
+
+<div class="emi-highlight">
+  <span class="emi-label">Estimated Monthly EMI</span>
+  <strong class="emi-amount"><span id="emi"></span></strong>
+  <span class="emi-caption">Your estimated monthly instalment</span>
+</div>
+
+<div class="emi-metrics">
+  <div class="emi-metric"><span>Total Interest</span><strong><span id="interest"></span></strong></div>
+  <div class="emi-metric"><span>Total Payment</span><strong><span id="total"></span></strong></div>
+  <div class="emi-metric"><span>Flat Monthly Rate</span><strong><span id="flatM"></span></strong></div>
+  <div class="emi-metric"><span>Flat Yearly Rate</span><strong><span id="flatY"></span></strong></div>
+  <div class="emi-metric emi-date-metric"><span>Pre-EMI</span><strong><span id="preEmi"></span></strong><small id="preEmiDays"></small></div>
+  <div class="emi-metric emi-date-metric"><span>EMI Date</span><strong><span id="emiDate"></span></strong><small>First instalment date</small></div>
+</div>
+
+<div class="emi-chart-card">
+  <div class="emi-chart-heading"><div><strong>Payment Breakdown</strong><small>Principal vs. total interest</small></div><span class="emi-chart-icon">◒</span></div>
+  <div class="emi-chart-canvas"><canvas id="emiChart" height="220"></canvas></div>
+</div>
+
+<button class="emi-amortisation-btn" onclick="toggleChart()" type="button"><span>View Amortisation Schedule</span><span aria-hidden="true">⌄</span></button>
+
+<div id="chart" class="emi-amortisation-table">
+
+<table>
+
+<thead>
+
+<tr>
+<th>Month</th>
+<th>Principal</th>
+<th>Interest</th>
+<th>Balance</th>
+</tr>
+
+</thead>
+
+<tbody id="rows"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+<section id="advanced-calculator" class="section advanced-calculator-section">
+  <div class="advanced-intro">
+    <span class="services-eyebrow">KEYDHAN <i></i> ADVANCED TOOL</span>
+    <h2>Advanced EMI Calculator</h2>
+    <p>Estimate your EMI, deductions and final loan amount disbursed.</p>
+  </div>
+  <div class="card advanced-card">
+    <div class="advanced-fields">
+      <div class="advanced-field"><label for="advLoanType">Loan Type</label><select id="advLoanType"><option value="fresh">Fresh Loan</option><option value="topup">Top-up Loan</option></select></div>
+      <div class="advanced-field"><label for="advLoan">Loan Amount (₹)</label><input id="advLoan" type="number" min="1" step="1" inputmode="numeric" placeholder="Enter loan amount" required></div>
+      <div class="advanced-field"><label for="advRate">Reducing Interest Rate (% p.a.)</label><input id="advRate" type="number" min="0.01" step="0.01" placeholder="Enter annual rate" required></div>
+      <div class="advanced-field"><label for="advTenure">Tenure</label><input id="advTenure" type="number" min="1" step="1" placeholder="Enter tenure" required></div>
+      <div class="advanced-field"><label for="advTenureUnit">Tenure Unit</label><select id="advTenureUnit"><option value="m">Months</option><option value="y">Years</option></select></div>
+      <div class="advanced-field"><label for="advPf">Processing Fee / PF (₹, before GST)</label><input id="advPf" type="number" min="0" step="0.01" value="0" inputmode="decimal" required></div>
+      <div class="advanced-field"><label for="advInsurance">Insurance Amount (₹)</label><input id="advInsurance" type="number" min="0" step="0.01" value="0" inputmode="decimal" required></div>
+      <div class="advanced-field adv-old-loan-field" id="advOldLoanWrap" hidden><label for="advOldLoan">Old Loan Principal Amount (₹) — Required for Top-up</label><input id="advOldLoan" type="number" min="1" step="0.01" inputmode="decimal" placeholder="Enter outstanding principal"></div>
+    </div>
+    <p class="advanced-note">PF GST is calculated at 18% of the PF amount. Pre-EMI follows the KeyDhan rule: disbursement on/before the 5th has ₹0 Pre-EMI; after the 5th, interest is calculated up to the next month's 5th on a 30-day basis. Stamp paper deduction is fixed at ₹100.</p>
+    <div class="advanced-actions"><button type="button" class="emi-calculate-btn" id="advCalculate">Calculate Advanced EMI</button><button type="button" class="emi-reset-btn" id="advReset">↺ Reset</button></div>
+    <div class="advanced-results" id="advResults" hidden aria-live="polite">
+      <div class="advanced-result-head"><div><span class="emi-kicker">ADVANCED LOAN SUMMARY</span><h3>Disbursement Breakdown</h3></div><button class="advanced-copy-btn" type="button" id="advCopy" aria-label="Copy loan calculation details" title="Copy calculation details">▢ <span>Copy</span></button></div>
+      <div class="advanced-net"><span>Final Loan Amount Disbursed</span><strong id="advNetDisbursed">₹0</strong></div>
+      <div class="advanced-results-grid" id="advResultRows"></div>
+      <p class="advanced-copy-status" id="advCopyStatus" role="status"></p>
+      <p class="advanced-footnote">This is an estimate based on the details entered. Actual deductions and disbursement may differ according to lender policy.</p>
+    </div>
+  </div>
+</section>
+</main>
+<div data-keydhan-footer></div>
+<script src="/footer.js?v=20270127-mobile-legal-fix"></script>
+<script src="/app.js?v=20261029-pre-emi-results-fix"></script>
+<script src="/advanced-calculator.js?v=20261029-1"></script>
+</body>
+</html>
