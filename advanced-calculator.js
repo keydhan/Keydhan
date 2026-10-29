@@ -12,14 +12,14 @@
  $("advCalculate").addEventListener("click",()=>{
   const P=Number($("advLoan").value),annualRate=Number($("advRate").value);
   let months=Number($("advTenure").value);if($("advTenureUnit").value==="y")months*=12;
-  const pf=Number($("advPf").value),insurance=Number($("advInsurance").value);
+  const pfPercent=Number($("advPf").value),insurance=Number($("advInsurance").value);
   const old=loanType.value==="topup"?Number(oldLoan.value):0;
   const fields=[ $("advLoan"),$("advRate"),$("advTenure"),$("advPf"),$("advInsurance"),oldLoan ];
   fields.forEach(f=>f.setCustomValidity(""));
   if(!(P>0)){ $("advLoan").setCustomValidity("Enter a loan amount greater than zero.");$("advLoan").reportValidity();return;}
   if(!(annualRate>0)){ $("advRate").setCustomValidity("Enter an annual interest rate greater than zero.");$("advRate").reportValidity();return;}
   if(!(months>0)){ $("advTenure").setCustomValidity("Enter a valid tenure.");$("advTenure").reportValidity();return;}
-  if(pf<0||insurance<0){alert("PF and insurance cannot be negative.");return;}
+  if(pfPercent<0||pfPercent>100||insurance<0){alert("Enter PF percentage between 0 and 100, and a non-negative insurance amount.");return;}
   if(loanType.value==="topup"&&!(old>0)){oldLoan.setCustomValidity("Old loan principal amount is mandatory for a Top-up Loan.");oldLoan.reportValidity();return;}
   if(old>P){oldLoan.setCustomValidity("Old loan principal cannot exceed the total loan amount.");oldLoan.reportValidity();return;}
   const r=annualRate/1200;
@@ -32,12 +32,15 @@
    days=Math.max(0,Math.round((Date.UTC(cutoff.getFullYear(),cutoff.getMonth(),cutoff.getDate())-Date.UTC(disbursement.getFullYear(),disbursement.getMonth(),disbursement.getDate()))/86400000));
    firstEmi=new Date(disbursement.getFullYear(),disbursement.getMonth()+2,5);
   }
-  const preEmi=P*(annualRate/1200)*(days/30),gst=pf*.18,stamp=100;
-  const net=P-pf-gst-preEmi-stamp-insurance-old;
+  const pf=P*pfPercent/100,gst=pf*.18,pfIncludingGst=pf+gst;
+  const preEmi=P*(annualRate/1200)*(days/30),stamp=100;
+  const net=P-pfIncludingGst-preEmi-stamp-insurance-old;
   if(net<0){alert("Total deductions exceed the loan amount. Please check PF, insurance and old loan principal.");return;}
   const rows=[
    ["Loan Amount",money(P)],
-   ["PF (including 18% GST)",money(pf+gst)],
+   ["PF ("+pfPercent.toFixed(2).replace(/\\.?0+$/,"")+"% of loan amount)",money(pf)],
+   ["PF GST (18%)",money(gst)],
+   ["Total PF including GST",money(pfIncludingGst)],
    ["Pre-EMI"+(days?" ("+days+" days)": " (0 days)") ,money(preEmi)],
    ["Stamp Paper",money(stamp)],
    ["Insurance",money(insurance)]
@@ -46,7 +49,7 @@
   rows.push(["After Deduction — Final Loan Amount Disbursed",money(net)],["EMI",money(emi)],["First EMI Date",dateText(firstEmi)]);
   $("advNetDisbursed").textContent=money(net);
   $("advResultRows").innerHTML=rows.map(([label,value])=>makeRow(label,value)).join("");
-  copyText="KEYDHAN™ — ADVANCED EMI CALCULATION\n\nLoan amount: "+money(P)+"\n\nDeduction\n1. PF: "+money(pf)+" (before GST)\n2. PF GST (18%): "+money(gst)+"\n3. Pre-EMI: "+money(preEmi)+(days?" ("+days+" days)":" (0 days)")+"\n4. Stamp paper: "+money(stamp)+"\n5. Insurance: "+money(insurance)+(loanType.value==="topup"?"\n6. Old loan amount (principal): "+money(old):"")+"\n"+(loanType.value==="topup"?"7":"6")+". After deduction final loan amount disbursed: "+money(net)+"\n"+(loanType.value==="topup"?"8":"7")+". EMI: "+money(emi)+"\n"+(loanType.value==="topup"?"9":"8")+". First EMI Date: "+dateText(firstEmi)+"\n\nInterest rate: "+annualRate.toFixed(2)+"% p.a.\nTenure: "+months+" months";
+  copyText="KEYDHAN™ — ADVANCED EMI CALCULATION\n\nLoan amount: "+money(P)+"\n\nDeduction\n1. PF ("+pfPercent+"%): "+money(pf)+"\n2. PF GST (18%): "+money(gst)+"\n3. Total PF including GST: "+money(pfIncludingGst)+"\n4. Pre-EMI: "+money(preEmi)+(days?" ("+days+" days)":" (0 days)")+"\n5. Stamp paper: "+money(stamp)+"\n6. Insurance: "+money(insurance)+(loanType.value==="topup"?"\n7. Old loan amount (principal): "+money(old):"")+"\n"+(loanType.value==="topup"?"8":"7")+". After deduction final loan amount disbursed: "+money(net)+"\n"+(loanType.value==="topup"?"9":"8")+". EMI: "+money(emi)+"\n"+(loanType.value==="topup"?"10":"9")+". First EMI Date: "+dateText(firstEmi)+"\n\nInterest rate: "+annualRate.toFixed(2)+"% p.a.\nTenure: "+months+" months";
   $("advCopyStatus").textContent="";results.hidden=false;results.scrollIntoView({behavior:"smooth",block:"start"});
  });
  $("advReset").addEventListener("click",()=>{
