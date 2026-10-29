@@ -24,7 +24,7 @@
  advLoanInput.addEventListener("input",()=>formatLoanInput(advLoanInput));
  [pfInput,insuranceInput,oldLoan].forEach(input=>input.addEventListener("input",()=>stripLeadingZeros(input)));
  loanType.addEventListener("change",toggleOld);toggleOld();
- const makeRow=(label,value)=>'<div class="advanced-result-row'+(label==="EMI"?" advanced-result-emi":label==="First EMI Date"?" advanced-result-date":"")+'"><span>'+label+'</span><strong>'+value+'</strong></div>';
+ const makeRow=(label,value)=>'<div class="advanced-result-row'+(label==="EMI"?" advanced-result-emi":label==="First EMI Date"?" advanced-result-date":label==="Tenure"?" advanced-result-tenure":"")+'"><span>'+label+'</span><strong>'+value+'</strong></div>';
  let copyText="";
  $("advCalculate").addEventListener("click",()=>{
   const P=Number($("advLoan").value.replace(/,/g,"")),annualRate=Number($("advRate").value);
@@ -65,7 +65,7 @@
    ["Insurance",money(insurance)]
   ];
   if(loanType.value==="topup")rows.push(["Old Loan Principal Amount",money(old)]);
-  rows.push(["EMI",money(emi)],["First EMI Date",dateText(firstEmi)],["Tenure",months+" months"]);
+  rows.push(["Estimated Monthly EMI",money(emi)],["First EMI Date",dateText(firstEmi)],["Tenure",months+" months"]);
   $("advNetDisbursed").textContent=money(net);
   $("advResultRows").innerHTML=rows.map(([label,value])=>makeRow(label,value)).join("");
   const moneyWhole=value=>"₹"+Number(value).toLocaleString("en-IN",{maximumFractionDigits:0});
