@@ -14,16 +14,17 @@
   businessTrademarkDocuments:"Brand/logo details, applicant information and the relevant goods/services classes may be needed."
  };
  const text=(id,value)=>{const el=document.getElementById(id);if(el&&typeof value==="string"&&value.trim())el.textContent=value;};
- function whatsappNumber(value){let n=String(value||"").replace(/\D/g,"");if(n.length===10)n="91"+n;return n;}
+ const WHATSAPP_BASE="https://wa.me/keydhan";
  async function init(){
   let content={},settings={};
   try{const [cr,sr]=await Promise.all([fetch(API_URL+"/content",{cache:"no-store"}),fetch(API_URL+"/settings",{cache:"no-store"})]);if(cr.ok){const d=await cr.json();content=d.content||{};}if(sr.ok){const d=await sr.json();settings=d.settings||{};}}catch(e){console.warn("Business Services CMS unavailable; showing defaults.",e);}
   Object.keys(defaults).forEach(id=>text(id,content[id]||defaults[id]));
-  const number=whatsappNumber(settings.whatsapp);
   document.querySelectorAll("[data-service]").forEach(link=>{
    const service=link.getAttribute("data-service");
-   if(number){const message="Hello KeyDhan, I would like to enquire about "+service+". Please share the process, eligibility, documents and applicable charges.";link.href="https://wa.me/"+number+"?text="+encodeURIComponent(message);link.target="_blank";}
-   else{link.href="/contact.html";link.removeAttribute("target");link.title="Please configure the WhatsApp number in Admin Settings to enable direct WhatsApp enquiries.";}
+   const message="Hello KeyDhan, I would like to enquire about "+service+". Please share the process, eligibility, documents and applicable charges.";
+   link.href=WHATSAPP_BASE+"?text="+encodeURIComponent(message);
+   link.target="_blank";
+   link.rel="noopener noreferrer";
   });
  }
  init();
