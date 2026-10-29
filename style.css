@@ -706,3 +706,8 @@ footer.site-footer{padding:clamp(34px,5vw,52px) 18px;color:#9ca3af;border-top:1p
 #calculator .emi-rate-field input{padding-right:48px}
 #calculator .emi-percent-suffix{position:absolute;right:18px;top:18px;color:#f4f5f8;font-size:18px;line-height:1.4;pointer-events:none}
 #calculator .emi-field input:focus{outline-color:rgba(212,175,55,.55)}
+
+
+/* EMI loan amount rupee prefix */
+#calculator .emi-loan-field input{padding-left:43px}
+#calculator .emi-rupee-prefix{position:absolute;left:16px;top:17px;color:#d9b83f;font-size:19px;line-height:1.4;font-weight:700;pointer-events:none}
