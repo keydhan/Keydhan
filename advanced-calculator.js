@@ -33,6 +33,8 @@
   const old=loanType.value==="topup"?Number(oldLoan.value):0;
   const fields=[ $("advLoan"),$("advRate"),$("advTenure"),$("advPf"),$("advInsurance"),oldLoan ];
   fields.forEach(f=>f.setCustomValidity(""));
+  if(!pfInput.value.trim()){pfInput.setCustomValidity("Enter the Processing Fee / PF percentage.");pfInput.reportValidity();return;}
+  if(!insuranceInput.value.trim()){insuranceInput.setCustomValidity("Enter the Insurance Amount. Enter 0 if there is no insurance.");insuranceInput.reportValidity();return;}
   if(!(P>0)){ $("advLoan").setCustomValidity("Enter a loan amount greater than zero.");$("advLoan").reportValidity();return;}
   if(!(annualRate>0)){ $("advRate").setCustomValidity("Enter an annual interest rate greater than zero.");$("advRate").reportValidity();return;}
   if(!(months>0)){ $("advTenure").setCustomValidity("Enter a valid tenure.");$("advTenure").reportValidity();return;}
