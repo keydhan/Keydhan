@@ -25,7 +25,7 @@
 
 <meta name="description" content="Home Loan, Business Loan, LAP & Real Estate">
 
-<link rel="stylesheet" href="style.css?v=20261029-desktop-emi-empty-state">
+<link rel="stylesheet" href="style.css?v=20261029-emi-field-labels">
 
 <!-- Added Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -130,13 +130,13 @@ Key<span>Dhan</span><sup>™</sup>
 
 <div class="card">
 
-<input id="loan" type="text" inputmode="numeric" autocomplete="off" placeholder="Loan Amount" aria-label="Loan Amount">
+<div class="emi-field"><input id="loan" type="text" inputmode="numeric" autocomplete="off" placeholder=" " aria-label="Loan Amount"><label for="loan" class="emi-field-label">Loan Amount</label></div>
 
-<input id="rate" type="number" step="0.01" placeholder="Interest Rate (%)">
+<div class="emi-field emi-rate-field"><input id="rate" type="number" step="0.01" placeholder=" " aria-label="Interest Rate"><span class="emi-percent-suffix" aria-hidden="true">%</span><label for="rate" class="emi-field-label">Reducing Rate</label></div>
 
-<input id="tenure" type="number" placeholder="Tenure">
+<div class="emi-field"><input id="tenure" type="number" min="1" step="1" placeholder=" " aria-label="Loan Tenure"><label for="tenure" class="emi-field-label" id="tenureLabel">Tenure in Months</label></div>
 
-<select id="type">
+<select id="type" aria-label="Tenure unit">
 <option value="m">Months</option>
 <option value="y">Years</option>
 </select>
@@ -213,7 +213,7 @@ Key<span>Dhan</span><sup>™</sup>
 <div data-keydhan-footer></div>
 
 <script src="/footer.js?v=20270127-mobile-legal-fix"></script>
-<script src="app.js?v=20261029-emi-comma-calc-fix"></script>
+<script src="app.js?v=20261029-emi-field-labels"></script>
 
 
 </body>
