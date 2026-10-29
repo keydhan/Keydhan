@@ -70,6 +70,8 @@
   $("advResultRows").innerHTML=rows.map(([label,value])=>makeRow(label,value)).join("");
   const moneyWhole=value=>"₹"+Number(value).toLocaleString("en-IN",{maximumFractionDigits:0});
   const copyRows=[
+   loanType.value==="topup"?"*TOP UP LOAN*":"*FRESH LOAN*",
+   "",
    "Loan amount: "+moneyWhole(P),
    "",
    "Deduction",
