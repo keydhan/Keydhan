@@ -1,0 +1,66 @@
+/* KeyDhan Advanced EMI Calculator */
+(function(){
+ const $=id=>document.getElementById(id);
+ const money=value=>"₹"+Number(value).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+ const localToday=()=>{const d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate());};
+ const dateText=d=>d.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"});
+ const loanType=$("advLoanType"),oldWrap=$("advOldLoanWrap"),oldLoan=$("advOldLoan"),results=$("advResults");
+ const toggleOld=()=>{const topup=loanType.value==="topup";oldWrap.hidden=!topup;oldLoan.required=topup;if(!topup)oldLoan.value="";};
+ loanType.addEventListener("change",toggleOld);toggleOld();
+ const makeRow=(label,value)=>'<div class="advanced-result-row"><span>'+label+'</span><strong>'+value+'</strong></div>';
+ let copyText="";
+ $("advCalculate").addEventListener("click",()=>{
+  const P=Number($("advLoan").value),annualRate=Number($("advRate").value);
+  let months=Number($("advTenure").value);if($("advTenureUnit").value==="y")months*=12;
+  const pf=Number($("advPf").value),insurance=Number($("advInsurance").value);
+  const old=loanType.value==="topup"?Number(oldLoan.value):0;
+  const fields=[ $("advLoan"),$("advRate"),$("advTenure"),$("advPf"),$("advInsurance") ];
+  fields.forEach(f=>f.setCustomValidity(""));
+  if(!(P>0)){ $("advLoan").setCustomValidity("Enter a loan amount greater than zero.");$("advLoan").reportValidity();return;}
+  if(!(annualRate>0)){ $("advRate").setCustomValidity("Enter an annual interest rate greater than zero.");$("advRate").reportValidity();return;}
+  if(!(months>0)){ $("advTenure").setCustomValidity("Enter a valid tenure.");$("advTenure").reportValidity();return;}
+  if(pf<0||insurance<0){alert("PF and insurance cannot be negative.");return;}
+  if(loanType.value==="topup"&&!(old>0)){oldLoan.setCustomValidity("Old loan principal amount is mandatory for a Top-up Loan.");oldLoan.reportValidity();return;}
+  if(old>P){oldLoan.setCustomValidity("Old loan principal cannot exceed the total loan amount.");oldLoan.reportValidity();return;}
+  const r=annualRate/1200;
+  const emi=P*r*Math.pow(1+r,months)/(Math.pow(1+r,months)-1);
+  const disbursement=localToday();
+  let days=0,firstEmi;
+  if(disbursement.getDate()<=5) firstEmi=new Date(disbursement.getFullYear(),disbursement.getMonth()+1,5);
+  else{
+   const cutoff=new Date(disbursement.getFullYear(),disbursement.getMonth()+1,5);
+   days=Math.max(0,Math.round((Date.UTC(cutoff.getFullYear(),cutoff.getMonth(),cutoff.getDate())-Date.UTC(disbursement.getFullYear(),disbursement.getMonth(),disbursement.getDate()))/86400000));
+   firstEmi=new Date(disbursement.getFullYear(),disbursement.getMonth()+2,5);
+  }
+  const preEmi=P*(annualRate/1200)*(days/30),gst=pf*.18,stamp=100;
+  const net=P-pf-gst-preEmi-stamp-insurance-old;
+  const rows=[
+   ["Loan Amount",money(P)],
+   ["PF (before GST)",money(pf)],
+   ["PF GST (18%)",money(gst)],
+   ["Pre-EMI"+(days?" ("+days+" days)": " (0 days)") ,money(preEmi)],
+   ["Stamp Paper",money(stamp)],
+   ["Insurance",money(insurance)]
+  ];
+  if(loanType.value==="topup")rows.push(["Old Loan Principal Amount",money(old)]);
+  rows.push(["After Deduction — Final Loan Amount Disbursed",money(net)],["EMI",money(emi)],["First EMI Date",dateText(firstEmi)]);
+  $("advNetDisbursed").textContent=money(net);
+  $("advResultRows").innerHTML=rows.map(([label,value])=>makeRow(label,value)).join("");
+  copyText="KEYDHAN™ — ADVANCED EMI CALCULATION\n\nLoan amount: "+money(P)+"\n\nDeduction\n1. PF: "+money(pf)+" (before GST)\n2. PF GST (18%): "+money(gst)+"\n3. Pre-EMI: "+money(preEmi)+(days?" ("+days+" days)":" (0 days)")+"\n4. Stamp paper: "+money(stamp)+"\n5. Insurance: "+money(insurance)+(loanType.value==="topup"?"\n6. Old loan amount (principal): "+money(old):"")+"\n"+(loanType.value==="topup"?"7":"6")+". After deduction final loan amount disbursed: "+money(net)+"\n"+(loanType.value==="topup"?"8":"7")+". EMI: "+money(emi)+"\n"+(loanType.value==="topup"?"9":"8")+". First EMI Date: "+dateText(firstEmi)+"\n\nInterest rate: "+annualRate.toFixed(2)+"% p.a.\nTenure: "+months+" months";
+  $("advCopyStatus").textContent="";results.hidden=false;results.scrollIntoView({behavior:"smooth",block:"start"});
+ });
+ $("advReset").addEventListener("click",()=>{
+  ["advLoan","advRate","advTenure","advOldLoan"].forEach(id=>$(id).value="");
+  $("advPf").value="0";$("advInsurance").value="0";$("advTenureUnit").value="m";loanType.value="fresh";toggleOld();results.hidden=true;copyText="";$("advCopyStatus").textContent="";
+ });
+ $("advCopy").addEventListener("click",async()=>{
+  if(!copyText){$("advCopyStatus").textContent="Calculate first, then copy the result.";return;}
+  try{
+   if(navigator.clipboard&&window.isSecureContext)await navigator.clipboard.writeText(copyText);
+   else{
+    const area=document.createElement("textarea");area.value=copyText;area.setAttribute("readonly","");area.style.position="fixed";area.style.opacity="0";document.body.appendChild(area);area.select();const ok=document.execCommand("copy");area.remove();if(!ok)throw new Error("Copy failed");
+   }
+   $("advCopyStatus").textContent="Copied! Paste this message into WhatsApp.";
+  }catch(e){$("advCopyStatus").textContent="Copy was blocked by your browser. Please try again or copy manually.";}
+ });
+})();
