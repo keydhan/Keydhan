@@ -2,6 +2,7 @@
 (function(){
  const $=id=>document.getElementById(id);
  const money=value=>"₹"+Number(value).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+ const moneyTrim=value=>"₹"+Number(value).toLocaleString("en-IN",{maximumFractionDigits:2});
  const localToday=()=>{const d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate());};
  const dateText=d=>d.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"});
  const loanType=$("advLoanType"),oldWrap=$("advOldLoanWrap"),oldLoan=$("advOldLoan"),results=$("advResults");
@@ -55,14 +56,14 @@
    "",
    "Deduction",
    "1. Total PF including GST: "+moneyWhole(pfIncludingGst),
-   "2. Pre-EMI: "+money(preEmi)+(days?" ("+days+" days)":" (0 days)"),
+   "2. Pre-EMI: "+moneyTrim(preEmi)+(days?" ("+days+" days)":" (0 days)"),
    "3. Stamp paper: "+moneyWhole(stamp),
-   "4. Insurance: "+money(insurance)
+   "4. Insurance: "+moneyTrim(insurance)
   ];
   if(loanType.value==="topup")copyRows.push("5. Old loan amount (principal): "+money(old));
   copyRows.push(
    "",
-   "After deduction final loan amount disbursed: "+money(net),
+   "After deduction final loan amount disbursed: "+moneyTrim(net),
    "",
    "EMI: "+money(emi),
    "First EMI Date: "+dateText(firstEmi),
