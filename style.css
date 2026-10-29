@@ -658,3 +658,42 @@ footer.site-footer{padding:clamp(34px,5vw,52px) 18px;color:#9ca3af;border-top:1p
 .site-footer .footer-social-links a{color:var(--gold);text-decoration:none;}
 .site-footer .footer-social-links a:hover,.site-footer .footer-social-links a:focus-visible{text-decoration:underline;color:#f8e58c;}
 .site-footer [hidden]{display:none!important;}
+
+
+/* Desktop-only refinement: compact, balanced empty EMI calculator state.
+   Keep the populated results dashboard and all mobile layouts unchanged. */
+@media (min-width: 769px) {
+  #calculator > .card:not(:has(#results[style*="block"])) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 18px;
+    width: min(100%, 900px);
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px;
+    border-radius: 22px;
+    align-items: center;
+  }
+
+  #calculator > .card:not(:has(#results[style*="block"])) #loan,
+  #calculator > .card:not(:has(#results[style*="block"])) #rate,
+  #calculator > .card:not(:has(#results[style*="block"])) #tenure,
+  #calculator > .card:not(:has(#results[style*="block"])) #type {
+    min-height: 52px;
+    margin: 0;
+    width: 100%;
+  }
+
+  #calculator > .card:not(:has(#results[style*="block"])) .emi-actions {
+    grid-column: 1 / -1;
+    margin-top: 4px;
+  }
+
+  #calculator > .card:not(:has(#results[style*="block"])) .emi-actions .emi-calculate-btn {
+    min-height: 52px;
+  }
+
+  #calculator > .card:not(:has(#results[style*="block"])) .emi-actions .emi-reset-btn {
+    min-height: 52px;
+  }
+}
