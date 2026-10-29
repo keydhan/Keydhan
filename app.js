@@ -264,16 +264,25 @@ if(e.key==="Enter") calc();
 
 const enquiryTypeField=document.getElementById("loanType");
 const propertyNameField=document.getElementById("propertyName");
-function syncPropertyNameField(){
-  if(!enquiryTypeField||!propertyNameField)return;
+const budgetField=document.getElementById("budget");
+function syncEnquiryFields(){
+  if(!enquiryTypeField)return;
   const isRealEstate=enquiryTypeField.value.trim().toLowerCase()==="real estate";
-  propertyNameField.hidden=!isRealEstate;
-  propertyNameField.disabled=!isRealEstate;
-  if(!isRealEstate)propertyNameField.value="";
+  if(propertyNameField){
+    propertyNameField.hidden=!isRealEstate;
+    propertyNameField.disabled=!isRealEstate;
+    if(!isRealEstate)propertyNameField.value="";
+  }
+  if(budgetField){
+    budgetField.hidden=isRealEstate;
+    budgetField.disabled=isRealEstate;
+    budgetField.required=false;
+    if(isRealEstate)budgetField.value="";
+  }
 }
-if(enquiryTypeField&&propertyNameField){
-  enquiryTypeField.addEventListener("change",syncPropertyNameField);
-  syncPropertyNameField();
+if(enquiryTypeField){
+  enquiryTypeField.addEventListener("change",syncEnquiryFields);
+  syncEnquiryFields();
 }
 
 const form=document.getElementById("leadForm");
@@ -343,6 +352,7 @@ if(out.success){
 showToast("Lead submitted successfully.");
 
 form.reset();
+syncEnquiryFields();
 
 }else{
 
