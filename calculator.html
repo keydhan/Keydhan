@@ -6,7 +6,7 @@
 <meta name="description" content="KeyDhan EMI and Advanced EMI Calculator with PF, GST, Pre-EMI, insurance and net disbursement estimate.">
 <link rel="canonical" href="https://keydhan.com/calculator.html">
 <title>EMI Calculator | KeyDhan™</title>
-<link rel="stylesheet" href="/style.css?v=20261029-advanced-results-premium">
+<link rel="stylesheet" href="/style.css?v=20261029-advanced-results-cards">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -120,8 +120,8 @@
     
     <div class="advanced-actions"><button type="button" class="emi-calculate-btn" id="advCalculate">Calculate Advanced EMI</button><button type="button" class="emi-reset-btn" id="advReset">↺ Reset</button></div>
     <div class="advanced-results" id="advResults" hidden aria-live="polite">
-      <div class="advanced-result-head"><div><span class="emi-kicker">ADVANCED LOAN SUMMARY</span><h3>Disbursement Breakdown</h3></div><button class="advanced-copy-btn" type="button" id="advCopy" aria-label="Copy loan calculation details" title="Copy calculation details">▢ <span>Copy</span></button></div>
-      <div class="advanced-net"><span>Final Loan Amount Disbursed</span><strong id="advNetDisbursed">₹0</strong></div>
+      <div class="advanced-result-head"><div><span class="emi-kicker">ADVANCED LOAN SUMMARY</span><h3>Disbursement Breakdown</h3></div></div>
+      <div class="advanced-net"><div class="advanced-net-copy"><div><span>Final Loan Amount Disbursed</span><strong id="advNetDisbursed">₹0</strong><small>After all applicable deductions</small></div><button class="advanced-copy-btn" type="button" id="advCopy" aria-label="Copy loan calculation details" title="Copy calculation details">▢ <span>Copy</span></button></div></div>
       <div class="advanced-results-grid" id="advResultRows"></div>
       <p class="advanced-copy-status" id="advCopyStatus" role="status"></p>
       <p class="advanced-footnote">This is an estimate based on the details entered. Actual deductions and disbursement may differ according to lender policy.</p>
@@ -132,6 +132,6 @@
 <div data-keydhan-footer></div>
 <script src="/footer.js?v=20270127-mobile-legal-fix"></script>
 <script src="/app.js?v=20261029-pre-emi-results-fix"></script>
-<script src="/advanced-calculator.js?v=20261029-advanced-results-premium"></script>
+<script src="/advanced-calculator.js?v=20261029-advanced-results-cards"></script>
 </body>
 </html>
