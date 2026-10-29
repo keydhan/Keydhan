@@ -7,11 +7,27 @@
  const dateText=d=>d.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"});
  const loanType=$("advLoanType"),oldWrap=$("advOldLoanWrap"),oldLoan=$("advOldLoan"),results=$("advResults");
  const toggleOld=()=>{const topup=loanType.value==="topup";oldWrap.hidden=!topup;oldLoan.required=topup;if(!topup)oldLoan.value="";};
+ const formatLoanInput=input=>{
+  const digits=String(input.value||"").replace(/,/g,"").replace(/[^0-9.]/g,"");
+  const parts=digits.split(".");
+  const whole=(parts.shift()||"").replace(/^0+(?=\\d)/,"");
+  const decimal=parts.length?"."+parts.join("").replace(/\\./g,""):"";
+  input.value=whole?Number(whole).toLocaleString("en-IN")+decimal:(decimal? "0"+decimal:"");
+ };
+ const stripLeadingZeros=input=>{
+  const value=String(input.value||"");
+  if(!value)return;
+  const normalized=value.replace(/^0+(?=\\d)/,"");
+  if(normalized!==value)input.value=normalized;
+ };
+ const advLoanInput=$("advLoan"),pfInput=$("advPf"),insuranceInput=$("advInsurance");
+ advLoanInput.addEventListener("input",()=>formatLoanInput(advLoanInput));
+ [pfInput,insuranceInput,oldLoan].forEach(input=>input.addEventListener("input",()=>stripLeadingZeros(input)));
  loanType.addEventListener("change",toggleOld);toggleOld();
  const makeRow=(label,value)=>'<div class="advanced-result-row"><span>'+label+'</span><strong>'+value+'</strong></div>';
  let copyText="";
  $("advCalculate").addEventListener("click",()=>{
-  const P=Number($("advLoan").value),annualRate=Number($("advRate").value);
+  const P=Number($("advLoan").value.replace(/,/g,"")),annualRate=Number($("advRate").value);
   let months=Number($("advTenure").value);if($("advTenureUnit").value==="y")months*=12;
   const pfPercent=Number($("advPf").value),insurance=Number($("advInsurance").value);
   const old=loanType.value==="topup"?Number(oldLoan.value):0;
