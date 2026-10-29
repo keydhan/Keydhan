@@ -56,7 +56,7 @@
    "",
    "Deduction",
    "1. Total PF including GST: "+moneyWhole(pfIncludingGst),
-   "2. Pre-EMI: "+moneyTrim(preEmi)+(days?" ("+days+" days)":" (0 days)"),
+   "2. Pre-EMI: "+moneyTrim(preEmi),
    "3. Stamp paper: "+moneyWhole(stamp),
    "4. Insurance: "+moneyTrim(insurance)
   ];
