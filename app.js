@@ -85,6 +85,17 @@ if(loanAmountField){
   });
 }
 
+/* ---------- EMI FIELD LABELS ---------- */
+const tenureUnitField=document.getElementById("type");
+const tenureLabelField=document.getElementById("tenureLabel");
+function syncTenureLabel(){
+  if(tenureLabelField&&tenureUnitField){
+    tenureLabelField.textContent=tenureUnitField.value==="y"?"Tenure in Years":"Tenure in Months";
+  }
+}
+if(tenureUnitField)tenureUnitField.addEventListener("change",syncTenureLabel);
+syncTenureLabel();
+
 /* ---------- EMI ---------- */
 
 let chart=null;
