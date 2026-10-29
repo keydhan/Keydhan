@@ -110,8 +110,8 @@
     <div class="advanced-fields">
       <div class="advanced-field"><label for="advLoanType">Loan Type</label><select id="advLoanType"><option value="fresh">Fresh Loan</option><option value="topup">Top-up Loan</option></select></div>
       <div class="advanced-field"><label for="advLoan">Loan Amount (₹)</label><input id="advLoan" type="text" inputmode="numeric" autocomplete="off" placeholder="Enter loan amount" required></div>
-      <div class="advanced-field"><label for="advRate">Reducing Interest Rate (% p.a.)</label><input id="advRate" type="number" min="0.01" step="0.01" placeholder="Enter annual rate" required></div>
-      <div class="advanced-field"><label for="advTenure">Tenure</label><input id="advTenure" type="number" min="1" step="1" placeholder="Enter tenure" required></div>
+      <div class="advanced-field"><label for="advRate">Reducing Interest Rate (% p.a.)</label><input id="advRate" type="text" inputmode="decimal" autocomplete="off" placeholder="Enter annual rate" required></div>
+      <div class="advanced-field"><label for="advTenure">Tenure</label><input id="advTenure" type="text" inputmode="numeric" autocomplete="off" placeholder="Enter tenure" required></div>
       <div class="advanced-field"><label for="advTenureUnit">Tenure Unit</label><select id="advTenureUnit"><option value="m">Months</option><option value="y">Years</option></select></div>
       <div class="advanced-field"><label for="advPf">Processing Fee / PF (%)</label><input id="advPf" type="number" min="0" max="100" step="0.01" inputmode="decimal" placeholder="Enter PF percentage" required></div>
       <div class="advanced-field"><label for="advInsurance">Insurance Amount (₹)</label><input id="advInsurance" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Enter insurance amount (₹)" required></div>
@@ -132,6 +132,6 @@
 <div data-keydhan-footer></div>
 <script src="/footer.js?v=20270127-mobile-legal-fix"></script>
 <script src="/app.js?v=20261029-pre-emi-results-fix"></script>
-<script src="/advanced-calculator.js?v=20261029-required-pf-insurance"></script>
+<script src="/advanced-calculator.js?v=20261029-mobile-keyboard-fix"></script>
 </body>
 </html>
