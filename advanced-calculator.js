@@ -49,24 +49,26 @@
   rows.push(["After Deduction — Final Loan Amount Disbursed",money(net)],["EMI",money(emi)],["First EMI Date",dateText(firstEmi)]);
   $("advNetDisbursed").textContent=money(net);
   $("advResultRows").innerHTML=rows.map(([label,value])=>makeRow(label,value)).join("");
+  const moneyWhole=value=>"₹"+Number(value).toLocaleString("en-IN",{maximumFractionDigits:0});
   const copyRows=[
-   "Loan amount: "+money(P),
+   "Loan amount: "+moneyWhole(P),
    "",
    "Deduction",
-   "1. Total PF including GST: "+money(pfIncludingGst),
+   "1. Total PF including GST: "+moneyWhole(pfIncludingGst),
    "2. Pre-EMI: "+money(preEmi)+(days?" ("+days+" days)":" (0 days)"),
-   "3. Stamp paper: "+money(stamp),
+   "3. Stamp paper: "+moneyWhole(stamp),
    "4. Insurance: "+money(insurance)
   ];
   if(loanType.value==="topup")copyRows.push("5. Old loan amount (principal): "+money(old));
   copyRows.push(
-   (loanType.value==="topup"?"6":"5")+". After deduction final loan amount disbursed: "+money(net),
-   (loanType.value==="topup"?"7":"6")+". EMI: "+money(emi),
-   (loanType.value==="topup"?"8":"7")+". First EMI Date: "+dateText(firstEmi),
    "",
+   "After deduction final loan amount disbursed: "+money(net),
+   "",
+   "EMI: "+money(emi),
+   "First EMI Date: "+dateText(firstEmi),
    "Tenure: "+months+" months"
   );
-  copyText=copyRows.join("\\n");
+  copyText=copyRows.join("\n");
   $("advCopyStatus").textContent="";results.hidden=false;results.scrollIntoView({behavior:"smooth",block:"start"});
  });
  $("advReset").addEventListener("click",()=>{
