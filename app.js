@@ -267,17 +267,20 @@ const propertyNameField=document.getElementById("propertyName");
 const budgetField=document.getElementById("budget");
 function syncEnquiryFields(){
   if(!enquiryTypeField)return;
-  const isRealEstate=enquiryTypeField.value.trim().toLowerCase()==="real estate";
+  const selectedType=enquiryTypeField.value.trim().toLowerCase().replace(/\\s+/g," ");
+  const isRealEstate=selectedType==="real estate";
+  const loanAmountTypes=["home loan","business loan","loan against property"];
+  const showLoanAmount=loanAmountTypes.includes(selectedType);
   if(propertyNameField){
     propertyNameField.hidden=!isRealEstate;
     propertyNameField.disabled=!isRealEstate;
     if(!isRealEstate)propertyNameField.value="";
   }
   if(budgetField){
-    budgetField.hidden=isRealEstate;
-    budgetField.disabled=isRealEstate;
+    budgetField.hidden=!showLoanAmount;
+    budgetField.disabled=!showLoanAmount;
     budgetField.required=false;
-    if(isRealEstate)budgetField.value="";
+    if(!showLoanAmount)budgetField.value="";
   }
 }
 if(enquiryTypeField){
