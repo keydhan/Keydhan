@@ -96,7 +96,7 @@ const rate=document.getElementById("rate");
 const tenure=document.getElementById("tenure");
 const type=document.getElementById("type");
 
-let P=Number(loan.value);
+let P=Number(String(loan.value).replace(/,/g,""));
 let R=Number(rate.value);
 let N=Number(tenure.value);
 
