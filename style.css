@@ -786,3 +786,26 @@ footer.site-footer{padding:clamp(34px,5vw,52px) 18px;color:#9ca3af;border-top:1p
   .advanced-actions{gap:10px;margin-top:22px}
   .advanced-actions button{flex:1 1 0;width:auto;min-width:0;min-height:60px;padding:12px 10px;font-size:14px;line-height:1.25;white-space:normal}
 }
+
+
+/* Simple EMI calculator form sizing: match the comfortable Advanced EMI input scale */
+#calculator>.card .emi-field input,
+#calculator>.card>select{
+  min-height:60px;
+  border-radius:14px;
+  font-size:18px;
+}
+#calculator>.card .emi-field input{padding-top:18px;padding-bottom:32px;padding-left:16px;padding-right:16px}
+#calculator>.card .emi-field-label{left:16px;bottom:9px;font-size:13px}
+#calculator>.card>select{padding:15px 16px}
+#calculator .emi-actions{gap:12px;margin-top:10px}
+#calculator .emi-actions button{min-height:60px;border-radius:14px;font-size:16px}
+@media(max-width:768px){
+  #calculator>.card{padding:20px 16px}
+  #calculator>.card .emi-field{margin-bottom:8px}
+  #calculator>.card .emi-field input,
+  #calculator>.card>select{min-height:60px;font-size:18px}
+  #calculator .emi-actions{gap:10px;margin-top:12px}
+  #calculator .emi-actions .emi-calculate-btn{flex:1 1 160px}
+  #calculator .emi-actions .emi-reset-btn{min-width:104px}
+}
