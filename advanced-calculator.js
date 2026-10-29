@@ -57,9 +57,7 @@
   if(net<0){alert("Total deductions exceed the loan amount. Please check PF, insurance and old loan principal.");return;}
   const rows=[
    ["Loan Amount",money(P)],
-   ["PF ("+pfPercent.toString()+"% of loan amount)",money(pf)],
-   ["PF GST (18%)",money(gst)],
-   ["Total PF including GST",money(pfIncludingGst)],
+   [pfPercent.toString()+"% PF including GST",money(pfIncludingGst)],
    ["Pre-EMI"+(days?" ("+days+" days)": " (0 days)") ,money(preEmi)],
    ["Stamp Paper",money(stamp)],
    ["Insurance",money(insurance)]
@@ -73,7 +71,7 @@
    "Loan amount: "+moneyWhole(P),
    "",
    "Deduction",
-   "1. Total PF including GST: "+moneyWhole(pfIncludingGst),
+   "1. "+pfPercent.toString()+"% PF including GST: "+moneyWhole(pfIncludingGst),
    "2. Pre-EMI: "+moneyTrim(preEmi),
    "3. Stamp paper: "+moneyWhole(stamp),
    "4. Insurance: "+moneyTrim(insurance)
