@@ -72,3 +72,26 @@
   font-size:17px;
  }
 }
+
+
+/* Simple EMI labels stay above fields; compact the input controls on mobile and desktop. */
+#calculator>.card .emi-field input,
+#calculator>.card>#type{
+  min-height:52px;
+  padding-top:12px;
+  padding-bottom:12px;
+  border-radius:14px;
+}
+#calculator>.card .emi-field{gap:7px;margin-bottom:12px}
+#calculator>.card .emi-field-label{line-height:1.3}
+@media(max-width:768px){
+  #calculator>.card .emi-field input,
+  #calculator>.card>#type{
+    min-height:52px;
+    padding-top:12px;
+    padding-bottom:12px;
+    font-size:17px;
+  }
+  #calculator>.card .emi-field{gap:7px;margin-bottom:12px}
+  #calculator .emi-actions{margin-top:8px}
+}
