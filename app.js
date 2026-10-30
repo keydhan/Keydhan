@@ -357,6 +357,11 @@ if(enquiryTypeField){
 
 const form=document.getElementById("leadForm");
 
+// Load the Admin WhatsApp destination while the visitor is filling the form.
+const keydhanWhatsAppSettingsPromise=fetch("https://admin-api.keydhan.com/api/settings",{cache:"no-store"})
+  .then(r=>r.ok?r.json():{})
+  .catch(()=>({}));
+
 if(form){
 
 // A shared form-level lock also protects against duplicate submit handlers.
@@ -455,8 +460,7 @@ syncEnquiryFields();
 // notification to the business number configured in Admin > Settings.
 document.querySelectorAll("#keydhanWhatsAppNotice").forEach(node=>node.remove());
 try{
-  const settingsResponse=await fetch("https://admin-api.keydhan.com/api/settings",{cache:"no-store"});
-  const settingsData=settingsResponse.ok?await settingsResponse.json():{};
+  const settingsData=await keydhanWhatsAppSettingsPromise;
   const rawNumber=String(settingsData.settings?.whatsapp||"").replace(/\D/g,"");
   if(rawNumber.length>=10){
     const message=[
