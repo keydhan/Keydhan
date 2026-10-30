@@ -431,7 +431,7 @@ if(previousNotice)previousNotice.remove();
 try{
   const settingsResponse=await fetch("https://admin-api.keydhan.com/api/settings",{cache:"no-store"});
   const settingsData=settingsResponse.ok?await settingsResponse.json():{};
-  const rawNumber=String(settingsData.settings?.whatsapp||"").replace(/\\D/g,"");
+  const rawNumber=String(settingsData.settings?.whatsapp||"").replace(/\D/g,"");
   if(rawNumber.length>=10){
     const message=[
       "New Enquiry - KeyDhan™",
@@ -443,7 +443,7 @@ try{
       "Property: "+(data.propertyId||"Not provided"),
       "City: "+(data.city||"Not provided"),
       "Message: "+(data.message||"Not provided")
-    ].join("\\n");
+    ].join("\n");
     const notice=document.createElement("div");
     notice.id="keydhanWhatsAppNotice";
     notice.style.cssText="margin-top:14px;padding:14px;border:1px solid rgba(212,175,55,.45);border-radius:12px;background:rgba(212,175,55,.08);text-align:center";
