@@ -419,7 +419,7 @@ const out=await res.json();
 
 if(out.success){
 
-showToast("Lead saved successfully in Admin Leads.");
+showToast("Thank you! Your enquiry has been received.");
 
 form.reset();
 syncEnquiryFields();
@@ -448,18 +448,18 @@ try{
     notice.id="keydhanWhatsAppNotice";
     notice.style.cssText="margin-top:14px;padding:14px;border:1px solid rgba(212,175,55,.45);border-radius:12px;background:rgba(212,175,55,.08);text-align:center";
     const copy=document.createElement("p");
-    copy.textContent="Your lead is saved in Admin Panel. Send its details to Admin on WhatsApp:";
+    copy.textContent="Thank you for your enquiry! Our team will get in touch with you shortly.";
     copy.style.cssText="margin:0 0 10px;color:inherit;font-size:14px";
     const link=document.createElement("a");
     link.href="https://wa.me/"+rawNumber+"?text="+encodeURIComponent(message);
     link.target="_blank";
     link.rel="noopener noreferrer";
-    link.textContent="Send Lead to Admin on WhatsApp";
+    link.textContent="Continue on WhatsApp";
     link.style.cssText="display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;border-radius:9px;background:#25D366;color:#062b16;font-weight:700;text-decoration:none";
     notice.append(copy,link);
     form.insertAdjacentElement("afterend",notice);
   }else{
-    showToast("Lead saved. Add Admin WhatsApp number in Admin > Settings.");
+    showToast("Thank you! Your enquiry has been received. Our team will contact you shortly.");
   }
 }catch(settingsError){
   console.warn("WhatsApp notification link unavailable",settingsError);
