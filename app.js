@@ -365,6 +365,7 @@ e.preventDefault();
 
 const mobileField=document.getElementById("mobile");
 const emailField=document.getElementById("email");
+const requirementField=document.getElementById("message");
 const mobileError=document.getElementById("mobileError");
 const mobileValue=mobileField.value.replace(/\s+/g,"");
 const emailValue=emailField.value.trim();
@@ -387,6 +388,16 @@ if(!validEmail){
 }
 mobileField.value=mobileValue;
 emailField.value=emailValue;
+
+const requirementValue=requirementField.value.trim();
+requirementField.setCustomValidity("");
+if(requirementValue.length<10){
+  requirementField.setCustomValidity("Please describe your requirement in at least 10 characters.");
+  requirementField.reportValidity();
+  requirementField.focus();
+  return;
+}
+requirementField.value=requirementValue;
 
 const data={
 
