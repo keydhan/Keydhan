@@ -6,3 +6,8 @@ compatibility_date = "2026-09-29"
 [[kv_namespaces]]
 binding = "KEYDHAN_DB"
 id = "849a5554c02641ba8bed133ae34622f0"
+
+[[send_email]]
+name = "EMAIL"
+destination_address = "hello@keydhan.com"
+allowed_sender_addresses = ["hello@keydhan.com"]
