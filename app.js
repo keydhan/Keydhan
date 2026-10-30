@@ -96,7 +96,7 @@ const tenureUnitField=document.getElementById("type");
 const tenureLabelField=document.getElementById("tenureLabel");
 function syncTenureLabel(){
   if(tenureLabelField&&tenureUnitField){
-    tenureLabelField.textContent=tenureUnitField.value==="y"?"Tenure in Years":"Tenure in Months";
+    tenureLabelField.textContent="Tenure";
   }
 }
 if(tenureUnitField)tenureUnitField.addEventListener("change",syncTenureLabel);
