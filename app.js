@@ -359,9 +359,20 @@ const form=document.getElementById("leadForm");
 
 if(form){
 
+// A shared form-level lock also protects against duplicate submit handlers.
+form.addEventListener("input",function(){
+  if(form.dataset.keydhanSubmitted==="true"){
+    form.dataset.keydhanSubmitted="false";
+    const button=form.querySelector('button[type="submit"]');
+    if(button){button.disabled=false;button.textContent="Submit Enquiry ↗";}
+    document.querySelectorAll("#keydhanWhatsAppNotice").forEach(node=>node.remove());
+  }
+});
+
 form.addEventListener("submit",async function(e){
 
 e.preventDefault();
+if(form.dataset.keydhanSubmitting==="true"||form.dataset.keydhanSubmitted==="true")return;
 
 const mobileField=document.getElementById("mobile");
 const emailField=document.getElementById("email");
@@ -399,6 +410,10 @@ if(requirementValue.length<10){
 }
 requirementField.value=requirementValue;
 
+const submitButton=form.querySelector('button[type="submit"]');
+form.dataset.keydhanSubmitting="true";
+if(submitButton){submitButton.disabled=true;submitButton.textContent="Submitting…";}
+
 const data={
 
 name:document.getElementById("name").value,
@@ -431,14 +446,14 @@ const out=await res.json();
 if(out.success){
 
 showToast("Thank you! Your enquiry has been received.");
-
+form.dataset.keydhanSubmitted="true";
 form.reset();
+if(submitButton){submitButton.disabled=true;submitButton.textContent="Enquiry Submitted ✓";}
 syncEnquiryFields();
 
 // Normal WhatsApp cannot send silently. Offer a user-clicked, pre-filled
 // notification to the business number configured in Admin > Settings.
-const previousNotice=document.getElementById("keydhanWhatsAppNotice");
-if(previousNotice)previousNotice.remove();
+document.querySelectorAll("#keydhanWhatsAppNotice").forEach(node=>node.remove());
 try{
   const settingsResponse=await fetch("https://admin-api.keydhan.com/api/settings",{cache:"no-store"});
   const settingsData=settingsResponse.ok?await settingsResponse.json():{};
@@ -477,15 +492,22 @@ try{
 }
 
 }else{
-
+form.dataset.keydhanSubmitted="false";
+if(submitButton){submitButton.disabled=false;submitButton.textContent="Submit Enquiry ↗";}
 showToast("Submission failed.");
 
 }
 
 }catch(err){
-
+form.dataset.keydhanSubmitted="false";
+if(submitButton){submitButton.disabled=false;submitButton.textContent="Submit Enquiry ↗";}
 showToast("Server unavailable.");
 
+}
+
+finally{
+  form.dataset.keydhanSubmitting="false";
+  if(form.dataset.keydhanSubmitted!=="true"&&submitButton)submitButton.disabled=false;
 }
 
 });
