@@ -53,3 +53,22 @@
 @media(prefers-reduced-motion:reduce){
  #calculator .emi-field input,.advanced-field input,.advanced-field select,#calculator #type{transition:none}
 }
+
+/* Simple EMI form: slightly more compact than Advanced EMI fields */
+#calculator .emi-field input,
+#calculator #type{
+ min-height:56px;
+ padding-top:14px;
+ padding-bottom:14px;
+ border-radius:15px;
+ font-size:17px;
+}
+@media(max-width:768px){
+ #calculator .emi-field input,
+ #calculator #type{
+  min-height:56px;
+  padding-top:14px;
+  padding-bottom:14px;
+  font-size:17px;
+ }
+}
