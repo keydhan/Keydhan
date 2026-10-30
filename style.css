@@ -827,3 +827,52 @@ footer.site-footer{padding:clamp(34px,5vw,52px) 18px;color:#9ca3af;border-top:1p
   #calculator .emi-field-label{font-size:15px}
   #calculator .emi-field input,#calculator #type{min-height:60px;font-size:18px}
 }
+
+
+/* Advanced EMI actions use the exact visual treatment of the Simple EMI buttons. */
+.advanced-actions button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  min-height:54px;
+  padding:14px 22px;
+  border:1px solid rgba(255,232,151,.55);
+  border-radius:14px;
+  font-size:16px;
+  font-weight:800;
+  line-height:1.25;
+  cursor:pointer;
+  transition:transform .18s,background .18s,border-color .18s,box-shadow .18s;
+}
+.advanced-actions .emi-calculate-btn{
+  flex:1 1 210px;
+  border-color:rgba(255,232,151,.55);
+  background:linear-gradient(135deg,#f3d65e,#d0aa30);
+  color:#10151d;
+  box-shadow:0 8px 22px rgba(212,175,55,.13);
+}
+.advanced-actions .emi-reset-btn{
+  flex:0 0 auto;
+  min-width:116px;
+  border:1px solid rgba(212,175,55,.42);
+  background:linear-gradient(145deg,#142238,#0a1423);
+  color:#e7c958;
+}
+.advanced-actions button:hover{transform:translateY(-2px)}
+.advanced-actions .emi-reset-btn:hover{
+  border-color:#d4af37;
+  background:#172840;
+  box-shadow:0 8px 20px rgba(212,175,55,.09);
+}
+.advanced-actions button:focus-visible{outline:2px solid #f0d15b;outline-offset:3px}
+@media(max-width:768px){
+  .advanced-actions{gap:10px}
+  .advanced-actions .emi-calculate-btn{flex:1 1 160px}
+  .advanced-actions .emi-reset-btn{min-width:104px;padding:14px 16px}
+}
+@media(max-width:380px){
+  .advanced-actions{gap:8px}
+  .advanced-actions .emi-calculate-btn{flex-basis:135px;padding:13px 12px;font-size:14px}
+  .advanced-actions .emi-reset-btn{min-width:88px;padding:13px 11px;font-size:14px}
+}
