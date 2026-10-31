@@ -20,7 +20,7 @@ const defs={
 'photo-signature-forms':'<label class="dropzone">Choose photo or signature <input id="files" type="file" accept="image/*"></label>'+field('Width (px)','width','number','200','min="1" max="5000"')+field('Height (px)','height','number','230','min="1" max="5000"')
 };box.innerHTML=defs[tool]||'';}
 if($('extraControls'))controls();
-const file=()=>input&&input.files&&input.files[0];
+const file=()=>{const el=$('files');return el&&el.files&&el.files[0]};
 async function pdfEdit(mode){const f=file();if(!f)throw Error('Select a PDF file first.');if(!window.PDFLib)throw Error('PDF engine did not load. Refresh the page.');const {PDFDocument,StandardFonts,rgb}=PDFLib,doc=await PDFDocument.load(await f.arrayBuffer()),page=doc.getPages()[0],font=await doc.embedFont(StandardFonts.Helvetica);const text=mode==='sign'?($('signature')?.value||'').trim():($('annotation')?.value||'').trim();if(!text)throw Error(mode==='sign'?'Enter signature text.':'Enter annotation text.');page.drawText(text,{x:Number($('x')?.value||50),y:Number($('y')?.value||50),size:mode==='sign'?22:12,font,color:rgb(.08,.12,.2)});download(new Blob([await doc.save()],{type:'application/pdf'}),(mode==='sign'?'signed-':'edited-')+f.name);say('Saved a new PDF. The text was added to the first page only.');}
 async function imageCanvas(f,maxW){const bmp=await createImageBitmap(f),scale=Math.min(1,maxW/bmp.width);const c=document.createElement('canvas');c.width=Math.max(1,Math.round(bmp.width*scale));c.height=Math.max(1,Math.round(bmp.height*scale));c.getContext('2d').drawImage(bmp,0,0,c.width,c.height);bmp.close();return c;}
 async function imageOutput(c,type,q){return new Promise((res,rej)=>c.toBlob(b=>b?res(b):rej(Error('Could not encode image.')),type,q));}
