@@ -44,3 +44,14 @@
  .popular-links a{min-height:46px;padding:10px 11px;font-size:12px;border-radius:11px}
  .recent-heading{margin-top:27px!important}
 }
+
+
+/* Final mobile directory overrides and prevent sticky header covering the hero */
+.tools-directory>header{position:relative;top:auto}
+.tools-directory .catalog-search{display:flex!important;flex-direction:row!important;align-items:center!important}
+.tools-directory .catalog-search>span{position:static!important;display:inline-flex!important;flex:0 0 22px!important;float:none!important}
+.tools-directory .catalog-search input{display:block!important;flex:1 1 auto!important;width:100%!important;min-width:0!important;margin:0!important;padding:0!important}
+.tools-directory .catalog-filters{display:flex!important;flex-wrap:nowrap!important;overflow-x:auto;justify-content:flex-start!important}
+.tools-directory .popular-links{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+.tools-directory .popular-links a{display:flex!important;white-space:normal!important;text-decoration:none!important;margin:0!important}
+@media(min-width:601px){.tools-directory .popular-links{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
