@@ -17,7 +17,7 @@
     { label: "Services", href: "/#services", match: false },
     { label: "Calculator", href: "/calculator.html", match: path === "/calculator.html" },
     { label: "Financial Tools", href: "/financial-tools.html", match: path === "/financial-tools.html" },
-    { label: "Loan Comparison", href: "/loan-comparison.html", match: path === "/loan-comparison.html" },
+    { label: "Loan Planning", href: "/loan-comparison.html", match: path === "/loan-comparison.html" },
     { label: "Knowledge Centre", href: "/knowledge/", match: path === "/knowledge" || path.startsWith("/knowledge/") },
     { label: "Free Tools", href: "/tools/", match: path === "/tools" || path.startsWith("/tools/") },
     { label: "Properties", href: "/properties.html", match: path === "/properties.html" },
