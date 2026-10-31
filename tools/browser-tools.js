@@ -2,6 +2,7 @@
 const root=document.querySelector('[data-browser-tool]');if(!root)return;
 const tool=root.dataset.browserTool,$=id=>document.getElementById(id),status=$('status'),out=$('output');
 const say=s=>{if(status)status.textContent=s};
+if(tool==='unit-converter'){const sets={length:[['m','Meters'],['km','Kilometers'],['cm','Centimeters'],['ft','Feet'],['in','Inches'],['mi','Miles']],weight:[['kg','Kilograms'],['g','Grams'],['lb','Pounds'],['oz','Ounces']],volume:[['l','Liters'],['ml','Milliliters'],['gal','Gallons'],['cup','Cups']],temperature:[['C','Celsius'],['F','Fahrenheit'],['K','Kelvin']]};const update=()=>{const opts=sets[$('category').value];$('from').innerHTML=opts.map((x,i)=>'<option value="'+x[0]+'">'+x[1]+'</option>').join('');$('to').innerHTML=opts.map((x,i)=>'<option value="'+x[0]+'" '+(i===1?'selected':'')+'>'+x[1]+'</option>').join('');};$('category').addEventListener('change',update);update();}
 const btn=$('run');if(btn)btn.addEventListener('click',async()=>{
 try{
 if(tool==='currency-converter'){const a=Number($('amount').value),f=$('from').value,t=$('to').value;if(!Number.isFinite(a)||a<0)throw Error('Enter a valid amount.');const r=await fetch('https://api.frankfurter.app/latest?from='+f+'&to='+t);if(!r.ok)throw Error('Exchange rates unavailable.');const d=await r.json(),v=f===t?a:a*d.rates[t];say(a+' '+f+' = '+v.toLocaleString(undefined,{maximumFractionDigits:4})+' '+t+' · Rate date: '+d.date);}
