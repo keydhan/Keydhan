@@ -25,7 +25,7 @@
     ];
 
     header.innerHTML =
-      '<a class="logo" id="adminLogo" href="/" aria-label="KeyDhan home"><span class="logo-key">Key</span><span>Dhan</span><sup>™</sup></a>' +
+      '<a class="logo" id="adminLogo" href="/" aria-label="KeyDhan home" style="color:#fff!important;text-decoration:none!important;border:0!important;background:none!important"><span class="logo-key" style="color:#fff!important;text-decoration:none!important">Key</span><span style="color:var(--gold)!important;text-decoration:none!important">Dhan</span><sup style="color:var(--gold)!important;text-decoration:none!important">™</sup></a>' +
       '<button class="menu-btn" id="menuBtn" type="button" aria-label="Open navigation menu" aria-controls="menu" aria-expanded="false">☰</button>' +
       '<nav id="menu" aria-label="Main navigation">' +
       links.map(item => '<a href="' + item.href + '"' + (item.match ? ' aria-current="page"' : "") + '>' + item.label + '</a>').join("") +
