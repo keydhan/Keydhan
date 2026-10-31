@@ -1,7 +1,39 @@
 /* KeyDhan™ — single source of truth for every public-page header and navigation. */
 (function () {
   "use strict";
+  function installCompactMobileMenuStyles() {
+    if (document.getElementById("kd-compact-menu-styles")) return;
+    const style = document.createElement("style");
+    style.id = "kd-compact-menu-styles";
+    style.textContent = `
+      @media (max-width: 768px) {
+        header #menu {
+          width: min(280px, calc(100vw - 32px)) !important;
+          max-height: min(62dvh, 520px) !important;
+          padding: 9px !important;
+          gap: 2px !important;
+          border-radius: 20px !important;
+        }
+        header #menu a {
+          min-height: 42px !important;
+          padding: 10px 12px !important;
+          border-radius: 11px !important;
+          font-size: 14px !important;
+          line-height: 1.25 !important;
+        }
+        header #menu a:before {
+          width: 5px !important;
+          height: 5px !important;
+          flex-basis: 5px !important;
+          margin-right: 10px !important;
+        }
+      }
+    `;
+    (document.head || document.documentElement).appendChild(style);
+  }
+
   function initKeyDhanHeader() {
+    installCompactMobileMenuStyles();
     let header = document.querySelector("body > header") || document.querySelector("header");
     if (!header) {
       header = document.createElement("header");
