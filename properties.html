@@ -109,12 +109,12 @@ main > .key3d:empty,
   </section>
 </main>
 <div data-keydhan-footer></div>
-<script src="/app.js?v=20261028-properties-empty-pill-fix2"></script>
+<script src="/app.js?v=20261031-property-image-optimization"></script>
 <script>
 (function(){
  const API="https://admin-api.keydhan.com/api";
  const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
- const optimizePropertyImage=(raw,width=800)=>{try{const u=new URL(String(raw||""),location.href);if(u.hostname!=="res.cloudinary.com"||!u.pathname.includes("/image/upload/"))return String(raw||"");if(/(?:^|[,/])f_auto(?:[,/]|$)/.test(u.pathname)||/(?:^|[,/])q_auto(?:[,/]|$)/.test(u.pathname))return u.href;u.pathname=u.pathname.replace("/image/upload/","/image/upload/f_auto,q_auto,w_"+width+",c_limit/");return u.href;}catch(_){return String(raw||"");}};
+ const optimizePropertyImage=(raw,width=800)=>{try{const u=new URL(String(raw||""),location.href);if(u.hostname!=="res.cloudinary.com"||!u.pathname.includes("/image/upload/"))return String(raw||"");const marker="/image/upload/";const parts=(u.pathname.split(marker)[1]||"").split("/");if(parts[0]&&/(?:^|,)(?:f_auto|q_auto|w_[0-9]+|c_limit)(?:,|$)/.test(parts[0]))parts.shift();u.pathname=u.pathname.split(marker)[0]+marker+"f_auto,q_auto,w_"+Math.max(320,Math.min(1600,Number(width)||800))+",c_limit/"+parts.join("/");return u.href;}catch(_){return String(raw||"");}};
  const dateValue=p=>{
   const fields=["updatedAt","updated_at","lastUpdated","last_updated","modifiedAt","modified_at","publishedAt","published_at","createdAt","created_at","timestamp"];
   for(const k of fields){const v=p&&p[k];if(v){const n=typeof v==="number"?(v<1e12?v*1000:v):Date.parse(v);if(Number.isFinite(n))return n;}}
