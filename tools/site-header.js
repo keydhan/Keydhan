@@ -4,7 +4,7 @@
  if(header && header.dataset.kdMenuReady==='true') return;
  const btn=document.getElementById('menuBtn');
  const menu=document.getElementById('menu');
- if(!btn||!menu)return;
+ if(!btn||!menu||btn.dataset.kdMenuBound==='true')return;
  let backdrop=document.querySelector('.mobile-menu-backdrop');
  if(!backdrop){backdrop=document.createElement('div');backdrop.className='mobile-menu-backdrop';backdrop.setAttribute('aria-hidden','true');document.body.appendChild(backdrop);}
  const close=()=>{menu.classList.remove('show');backdrop.classList.remove('show');btn.setAttribute('aria-expanded','false');btn.setAttribute('aria-label','Open navigation menu');document.body.classList.remove('menu-open');};
