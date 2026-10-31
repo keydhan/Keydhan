@@ -11,7 +11,7 @@
     header.appendChild(nav);
   }
 
-  const path = window.location.pathname.replace(/\\/+$/, "") || "/";
+  const path = window.location.pathname.replace(/\/+$/, "") || "/";
   const links = [
     { label: "Home", href: "/#home", match: path === "/" },
     { label: "Services", href: "/#services", match: false },
