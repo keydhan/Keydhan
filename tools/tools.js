@@ -18,14 +18,36 @@ async function mergePdfs(items){const {PDFDocument}=pdfLib();const out=await PDF
 async function renderPdfToImages(file){if(!window.pdfjsLib)throw Error('PDF image engine did not load. Refresh and try again.');const lib=window.pdfjsLib;lib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';const pdf=await lib.getDocument({data:await file.arrayBuffer()}).promise;const zip=window.JSZip?new JSZip():null;for(let n=1;n<=pdf.numPages;n++){setStatus('Rendering page '+n+' of '+pdf.numPages+'…');const page=await pdf.getPage(n);const vp=page.getViewport({scale:1.8});const canvas=document.createElement('canvas');canvas.width=Math.ceil(vp.width);canvas.height=Math.ceil(vp.height);await page.render({canvasContext:canvas.getContext('2d'),viewport:vp}).promise;const blob=await new Promise(r=>canvas.toBlob(r,'image/png'));if(zip)zip.file((file.name.replace(/\.pdf$/i,'')||'page')+'-'+String(n).padStart(3,'0')+'.png',blob);else download(blob,'page-'+n+'.png');canvas.width=canvas.height=1;}if(zip)download(await zip.generateAsync({type:'blob'}),(file.name.replace(/\.pdf$/i,'')||'converted')+'-images.zip');}
 async function convertJpgPng(file){const bmp=await createImageBitmap(file);const c=document.createElement('canvas');c.width=bmp.width;c.height=bmp.height;c.getContext('2d').drawImage(bmp,0,0);bmp.close();const blob=await new Promise(r=>c.toBlob(r,'image/png'));download(blob,file.name.replace(/\.[^.]+$/,'')+'.png');}
 async function compressImage(file){const bmp=await createImageBitmap(file);const max=Number($('#maxWidth')?.value||2000);const scale=Math.min(1,max/Math.max(bmp.width,bmp.height));const c=document.createElement('canvas');c.width=Math.round(bmp.width*scale);c.height=Math.round(bmp.height*scale);c.getContext('2d').drawImage(bmp,0,0,c.width,c.height);bmp.close();const quality=Number($('#quality')?.value||75)/100;const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',quality));download(blob,file.name.replace(/\.[^.]+$/,'')+'-compressed.jpg');setStatus('Image compressed: '+fmt(file.size)+' → '+fmt(blob.size)+(blob.size>=file.size?' (this image was already efficient; output may be larger).':''));}
-async function compressPdf(file){const {PDFDocument}=pdfLib();const doc=await PDFDocument.load(await file.arrayBuffer());const bytes=await doc.save({useObjectStreams:true,addDefaultPage:false});const blob=new Blob([bytes],{type:'application/pdf'});download(blob,file.name.replace(/\.pdf$/i,'')+'-optimized.pdf');setStatus('PDF optimization complete: '+fmt(file.size)+' → '+fmt(blob.size)+'. Note: this safely re-saves the PDF; it does not recompress embedded photos, so size reduction is not guaranteed.');}
+async function compressPdf(file){
+ if(!window.pdfjsLib)throw Error('PDF image engine did not load. Refresh the page and try again.');
+ const levels={low:{scale:1.65,quality:.84,label:'Low'},medium:{scale:1.3,quality:.68,label:'Medium'},high:{scale:1.0,quality:.5,label:'High'}};
+ const chosen=document.querySelector('input[name="pdfQuality"]:checked')?.value||'medium';const level=levels[chosen]||levels.medium;
+ const lib=window.pdfjsLib;lib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+ const loading=lib.getDocument({data:await file.arrayBuffer()});const pdf=await loading.promise;const {PDFDocument}=pdfLib();const out=await PDFDocument.create();
+ try{
+  for(let n=1;n<=pdf.numPages;n++){
+   setStatus('Compressing '+file.name+' · page '+n+' of '+pdf.numPages+' ('+level.label+')…');
+   const page=await pdf.getPage(n);const base=page.getViewport({scale:1});const viewport=page.getViewport({scale:level.scale});
+   const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.ceil(viewport.width));canvas.height=Math.max(1,Math.ceil(viewport.height));
+   const ctx=canvas.getContext('2d',{alpha:false});ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);
+   await page.render({canvasContext:ctx,viewport, background:'#ffffff'}).promise;
+   const jpg=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error('Could not encode PDF page '+n+'.')),'image/jpeg',level.quality));
+   const image=await out.embedJpg(new Uint8Array(await jpg.arrayBuffer()));const target=out.addPage([base.width,base.height]);target.drawImage(image,{x:0,y:0,width:base.width,height:base.height});
+   canvas.width=canvas.height=1;page.cleanup();
+  }
+  const bytes=await out.save({useObjectStreams:true});const blob=new Blob([bytes],{type:'application/pdf'});const saved=file.size-blob.size;const pct=saved>0?(saved/file.size*100):0;
+  if(blob.size>=file.size)return {name:file.name,original:file.size,result:blob.size,saved:0,downloaded:false,message:file.name+': no size reduction ('+fmt(file.size)+' → '+fmt(blob.size)+'). Original kept; no larger file downloaded.'};
+  download(blob,file.name.replace(/\.pdf$/i,'')+'-compressed.pdf');
+  return {name:file.name,original:file.size,result:blob.size,saved,downloaded:true,message:file.name+': '+fmt(file.size)+' → '+fmt(blob.size)+' · saved '+fmt(saved)+' ('+pct.toFixed(1)+'%)'};
+ }finally{await pdf.destroy();}
+}
 async function runTool(){if(!files.length)return;run.disabled=true;clear.disabled=true;setStatus('Processing locally in your browser…');try{const t=cfg.tool;if(t==='image-to-pdf'){const imgs=files.filter(isImage);if(!imgs.length)throw Error('Please select JPG, PNG or WebP images.');download(await imagePdf(imgs),'keydhan-images.pdf');}
 else if(t==='merge-pdf'){const pdfs=files.filter(isPdf);if(pdfs.length<2)throw Error('Select at least two PDF files to merge.');download(await mergePdfs(pdfs),'keydhan-merged.pdf');}
 else if(t==='pdf-to-image'){const pdfs=files.filter(isPdf);if(!pdfs.length)throw Error('Please select a PDF file.');for(const f of pdfs)await renderPdfToImages(f);}
 else if(t==='jpg-to-png'){for(const f of files.filter(isImage))await convertJpgPng(f);if(!files.some(isImage))throw Error('Please select an image file.');}
 else if(t==='image-pdf-to-pdf'){const {PDFDocument}=pdfLib();const out=await PDFDocument.create();for(const f of files){if(isPdf(f)){const src=await PDFDocument.load(await f.arrayBuffer());(await out.copyPages(src,src.getPageIndices())).forEach(p=>out.addPage(p));}else if(isImage(f)){const im=await embedImage(out,f);const scale=Math.min(1,1600/Math.max(im.width,im.height));const p=out.addPage([im.width*scale,im.height*scale]);p.drawImage(im,{x:0,y:0,width:im.width*scale,height:im.height*scale});}else throw Error('Unsupported file: '+f.name);}if(!out.getPageCount())throw Error('Add at least one PDF or image.');download(new Blob([await out.save()],{type:'application/pdf'}),'keydhan-combined.pdf');}
 else if(t==='image-compressor'){const imgs=files.filter(isImage);if(!imgs.length)throw Error('Please select JPG, PNG or WebP images.');for(const f of imgs)await compressImage(f);}
-else if(t==='pdf-compressor'){const pdfs=files.filter(isPdf);if(!pdfs.length)throw Error('Please select a PDF file.');for(const f of pdfs)await compressPdf(f);}
-setStatus('Done. Your file(s) have been generated.');}catch(e){console.error(e);setStatus(e.message||'Something went wrong. Please try another file.',true);}finally{run.disabled=!files.length;clear.disabled=false;}}
+else if(t==='pdf-compressor'){const pdfs=files.filter(isPdf);if(!pdfs.length)throw Error('Please select a PDF file.');const results=[];for(const f of pdfs)results.push(await compressPdf(f));setStatus(results.map(r=>r.message).join(' | '));}
+else setStatus('Done. Your file(s) have been generated.');}catch(e){console.error(e);setStatus(e.message||'Something went wrong. Please try another file.',true);}finally{run.disabled=!files.length;clear.disabled=false;}}
 run.addEventListener('click',runTool);render();
 })();
