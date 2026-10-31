@@ -1,184 +1,37 @@
 <!doctype html>
-<html lang="en-IN">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Loan Comparison Centre | Compare Loan Offers | KeyDhan</title>
-<meta name="description" content="Compare loan offers using lender-published interest rates, fees and tenure. Enter verified offer details to estimate EMI and total repayment side by side.">
-<link rel="canonical" href="https://keydhan.com/loan-comparison.html">
-<meta name="robots" content="index,follow">
-<link rel="icon" href="/favicon.svg">
-<link rel="stylesheet" href="/style.css?v=20261031-loan-comparison">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="KeyDhan">
-<meta property="og:title" content="Loan Comparison Centre | KeyDhan">
-<meta property="og:description" content="Compare lender offer details and estimate EMI using information you verify directly with lenders.">
-<meta property="og:url" content="https://keydhan.com/loan-comparison.html">
-<meta property="og:image" content="https://keydhan.com/assets/logo.svg">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Loan Comparison Centre | KeyDhan">
-<meta name="twitter:description" content="Compare lender offer details and estimate EMI using information you verify directly with lenders.">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Loan Comparison Centre","description":"Compare lender offer details and estimate EMI using information you verify directly with lenders.","url":"https://keydhan.com/loan-comparison.html","isPartOf":{"@type":"WebSite","name":"KeyDhan","url":"https://keydhan.com/"},"inLanguage":"en-IN"}</script>
+<html lang="en-IN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Loan Planning Centre | KeyDhan</title>
+<meta name="description" content="Plan loan scenarios, EMI burden, prepayment savings and repayment schedules using your own figures.">
+<link rel="canonical" href="https://keydhan.com/loan-comparison.html"><meta name="robots" content="index,follow"><link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/style.css?v=20261031-loan-planning">
+<meta property="og:type" content="website"><meta property="og:site_name" content="KeyDhan"><meta property="og:title" content="Loan Planning Centre | KeyDhan"><meta property="og:description" content="Independent loan planning tools using your own inputs."><meta property="og:url" content="https://keydhan.com/loan-comparison.html">
 <style>
-.lc-wrap{max-width:1120px;margin:auto;padding:38px 18px 70px}
-.lc-hero{text-align:center;padding:38px 18px 42px;background:radial-gradient(ellipse at center,rgba(212,175,55,.13),transparent 68%);border-bottom:1px solid var(--border)}
-.lc-eyebrow{color:var(--gold2);font-size:11px;font-weight:800;letter-spacing:.18em}
-.lc-hero h1{margin:13px 0;color:#fff;font-size:clamp(30px,5vw,46px);line-height:1.15}
-.lc-hero h1 span{color:var(--gold)}
-.lc-hero p{max-width:760px;margin:auto;color:var(--muted);font-size:15px;line-height:1.8}
-.lc-panel{margin-top:28px;padding:clamp(16px,3vw,26px);border:1px solid var(--border);border-radius:20px;background:linear-gradient(155deg,#0b192b,#07111f)}
-.lc-panel h2{color:var(--gold2);font-size:21px;margin-bottom:8px}
-.lc-help{color:var(--muted);font-size:13px;line-height:1.65;margin-bottom:18px}
-.lc-form{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
-.lc-field{min-width:0}
-.lc-field label{display:block;margin:0 0 7px;color:#dce5f0;font-size:12px;font-weight:700}
-.lc-field input,.lc-field select{width:100%;min-width:0;min-height:48px;padding:12px;background:#071323;border:1px solid #33445a;border-radius:11px;color:#fff;font-size:14px}
-.lc-field small{display:block;margin-top:5px;color:#9eacbf;font-size:10px;line-height:1.4}
-.lc-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
-.lc-actions button{min-height:46px;padding:11px 20px;border-radius:11px;font-size:14px}
-.lc-actions .secondary{background:#17263a;color:#f4d77a;border:1px solid var(--border)}
-.lc-status{margin-top:13px;color:#f4d77a;font-size:13px;line-height:1.5}
-.lc-empty{padding:22px;text-align:center;border:1px dashed #40516a;border-radius:14px;color:#aebbd0;font-size:13px;line-height:1.7}
-.lc-table-wrap{overflow-x:auto;margin-top:16px}
-.lc-table{width:100%;min-width:760px;border-collapse:collapse;font-size:13px}
-.lc-table th,.lc-table td{padding:12px 10px;text-align:left;border-bottom:1px solid rgba(255,255,255,.09);vertical-align:top}
-.lc-table th{color:var(--gold2);background:#0c1b30;white-space:nowrap}
-.lc-table td{color:#e2e8f0;line-height:1.5}
-.lc-table a{color:#f4d77a;overflow-wrap:anywhere}
-.lc-best{color:#8ee0b0;font-weight:800}
-.lc-remove{padding:7px 10px;font-size:11px;background:#26354a;color:#fff;border:1px solid #46566b;border-radius:8px}
-.lc-note{margin-top:22px;padding:16px;border:1px solid rgba(212,175,55,.22);border-radius:13px;background:#081525;color:#aebbd0;font-size:12px;line-height:1.75}
-.lc-note strong{color:#f4d77a}
-@media(max-width:760px){.lc-form{grid-template-columns:repeat(2,minmax(0,1fr))}.lc-wrap{padding:25px 14px 50px}}
-@media(max-width:480px){.lc-form{grid-template-columns:1fr}.lc-hero{padding:28px 8px 32px}.lc-hero p{font-size:14px}.lc-panel{border-radius:16px}}
-</style>
-</head>
-<body>
-<header>
-<a class="logo" href="/" aria-label="KeyDhan Home" style="text-decoration:none;color:inherit">Key<span>Dhan</span><sup>™</sup></a>
-<button class="menu-btn" id="menuBtn" type="button" aria-label="Open navigation menu" aria-expanded="false">☰</button>
-<nav id="menu" aria-label="Main navigation"></nav>
-</header>
-<script src="/site-header.js?v=20261031-loan-comparison-nav"></script>
-<main>
-<section class="lc-hero">
-<div class="lc-eyebrow">KEYDHAN · FINANCIAL DECISION SUPPORT</div>
-<h1>Loan <span>Comparison Centre</span></h1>
-<p>Compare the offers you have received from lenders. Add the rate, fees, tenure and official source details to see an indicative EMI and repayment comparison side by side.</p>
-</section>
-<div class="lc-wrap">
-<section class="lc-panel" aria-labelledby="lc-input-title">
-<h2 id="lc-input-title">Add a lender offer</h2>
-<p class="lc-help">Enter details exactly as shown in the lender's current official offer, sanction illustration or product page. All fields are required so the comparison remains traceable.</p>
-<form id="offerForm" novalidate>
-<div class="lc-form">
-<div class="lc-field"><label for="lender">Lender name</label><input id="lender" maxlength="80" required placeholder="Enter lender name"></div>
-<div class="lc-field"><label for="product">Loan product</label><select id="product" required><option value="">Select product</option><option>Home Loan</option><option>Business Loan</option><option>Loan Against Property</option><option>Personal Loan</option><option>Other</option></select></div>
-<div class="lc-field"><label for="amount">Loan amount (₹)</label><input id="amount" type="number" min="1" step="1" required placeholder="e.g. 2500000"></div>
-<div class="lc-field"><label for="rate">Annual interest rate (%)</label><input id="rate" type="number" min="0.01" max="60" step="0.01" required placeholder="As quoted by lender"></div>
-<div class="lc-field"><label for="tenure">Tenure (months)</label><input id="tenure" type="number" min="1" max="600" step="1" required placeholder="e.g. 240"></div>
-<div class="lc-field"><label for="processing">Processing fee (₹)</label><input id="processing" type="number" min="0" step="0.01" required placeholder="Enter 0 if nil"></div>
-<div class="lc-field"><label for="otherFees">Other known charges (₹)</label><input id="otherFees" type="number" min="0" step="0.01" required placeholder="Enter 0 if nil"><small>Only include charges disclosed in the source. Taxes/insurance can vary.</small></div>
-<div class="lc-field"><label for="source">Official source URL</label><input id="source" type="url" required placeholder="https://lender-domain/..."><small>Use the lender's official website or offer document URL.</small></div>
-<div class="lc-field"><label for="verified">Date you verified the offer</label><input id="verified" type="date" required><small>Check the offer directly with the lender before relying on it.</small></div>
-</div>
-<div class="lc-actions"><button type="submit">Add to comparison</button><button class="secondary" type="reset">Clear form</button></div>
-<p id="lcStatus" class="lc-status" role="status" aria-live="polite"></p>
-</form>
-</section>
-<section class="lc-panel" aria-labelledby="lc-results-title">
-<h2 id="lc-results-title">Your comparison</h2>
-<p class="lc-help">Results are calculated only from the offers you enter on this device. Lower EMI does not necessarily mean lower overall cost if the tenure or fees differ.</p>
-<div id="lcEmpty" class="lc-empty">No offers added yet.<br>Enter at least two lender offers to compare them side by side.</div>
-<div id="lcResults" class="lc-table-wrap" hidden><table class="lc-table"><thead><tr><th>Lender / Product</th><th>Rate</th><th>Estimated EMI</th><th>Interest over tenure</th><th>Fees entered</th><th>Estimated total outflow</th><th>Source / verified</th><th></th></tr></thead><tbody id="lcRows"></tbody></table></div>
-<div class="lc-actions"><button id="lcClearAll" class="secondary" type="button" hidden>Clear comparison</button></div>
-</section>
-<p class="lc-note"><strong>Important:</strong> This is a manual comparison calculator, not a lender-rate directory, loan recommendation, approval check or offer. KeyDhan does not independently verify the entries you submit here. Interest rates, fees, eligibility, benchmark resets, insurance, taxes, legal/valuation charges and repayment terms depend on the lender and applicant profile. EMI uses a standard monthly reducing-balance estimate and may differ from the lender's schedule. No entered details are uploaded or saved by this page; refreshing or closing the page clears the comparison. Always read the lender's official terms and obtain a written quotation before deciding.</p>
-</div>
-</main>
-<div data-keydhan-footer></div>
-<script src="/footer.js?v=20261031-loan-comparison"></script>
+.lp{max-width:1120px;margin:auto;padding:30px 16px 60px}.hero{text-align:center;padding:38px 16px;background:radial-gradient(ellipse,rgba(212,175,55,.13),transparent 70%);border-bottom:1px solid var(--border)}.hero h1{color:#fff;font-size:clamp(30px,5vw,46px)}.hero h1 span{color:var(--gold)}.hero p{color:var(--muted);max-width:720px;margin:auto;line-height:1.7}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.card{padding:22px;background:linear-gradient(155deg,#0b192b,#07111f);border:1px solid var(--border);border-radius:18px;min-width:0}.card h2{color:var(--gold2);font-size:20px}.help{color:var(--muted);font-size:12px;line-height:1.6}.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field label{display:block;color:#dce5f0;font-size:12px;margin-bottom:6px}.field input{width:100%;min-height:44px;padding:10px;background:#071323;border:1px solid #33445a;border-radius:9px;color:white}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.actions button,.actions a{padding:11px 16px;min-height:42px;border-radius:9px}.secondary{background:#17263a!important;color:#f4d77a!important;border:1px solid var(--border)!important}.out{margin-top:13px;padding:13px;background:#081525;border:1px solid rgba(212,175,55,.2);border-radius:11px;color:#e2e8f0;font-size:13px;line-height:1.8}.out:empty{display:none}.out strong{color:#f4d77a}.checks{display:grid;gap:10px}.checks label{display:flex;gap:9px;color:#dce5f0;font-size:13px}.checks input{accent-color:#d4af37}.bar{height:8px;background:#1b2b40;border-radius:9px;margin-top:12px;overflow:hidden}.bar span{display:block;height:100%;width:0;background:#d4af37}.tablewrap{overflow:auto;margin-top:12px}.table{width:100%;min-width:440px;border-collapse:collapse;font-size:12px}.table th,.table td{padding:8px;text-align:right;border-bottom:1px solid #33445a;color:#e2e8f0}.table th{color:#f4d77a}.table th:first-child,.table td:first-child{text-align:left}.note{margin-top:22px;padding:16px;background:#081525;border:1px solid rgba(212,175,55,.2);border-radius:12px;color:#aebbd0;font-size:12px;line-height:1.7}.note strong{color:#f4d77a}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.lp{padding:22px 13px 45px}}@media(max-width:420px){.fields{grid-template-columns:1fr}}
+</style></head><body>
+<header><a class="logo" href="/" aria-label="KeyDhan Home" style="text-decoration:none;color:inherit">Key<span>Dhan</span><sup>™</sup></a><button class="menu-btn" id="menuBtn" type="button" aria-label="Open navigation menu" aria-expanded="false">☰</button><nav id="menu" aria-label="Main navigation"></nav></header>
+<script src="/site-header.js?v=20261031-loan-planning-nav"></script>
+<main><section class="hero"><div class="financial-eyebrow">KEYDHAN · FINANCIAL DECISION SUPPORT</div><h1>Loan <span>Planning Centre</span></h1><p>Plan hypothetical loan scenarios, understand EMI burden and review repayment using your own figures. No lender listings, promotions or prefilled lender rates.</p></section>
+<div class="lp"><div class="grid">
+<section class="card"><h2>1. Loan Scenario Comparison</h2><p class="help">Compare two hypothetical loans. Enter the figures yourself.</p><div class="fields">
+<div class="field"><label for="aP">Scenario A amount (₹)</label><input id="aP" type="number" min="1" value="2500000"></div><div class="field"><label for="aR">Scenario A rate (%)</label><input id="aR" type="number" min="0" max="60" step=".01" value="9"></div><div class="field"><label for="aN">Scenario A tenure (months)</label><input id="aN" type="number" min="1" max="600" value="240"></div><div class="field"><label for="bP">Scenario B amount (₹)</label><input id="bP" type="number" min="1" value="2500000"></div><div class="field"><label for="bR">Scenario B rate (%)</label><input id="bR" type="number" min="0" max="60" step=".01" value="9.5"></div><div class="field"><label for="bN">Scenario B tenure (months)</label><input id="bN" type="number" min="1" max="600" value="240"></div></div><div class="actions"><button id="compare">Compare scenarios</button><button id="compareReset" class="secondary">Reset</button></div><div class="out" id="compareOut" aria-live="polite"></div></section>
+<section class="card"><h2>2. EMI Burden Calculator</h2><p class="help">Compare existing and proposed EMIs with monthly take-home income.</p><div class="fields"><div class="field"><label for="income">Monthly income (₹)</label><input id="income" type="number" min="1"></div><div class="field"><label for="existing">Existing EMIs (₹)</label><input id="existing" type="number" min="0" value="0"></div><div class="field"><label for="proposed">Proposed EMI (₹)</label><input id="proposed" type="number" min="0" value="0"></div></div><div class="actions"><button id="burden">Calculate burden</button><button id="burdenReset" class="secondary">Reset</button></div><div class="out" id="burdenOut" aria-live="polite"></div></section>
+<section class="card"><h2>3. Loan Readiness Checklist</h2><p class="help">Organise documents before a loan discussion. This does not predict approval.</p><div class="checks" id="checks"><label><input type="checkbox"> Identity and address documents ready</label><label><input type="checkbox"> Income proof / business records organised</label><label><input type="checkbox"> Bank statements available</label><label><input type="checkbox"> Existing loans and EMIs listed</label><label><input type="checkbox"> Credit report reviewed for errors</label><label><input type="checkbox"> Own contribution planned, if applicable</label><label><input type="checkbox"> Property / purpose documents organised</label></div><div class="bar"><span id="bar"></span></div><div class="out" id="checkOut">0 of 7 items completed.</div></section>
+<section class="card"><h2>4. Prepayment Savings Planner</h2><p class="help">Estimate a one-time prepayment while keeping regular EMI unchanged.</p><div class="fields"><div class="field"><label for="balance">Outstanding principal (₹)</label><input id="balance" type="number" min="1"></div><div class="field"><label for="preRate">Annual rate (%)</label><input id="preRate" type="number" min="0" max="60" step=".01"></div><div class="field"><label for="months">Remaining tenure (months)</label><input id="months" type="number" min="1" max="600"></div><div class="field"><label for="lump">One-time prepayment (₹)</label><input id="lump" type="number" min="1"></div></div><div class="actions"><button id="prepay">Estimate savings</button><button id="preReset" class="secondary">Reset</button></div><div class="out" id="preOut" aria-live="polite"></div></section>
+<section class="card"><h2>5. Repayment Schedule</h2><p class="help">View month-wise principal, interest and outstanding balance.</p><div class="fields"><div class="field"><label for="sP">Loan amount (₹)</label><input id="sP" type="number" min="1"></div><div class="field"><label for="sR">Annual rate (%)</label><input id="sR" type="number" min="0" max="60" step=".01"></div><div class="field"><label for="sN">Tenure (months)</label><input id="sN" type="number" min="1" max="600"></div></div><div class="actions"><button id="schedule">Generate schedule</button><button id="scheduleReset" class="secondary">Reset</button></div><div class="out" id="scheduleOut" aria-live="polite"></div><div class="tablewrap" id="tableWrap" hidden><table class="table"><thead><tr><th>Month</th><th>EMI</th><th>Principal</th><th>Interest</th><th>Balance</th></tr></thead><tbody id="scheduleRows"></tbody></table></div></section>
+<section class="card"><h2>6. Home Loan Affordability</h2><p class="help">Use the existing affordability calculator for an indicative home budget based on income, expenses and down payment.</p><div class="actions"><a href="/tools/home-loan-affordability/" style="background:#d4af37;color:#101827;text-decoration:none;font-weight:700">Open Affordability Calculator ↗</a></div><p class="help">Also explore <a href="/tools/home-loan-eligibility/" style="color:#f4d77a">Home Loan Eligibility</a> and <a href="/tools/home-loan-prepayment/" style="color:#f4d77a">Home Loan Prepayment</a>.</p></section>
+</div><p class="note"><strong>Important:</strong> Results are indicative and based only on your inputs. Calculations assume a standard monthly reducing-balance loan and may exclude fees, taxes, insurance, rate resets and lender-specific rounding. The checklist is not an eligibility or approval assessment. No lender information is displayed, recommended or verified. Inputs stay in your browser and are not submitted to KeyDhan by these tools. Confirm all terms independently before making a financial decision.</p></div></main>
+<div data-keydhan-footer></div><script src="/footer.js?v=20261031-loan-planning"></script>
 <script>
-(function(){
-  'use strict';
-  const form=document.getElementById('offerForm');
-  const rows=document.getElementById('lcRows');
-  const empty=document.getElementById('lcEmpty');
-  const results=document.getElementById('lcResults');
-  const clearAll=document.getElementById('lcClearAll');
-  const status=document.getElementById('lcStatus');
-  const offers=[];
-  const byId=id=>document.getElementById(id);
-  const money=value=>'₹'+Math.round(value).toLocaleString('en-IN');
-  const today=new Date().toISOString().slice(0,10);
-  byId('verified').max=today;
-  function emi(principal,annualRate,months){
-    const r=annualRate/1200;
-    if(!r)return principal/months;
-    const factor=Math.pow(1+r,months);
-    return principal*r*factor/(factor-1);
-  }
-  function render(){
-    rows.replaceChildren();
-    empty.hidden=offers.length>0;
-    results.hidden=offers.length===0;
-    clearAll.hidden=offers.length===0;
-    const calculated=offers.map((o,index)=>{
-      const monthly=emi(o.amount,o.rate,o.tenure);
-      const interest=monthly*o.tenure-o.amount;
-      const fees=o.processing+o.otherFees;
-      return {...o,index,monthly,interest,fees,total:monthly*o.tenure+fees};
-    });
-    calculated.forEach(o=>{
-      const tr=document.createElement('tr');
-      const cells=[
-        o.lender+'\n'+o.product,
-        o.rate.toFixed(2)+'% p.a.',
-        money(o.monthly),
-        money(o.interest),
-        money(o.fees),
-        money(o.total),
-        o.source+'\nVerified: '+o.verified
-      ];
-      cells.forEach((value,i)=>{
-        const td=document.createElement('td');
-        if(i===6){
-          const a=document.createElement('a');a.href=o.source;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Official source ↗';td.append(a);
-          const small=document.createElement('div');small.textContent='Verified: '+o.verified;small.style.marginTop='5px';td.append(small);
-        }else td.textContent=value;
-        tr.append(td);
-      });
-      const action=document.createElement('td');
-      const remove=document.createElement('button');remove.type='button';remove.className='lc-remove';remove.textContent='Remove';remove.addEventListener('click',()=>{offers.splice(o.index,1);render();});
-      action.append(remove);tr.append(action);rows.append(tr);
-    });
-  }
-  form.addEventListener('submit',event=>{
-    event.preventDefault();
-    const lender=byId('lender').value.trim();
-    const product=byId('product').value;
-    const amount=Number(byId('amount').value);
-    const rate=Number(byId('rate').value);
-    const tenure=Number(byId('tenure').value);
-    const processing=Number(byId('processing').value);
-    const otherFees=Number(byId('otherFees').value);
-    const source=byId('source').value.trim();
-    const verified=byId('verified').value;
-    let url;
-    try{url=new URL(source);}catch{}
-    if(!lender||!product||!Number.isFinite(amount)||amount<=0||!Number.isFinite(rate)||rate<=0||rate>60||!Number.isInteger(tenure)||tenure<1||tenure>600||!Number.isFinite(processing)||processing<0||!Number.isFinite(otherFees)||otherFees<0||!url||url.protocol!=='https:'||!verified||verified>today){
-      status.textContent='Please complete all fields correctly. Source must be an HTTPS URL and verification date cannot be in the future.';
-      return;
-    }
-    offers.push({lender,product,amount,rate,tenure,processing,otherFees,source:url.href,verified});
-    form.reset();byId('verified').max=today;
-    status.textContent='Offer added to this temporary comparison. Verify the source and date again before making a decision.';
-    render();
-  });
-  clearAll.addEventListener('click',()=>{offers.splice(0,offers.length);status.textContent='Comparison cleared.';render();});
-  form.addEventListener('reset',()=>{status.textContent='';});
-  render();
+(function(){'use strict';const $=id=>document.getElementById(id),v=id=>Number($(id).value),money=x=>'₹'+Math.round(x).toLocaleString('en-IN'),emi=(p,r,n)=>r===0?p/n:(p*r/1200*Math.pow(1+r/1200,n))/(Math.pow(1+r/1200,n)-1),valid=ids=>ids.every(id=>$(id).value!==''&&Number.isFinite(v(id)));
+$('compare').onclick=()=>{let ids=['aP','aR','aN','bP','bR','bN'];if(!valid(ids)||['aP','bP','aN','bN'].some(x=>v(x)<=0)||['aR','bR'].some(x=>v(x)<0||v(x)>60)){$('compareOut').textContent='Enter valid amounts, rates (0–60%) and tenures (1–600 months).';return}let c=(p,r,n)=>{let e=emi(p,r,n);return{e,i:e*n-p,t:e*n}},a=c(v('aP'),v('aR'),v('aN')),b=c(v('bP'),v('bR'),v('bN'));$('compareOut').innerHTML='<strong>Scenario A:</strong> EMI '+money(a.e)+', interest '+money(a.i)+', total '+money(a.t)+'<br><strong>Scenario B:</strong> EMI '+money(b.e)+', interest '+money(b.i)+', total '+money(b.t)+'<br><strong>Total repayment difference:</strong> '+money(Math.abs(a.t-b.t))+' ('+(a.t<=b.t?'A':'B')+' is lower in this estimate).'};
+$('compareReset').onclick=()=>{['aP','aR','aN','bP','bR','bN'].forEach((id,i)=>$(id).value=[2500000,9,240,2500000,9.5,240][i]);$('compareOut').textContent=''};
+$('burden').onclick=()=>{if(!valid(['income','existing','proposed'])||v('income')<=0||v('existing')<0||v('proposed')<0){$('burdenOut').textContent='Enter positive income and non-negative EMI amounts.';return}let total=v('existing')+v('proposed');$('burdenOut').innerHTML='<strong>Total monthly EMI:</strong> '+money(total)+'<br><strong>EMI-to-income ratio:</strong> '+(total/v('income')*100).toFixed(1)+'%<br><strong>Income remaining:</strong> '+money(v('income')-total)};
+$('burdenReset').onclick=()=>{['income','existing','proposed'].forEach(id=>$(id).value='');$('burdenOut').textContent=''};
+$('checks').onchange=()=>{let all=[...$('checks').querySelectorAll('input')],done=all.filter(x=>x.checked).length;$('bar').style.width=done/all.length*100+'%';$('checkOut').textContent=done+' of '+all.length+' items completed.'};
+$('prepay').onclick=()=>{let ids=['balance','preRate','months','lump'];if(!valid(ids)||v('balance')<=0||v('preRate')<0||v('preRate')>60||v('months')<=0||v('months')>600||v('lump')<=0){$('preOut').textContent='Enter valid outstanding amount, rate, tenure and prepayment.';return}let p=v('balance'),l=Math.min(p,v('lump')),r=v('preRate'),n=v('months'),pay=emi(p,r,n),np=p-l,rm=r/1200,nt=np===0?0:rm===0?Math.ceil(np/pay):Math.ceil(-Math.log(1-np*rm/pay)/Math.log(1+rm));nt=Math.max(0,Math.min(n,nt));let oldI=pay*n-p,newI=nt?pay*nt-np:0;$('preOut').innerHTML='<strong>Current EMI:</strong> '+money(pay)+'<br><strong>Balance after prepayment:</strong> '+money(np)+'<br><strong>Estimated interest saving:</strong> '+money(Math.max(0,oldI-newI))+'<br><strong>Indicative revised tenure:</strong> '+nt+' months.'};
+$('preReset').onclick=()=>{['balance','preRate','months','lump'].forEach(id=>$(id).value='');$('preOut').textContent=''};
+$('schedule').onclick=()=>{let ids=['sP','sR','sN'];if(!valid(ids)||v('sP')<=0||v('sR')<0||v('sR')>60||v('sN')<=0||v('sN')>600){$('scheduleOut').textContent='Enter valid amount, rate (0–60%) and tenure (1–600 months).';return}let bal=v('sP'),rate=v('sR')/1200,n=v('sN'),pay=emi(bal,v('sR'),n),sum=0,frag=document.createDocumentFragment();for(let i=1;i<=n;i++){let interest=bal*rate,principal=Math.min(bal,pay-interest);bal=Math.max(0,bal-principal);sum+=interest;let tr=document.createElement('tr');[i,money(principal+interest),money(principal),money(interest),money(bal)].forEach(x=>{let td=document.createElement('td');td.textContent=x;tr.append(td)});frag.append(tr)}$('scheduleRows').replaceChildren(frag);$('tableWrap').hidden=false;$('scheduleOut').innerHTML='<strong>Estimated EMI:</strong> '+money(pay)+'<br><strong>Total interest:</strong> '+money(sum)+'<br><strong>Total repayment:</strong> '+money(v('sP')+sum)};
+$('scheduleReset').onclick=()=>{['sP','sR','sN'].forEach(id=>$(id).value='');$('scheduleOut').textContent='';$('scheduleRows').replaceChildren();$('tableWrap').hidden=true};
 })();
-</script>
-</body>
-</html>
+</script></body></html>
