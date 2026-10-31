@@ -31,10 +31,10 @@
       links.map(item => '<a href="' + item.href + '"' + (item.match ? ' aria-current="page"' : "") + '>' + item.label + '</a>').join("") +
       '</nav>';
 
-    if (header.dataset.kdMenuReady === "true") return;
-    header.dataset.kdMenuReady = "true";
     const nav = header.querySelector("#menu");
     const button = header.querySelector("#menuBtn");
+    if (button.dataset.kdMenuBound === "true") return;
+    button.dataset.kdMenuBound = "true";
     const isMobile = () => window.matchMedia("(max-width: 768px)").matches;
     const closeMenu = () => {
       nav.classList.remove("show");
