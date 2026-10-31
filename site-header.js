@@ -16,6 +16,7 @@
     { label: "Home", href: "/#home", match: path === "/" },
     { label: "Services", href: "/#services", match: false },
     { label: "Calculator", href: "/calculator.html", match: path === "/calculator.html" },
+    { label: "Financial Tools", href: "/financial-tools.html", match: path === "/financial-tools.html" },
     { label: "Free Tools", href: "/tools/", match: path === "/tools" || path.startsWith("/tools/") },
     { label: "Properties", href: "/properties.html", match: path === "/properties.html" },
     { label: "Business Services", href: "/business-services.html", match: path === "/business-services.html" },
