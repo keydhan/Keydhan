@@ -105,6 +105,22 @@ syncTenureLabel();
 /* ---------- EMI ---------- */
 
 let chart=null;
+let chartLibraryPromise=null;
+
+function loadChartLibrary(){
+  if(window.Chart) return Promise.resolve(window.Chart);
+  if(!chartLibraryPromise){
+    chartLibraryPromise=new Promise((resolve,reject)=>{
+      const script=document.createElement("script");
+      script.src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js";
+      script.async=true;
+      script.onload=()=>window.Chart?resolve(window.Chart):reject(new Error("Chart.js did not initialise"));
+      script.onerror=()=>reject(new Error("Chart.js could not be loaded"));
+      document.head.appendChild(script);
+    });
+  }
+  return chartLibraryPromise;
+}
 
 function calc(){
 
@@ -238,17 +254,17 @@ chartBox.style.display==="block"
 
 /* ---------- PIE CHART ---------- */
 
-function drawPie(principal,interest){
+async function drawPie(principal,interest){
 
 const canvas=document.getElementById("emiChart");
 
 if(!canvas) return;
 
+try{
+const ChartLibrary=await loadChartLibrary();
 const ctx=canvas.getContext("2d");
-
 if(chart) chart.destroy();
-
-chart=new Chart(ctx,{
+chart=new ChartLibrary(ctx,{
 type:"pie",
 data:{
 labels:["Principal","Interest"],
@@ -276,6 +292,7 @@ font:{size:12}
 }
 });
 
+}catch(error){console.warn("EMI chart is unavailable; calculation results remain available.",error);}
 }
 
 /* ---------- PROPERTY AUTO FILL ---------- */
