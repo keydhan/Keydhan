@@ -55,7 +55,7 @@ export default {async fetch(req,env,ctx){
   }
   if(path==="/knowledge-sitemap.xml"&&method==="GET"){const list=await read(env,keys.articles,[]);return new Response(knowledgeSitemap(list),{headers:{"Content-Type":"application/xml; charset=utf-8","Cache-Control":"public, max-age=300"}});}
   if(path.startsWith("/property/")&&method==="GET"){
-   const requested=decodeURIComponent(path.slice("/property/".length).replace(/\\/+$/,""));
+   const requested=decodeURIComponent(path.slice("/property/".length).replace(/\/+$/,""));
    const list=await read(env,keys.properties,[]);
    const item=list.find(p=>(p.status||"published")==="published"&&propertySlug(p)===requested);
    if(!item)return new Response("<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"robots\" content=\"noindex\"><title>Property not found | KeyDhan</title></head><body style=\"font-family:Arial;background:#020814;color:white;padding:40px\"><h1>Property not found</h1><p>This property may have been unpublished or its URL changed.</p><a href=\"/properties.html\" style=\"color:#d4af37\">Browse all properties</a></body></html>",{status:404,headers:{"Content-Type":"text/html; charset=utf-8","Cache-Control":"no-store"}});
