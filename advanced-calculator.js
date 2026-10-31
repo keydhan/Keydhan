@@ -46,10 +46,14 @@
   const emi=P*r*Math.pow(1+r,months)/(Math.pow(1+r,months)-1);
   const disbursement=localToday();
   let days=0,firstEmi;
-  if(disbursement.getDate()<=5) firstEmi=new Date(disbursement.getFullYear(),disbursement.getMonth()+1,5);
-  else{
-   const cutoff=new Date(disbursement.getFullYear(),disbursement.getMonth()+1,5);
+  if(disbursement.getDate()<=5){
+   const cutoff=new Date(disbursement.getFullYear(),disbursement.getMonth(),5);
    days=Math.max(0,Math.round((Date.UTC(cutoff.getFullYear(),cutoff.getMonth(),cutoff.getDate())-Date.UTC(disbursement.getFullYear(),disbursement.getMonth(),disbursement.getDate()))/86400000));
+   firstEmi=new Date(disbursement.getFullYear(),disbursement.getMonth()+1,5);
+  }else{
+   const cutoff=new Date(disbursement.getFullYear(),disbursement.getMonth()+1,5);
+   const elapsed=Math.round((Date.UTC(cutoff.getFullYear(),cutoff.getMonth(),cutoff.getDate())-Date.UTC(disbursement.getFullYear(),disbursement.getMonth(),disbursement.getDate()))/86400000);
+   days=Math.max(0,elapsed+1);
    firstEmi=new Date(disbursement.getFullYear(),disbursement.getMonth()+2,5);
   }
   const pf=P*pfPercent/100,gst=pf*.18,pfIncludingGst=pf+gst;
