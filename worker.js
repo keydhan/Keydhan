@@ -9,7 +9,7 @@ const cors = origin => ({
 const response = (body,status=200,origin="https://keydhan.com") => new Response(JSON.stringify(body),{status,headers:{"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store",...cors(origin)}});
 const stamp=()=>new Date().toISOString();
 const str=(v,n=5000)=>String(v??"").trim().slice(0,n);
-const keys={properties:"properties",leads:"leads",offers:"loan_offers",settings:"site_settings",content:"site_content"};
+const keys={properties:"properties",leads:"leads",offers:"loan_offers",settings:"site_settings",content:"site_content",articles:"knowledge_articles"};
 async function read(env,key,fallback=[]){const raw=await env.KEYDHAN_DB.get(key);if(!raw)return fallback;const value=JSON.parse(raw);return value;}
 async function write(env,key,value){await env.KEYDHAN_DB.put(key,JSON.stringify(value));}
 function authorized(req,env){return !!env.ADMIN_API_KEY && req.headers.get("X-Admin-Key")===env.ADMIN_API_KEY;}
@@ -49,6 +49,7 @@ export default {async fetch(req,env,ctx){
 
   if(path==="/api/properties"&&method==="GET"){const list=await read(env,keys.properties,[]);return response({success:true,properties:list.filter(p=>(p.status||"published")==="published")},200,origin);}
   if(path==="/api/loan-offers"&&method==="GET"){const list=await read(env,keys.offers,[]);return response({success:true,offers:list.filter(o=>o.status==="published")},200,origin);}
+  if(path==="/api/knowledge"&&method==="GET"){const list=await read(env,keys.articles,[]);return response({success:true,articles:list.filter(a=>a.status==="published").sort((a,b)=>String(b.publishedAt||b.updatedAt).localeCompare(String(a.publishedAt||a.updatedAt)))},200,origin);}
   if(path==="/api/content"&&method==="GET")return response({success:true,content:await read(env,keys.content,{})},200,origin);
   if(path==="/api/settings"&&method==="GET")return response({success:true,settings:await read(env,keys.settings,{businessName:"KeyDhan",contactEmail:"hello@keydhan.com"})},200,origin);
   if(path==="/api/leads"&&method==="POST"){
@@ -95,6 +96,16 @@ export default {async fetch(req,env,ctx){
    if(path==="/api/admin/content"){
     if(method==="GET")return response({success:true,content:await read(env,keys.content,{})},200,origin);
     if(method==="PUT"){const b=await req.json();if(!b||typeof b!=="object"||Array.isArray(b))return response({success:false,error:"Content must be a JSON object"},400,origin);await write(env,keys.content,b);return response({success:true,content:b},200,origin);}
+   }
+   if(path==="/api/admin/knowledge"){
+    const list=await read(env,keys.articles,[]);
+    if(method==="GET")return response({success:true,articles:list},200,origin);
+    if(method==="POST"){const b=await req.json();const title=str(b.title,180),slug=str(b.slug||title,180).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,120);if(!title||!slug)return response({success:false,error:"Title and a valid slug are required"},400,origin);if(list.some(a=>a.slug===slug))return response({success:false,error:"This article slug is already in use"},409,origin);const item={id:crypto.randomUUID(),title,slug,summary:str(b.summary,500),body:str(b.body,30000),category:str(b.category,80),language:str(b.language||"en-IN",20),author:str(b.author,120),reviewer:str(b.reviewer,120),sources:Array.isArray(b.sources)?b.sources.map(x=>({label:str(x.label,180),url:str(x.url,1000)})).filter(x=>x.label&&/^https:\/\//.test(x.url)).slice(0,20):[],publishedAt:b.status==="published"?stamp():null,updatedAt:stamp(),status:b.status==="published"?"published":"draft",seoTitle:str(b.seoTitle||title,180),seoDescription:str(b.seoDescription||b.summary,320)};list.unshift(item);await write(env,keys.articles,list);return response({success:true,article:item},201,origin);}
+   }
+   if(path.startsWith("/api/admin/knowledge/")){
+    const id=idPath(path,"/api/admin/knowledge"),list=await read(env,keys.articles,[]),i=list.findIndex(a=>String(a.id)===id);if(i<0)return response({success:false,error:"Article not found"},404,origin);
+    if(method==="PUT"){const b=await req.json(),old=list[i],title=str(b.title??old.title,180),slug=str(b.slug??old.slug,180).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,120);if(!title||!slug)return response({success:false,error:"Title and a valid slug are required"},400,origin);if(list.some((a,j)=>j!==i&&a.slug===slug))return response({success:false,error:"This article slug is already in use"},409,origin);const status=b.status==="published"?"published":"draft";list[i]={...old,title,slug,summary:str(b.summary??old.summary,500),body:str(b.body??old.body,30000),category:str(b.category??old.category,80),language:str(b.language??old.language,20),author:str(b.author??old.author,120),reviewer:str(b.reviewer??old.reviewer,120),sources:Array.isArray(b.sources)?b.sources.map(x=>({label:str(x.label,180),url:str(x.url,1000)})).filter(x=>x.label&&/^https:\/\//.test(x.url)).slice(0,20):old.sources,publishedAt:status==="published"?(old.publishedAt||stamp()):null,updatedAt:stamp(),status,seoTitle:str(b.seoTitle??old.seoTitle,180),seoDescription:str(b.seoDescription??old.seoDescription,320)};await write(env,keys.articles,list);return response({success:true,article:list[i]},200,origin);}
+    if(method==="DELETE"){list.splice(i,1);await write(env,keys.articles,list);return response({success:true},200,origin);}
    }
    if(path==="/api/admin/analytics"&&method==="GET"){
     const [p,l,o]=await Promise.all([read(env,keys.properties,[]),read(env,keys.leads,[]),read(env,keys.offers,[])]);
