@@ -20,6 +20,7 @@
     { label: "Knowledge Centre", href: "/knowledge/", match: path === "/knowledge" || path.startsWith("/knowledge/") },
     { label: "Free Tools", href: "/tools/", match: path === "/tools" || path.startsWith("/tools/") },
     { label: "Properties", href: "/properties.html", match: path === "/properties.html" },
+    { label: "Delhi NCR", href: "/delhi-ncr/", match: path === "/delhi-ncr" || path === "/delhi-ncr/" },
     { label: "Business Services", href: "/business-services.html", match: path === "/business-services.html" },
     { label: "About Us", href: "/about.html", match: path === "/about.html" },
     { label: "Contact", href: "/contact.html", match: path === "/contact.html" }
