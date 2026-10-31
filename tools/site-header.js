@@ -1,5 +1,7 @@
 /* Shared KeyDhan mobile navigation for Free Tools pages. */
 (function(){
+ const header=document.querySelector('body > header');
+ if(header && header.dataset.kdMenuReady==='true') return;
  const btn=document.getElementById('menuBtn');
  const menu=document.getElementById('menu');
  if(!btn||!menu)return;
