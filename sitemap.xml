@@ -44,4 +44,12 @@
 <priority>0.7</priority>
 </url>
 
+<url><loc>https://keydhan.com/tools/image-to-pdf/</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://keydhan.com/tools/merge-pdf/</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://keydhan.com/tools/pdf-to-image/</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://keydhan.com/tools/jpg-to-png/</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://keydhan.com/tools/image-pdf-to-pdf/</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://keydhan.com/tools/image-compressor/</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://keydhan.com/tools/pdf-compressor/</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://keydhan.com/tools/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
 </urlset>
