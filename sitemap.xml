@@ -66,4 +66,8 @@
 <url><loc>https://keydhan.com/tools/image-rotator/</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
 <url><loc>https://keydhan.com/tools/passport-photo/</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
 <url><loc>https://keydhan.com/tools/signature-resizer/</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://keydhan.com/tools/image-to-text/</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://keydhan.com/tools/qr-code-generator/</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://keydhan.com/tools/pdf-to-text/</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://keydhan.com/tools/image-metadata-remover/</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
 </urlset>
