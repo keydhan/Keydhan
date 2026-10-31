@@ -31,7 +31,51 @@
 
 <!-- Chart.js is loaded on demand only after an EMI calculation. -->
 
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"KeyDhan","url":"https://keydhan.com/","logo":"https://keydhan.com/assets/logo.svg","description":"Real estate opportunities and financial solutions including home loans, business loans and loans against property."}</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://keydhan.com/#organization",
+      "name": "KeyDhan",
+      "alternateName": "KeyDhan™",
+      "url": "https://keydhan.com/",
+      "logo": {
+        "@type": "ImageObject",
+        "@id": "https://keydhan.com/#logo",
+        "url": "https://keydhan.com/assets/logo.svg",
+        "contentUrl": "https://keydhan.com/assets/logo.svg"
+      },
+      "description": "Real estate opportunities and financial solutions including home loans, business loans and loans against property."
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://keydhan.com/#website",
+      "url": "https://keydhan.com/",
+      "name": "KeyDhan",
+      "publisher": {
+        "@id": "https://keydhan.com/#organization"
+      },
+      "inLanguage": "en-IN"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://keydhan.com/#webpage",
+      "url": "https://keydhan.com/",
+      "name": "KeyDhan™ | Home Loans, Business Loans & Real Estate in India",
+      "description": "Explore home loans, business loans, loan against property, EMI calculators and curated real estate opportunities with KeyDhan. One Key. Endless Possibilities.",
+      "isPartOf": {
+        "@id": "https://keydhan.com/#website"
+      },
+      "about": {
+        "@id": "https://keydhan.com/#organization"
+      },
+      "inLanguage": "en-IN"
+    }
+  ]
+}
+</script>
 </head>
 
 <body>
