@@ -11,17 +11,15 @@
     header.appendChild(nav);
   }
 
-  const path = window.location.pathname.replace(/\/+$/, "") || "/";
+  const path = window.location.pathname.replace(/\\/+$/, "") || "/";
   const links = [
     { label: "Home", href: "/#home", match: path === "/" },
     { label: "Services", href: "/#services", match: false },
     { label: "Calculator", href: "/calculator.html", match: path === "/calculator.html" },
     { label: "Financial Tools", href: "/financial-tools.html", match: path === "/financial-tools.html" },
-    { label: "Loan Planning", href: "/loan-comparison.html", match: path === "/loan-comparison.html" },
-    { label: "Knowledge Centre", href: "/knowledge/", match: path === "/knowledge" || path.startsWith("/knowledge/") },
     { label: "Free Tools", href: "/tools/", match: path === "/tools" || path.startsWith("/tools/") },
+    { label: "Knowledge Centre", href: "/knowledge/", match: path === "/knowledge" || path.startsWith("/knowledge/") },
     { label: "Properties", href: "/properties.html", match: path === "/properties.html" },
-    { label: "Delhi NCR", href: "/delhi-ncr/", match: path === "/delhi-ncr" || path === "/delhi-ncr/" },
     { label: "Business Services", href: "/business-services.html", match: path === "/business-services.html" },
     { label: "About Us", href: "/about.html", match: path === "/about.html" },
     { label: "Contact", href: "/contact.html", match: path === "/contact.html" }
