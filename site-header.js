@@ -1,15 +1,11 @@
-/* KeyDhan™ — centralized public navigation for every public page. */
+/* KeyDhan™ — single source of truth for every public-page header and navigation. */
 (function () {
   "use strict";
-  function initKeyDhanNavigation() {
-    const header = document.querySelector("body > header") || document.querySelector("header");
-    if (!header) return;
-
-    let nav = header.querySelector("#menu");
-    if (!nav) {
-      nav = document.createElement("nav");
-      nav.id = "menu";
-      header.appendChild(nav);
+  function initKeyDhanHeader() {
+    let header = document.querySelector("body > header") || document.querySelector("header");
+    if (!header) {
+      header = document.createElement("header");
+      document.body.insertBefore(header, document.body.firstChild);
     }
 
     const path = window.location.pathname.replace(/\/+$/, "") || "/";
@@ -28,18 +24,17 @@
       { label: "Contact", href: "/contact.html", match: path === "/contact.html" }
     ];
 
-    nav.setAttribute("aria-label", "Main navigation");
-    nav.innerHTML = links.map(item =>
-      '<a href="' + item.href + '"' + (item.match ? ' aria-current="page"' : "") + '>' + item.label + '</a>'
-    ).join("");
+    header.innerHTML =
+      '<a class="logo" id="adminLogo" href="/" aria-label="KeyDhan home">Key<span>Dhan</span><sup>™</sup></a>' +
+      '<button class="menu-btn" id="menuBtn" type="button" aria-label="Open navigation menu" aria-controls="menu" aria-expanded="false">☰</button>' +
+      '<nav id="menu" aria-label="Main navigation">' +
+      links.map(item => '<a href="' + item.href + '"' + (item.match ? ' aria-current="page"' : "") + '>' + item.label + '</a>').join("") +
+      '</nav>';
 
-    const button = header.querySelector("#menuBtn, .menu-btn");
-    if (!button || header.dataset.kdMenuReady === "true") return;
+    if (header.dataset.kdMenuReady === "true") return;
     header.dataset.kdMenuReady = "true";
-    button.type = "button";
-    button.setAttribute("aria-controls", "menu");
-    button.setAttribute("aria-expanded", "false");
-
+    const nav = header.querySelector("#menu");
+    const button = header.querySelector("#menuBtn");
     const isMobile = () => window.matchMedia("(max-width: 768px)").matches;
     const closeMenu = () => {
       nav.classList.remove("show");
@@ -72,10 +67,9 @@
       if (!isMobile()) closeMenu();
     });
   }
-
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initKeyDhanNavigation, { once: true });
+    document.addEventListener("DOMContentLoaded", initKeyDhanHeader, { once: true });
   } else {
-    initKeyDhanNavigation();
+    initKeyDhanHeader();
   }
 })();
