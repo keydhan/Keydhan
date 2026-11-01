@@ -75,7 +75,7 @@
           header { display:flex !important; align-items:center !important; justify-content:space-between !important; gap:clamp(18px,2.2vw,34px) !important; padding:17px clamp(22px,4vw,64px) !important; min-height:82px; }
           header > .logo { flex:0 0 auto; font-size:clamp(27px,2.3vw,34px) !important; letter-spacing:-.045em; white-space:nowrap; }
           header .kd-desktop-nav { display:flex !important; flex:1 1 auto; min-width:0; align-items:center; justify-content:flex-end; gap:clamp(12px,1.55vw,25px) !important; white-space:nowrap; }
-          header .kd-desktop-nav .kd-desktop-link, header .kd-desktop-nav .kd-desktop-trigger { display:inline-flex; align-items:center; gap:6px; padding:12px 0; border:0; background:none; color:#e8edf5; font:650 clamp(11px,.93vw,14px)/1.2 inherit; text-decoration:none; cursor:pointer; transition:color .2s ease; }
+          header .kd-desktop-nav .kd-desktop-link, header .kd-desktop-nav .kd-desktop-trigger { display:inline-flex; align-items:center; gap:6px; padding:12px 0; border:0; background:none; color:#e8edf5; font-family:inherit; font-size:clamp(11px,.93vw,14px); font-weight:650; line-height:1.2; text-decoration:none; cursor:pointer; transition:color .2s ease; }
           header .kd-desktop-nav .kd-desktop-link:hover, header .kd-desktop-nav .kd-desktop-link:focus-visible, header .kd-desktop-nav .kd-desktop-trigger:hover, header .kd-desktop-nav .kd-desktop-trigger:focus-visible, header .kd-desktop-nav .is-active { color:#e4c65b !important; outline:none; }
           header .kd-desktop-nav .is-active { position:relative; }
           header .kd-desktop-nav .is-active:after { content:""; position:absolute; left:0; right:0; bottom:4px; height:2px; border-radius:2px; background:#d8b94e; }
