@@ -13,18 +13,34 @@
   businessTrademarkWhy:"A registered trademark can provide legal protection for the mark in its registered classes, subject to law.",
   businessTrademarkDocuments:"Brand/logo details, applicant information and the relevant goods/services classes may be needed."
  };
+ const fees={"GST Registration":"1,000","PAN Application / Correction":"500","MSME / Udyam Registration":"500","Trademark Registration Assistance":"2,000"};
  const text=(id,value)=>{const el=document.getElementById(id);if(el&&typeof value==="string"&&value.trim())el.textContent=value;};
- const DEFAULT_FEES={"GST Registration":"1000","PAN Application / Correction":"500","MSME / Udyam Registration":"500","Trademark Registration Assistance":"2000"};
  async function init(){
   let content={},settings={};
-  try{const [cr,sr]=await Promise.all([fetch(API_URL+"/content",{cache:"no-store"}),fetch(API_URL+"/settings",{cache:"no-store"})]);if(cr.ok){const d=await cr.json();content=d.content||{};}if(sr.ok){const d=await sr.json();settings=d.settings||{};}}catch(e){console.warn("Business Services CMS unavailable; showing defaults.",e);}
+  try{
+   const [cr,sr]=await Promise.all([fetch(API_URL+"/content",{cache:"no-store"}),fetch(API_URL+"/settings",{cache:"no-store"})]);
+   if(cr.ok){const d=await cr.json();content=d.content||{};}
+   if(sr.ok){const d=await sr.json();settings=d.settings||{};}
+  }catch(e){console.warn("Business Services CMS unavailable; showing defaults.",e);}
   Object.keys(defaults).forEach(id=>text(id,content[id]||defaults[id]));
+  const phone=String(settings.whatsapp||settings.contactPhone||"").replace(/[^0-9]/g,"");
   document.querySelectorAll("[data-service]").forEach(link=>{
    const service=link.getAttribute("data-service");
-   const message="Hello KeyDhan, I would like to enquire about "+service+". Please share the process, eligibility, documents and applicable charges.";
-   link.href=WHATSAPP_BASE+"?text="+encodeURIComponent(message);
-   link.target="_blank";
-   link.rel="noopener noreferrer";
+   const fee=fees[service]||"";
+   const feeLine=fee?"KeyDhan professional service fee: INR "+fee+". Government/statutory charges, if applicable, are extra. GST is not being collected by KeyDhan while unregistered.":"Please confirm the professional service fee and any separate government charges.";
+   const message="Hello KeyDhan, I would like to enquire about "+service+". "+feeLine+" Please share the process, eligibility and required documents.";
+   if(phone.length>=10){
+    link.href="https://wa.me/"+phone+"?text="+encodeURIComponent(message);
+    link.target="_blank";
+    link.rel="noopener noreferrer";
+    link.removeAttribute("aria-disabled");
+   }else{
+    link.removeAttribute("href");
+    link.removeAttribute("target");
+    link.setAttribute("aria-disabled","true");
+    link.title="Please configure the WhatsApp number in Admin → Settings.";
+    link.textContent="WhatsApp number not configured";
+   }
   });
  }
  init();
