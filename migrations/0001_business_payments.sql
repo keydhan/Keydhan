@@ -76,12 +76,26 @@ CREATE TABLE IF NOT EXISTS business_service_requests (
 CREATE INDEX IF NOT EXISTS idx_service_requests_status ON business_service_requests(fulfilment_status);
 CREATE INDEX IF NOT EXISTS idx_service_requests_phone ON business_service_requests(customer_phone);
 
--- Initial catalogue is deliberately inactive and unpriced until KeyDhan confirms
--- its own professional fees, applicable taxes, and the service scope.
-INSERT OR IGNORE INTO business_services(service_key, display_name, description, active)
+-- KeyDhan-confirmed professional service fees (INR), excluding government charges.
+-- All catalogue entries remain inactive until launch approval. GST-return filing remains unpriced.
+INSERT OR IGNORE INTO business_services(service_key, display_name, description, active, professional_fee_paise)
 VALUES
- ('gst-registration', 'GST Registration Assistance', 'Guidance and assistance with GST registration. Government approval and timelines are determined by the relevant authority.', 0),
- ('gst-return-filing', 'GST Return Filing Assistance', 'Assistance with GST return preparation and filing, subject to scope confirmation.', 0),
- ('pan-application', 'PAN Application / Correction Assistance', 'Assistance with PAN application or correction. Processing is controlled by the authorised agency.', 0),
- ('udyam-registration', 'MSME / Udyam Registration Assistance', 'Guidance for eligible enterprises applying for Udyam registration.', 0),
- ('trademark-registration', 'Trademark Registration Assistance', 'Assistance with trademark application preparation and filing workflow. Registration is not guaranteed.', 0);
+ ('gst-registration', 'GST Registration Assistance', 'KeyDhan professional assistance fee. Any government/statutory fee, if applicable, is separate and payable additionally.', 0, 100000),
+ ('gst-return-filing', 'GST Return Filing Assistance', 'Assistance with GST return preparation and filing; fee to be confirmed. Government/statutory charges, if any, are separate.', 0, NULL),
+ ('pan-application', 'PAN Application / Correction Assistance', 'KeyDhan professional assistance fee. Any government/authorised-agency fee is separate and payable additionally.', 0, 50000),
+ ('udyam-registration', 'MSME / Udyam Registration Assistance', 'KeyDhan professional assistance fee. Any government/statutory fee, if applicable, is separate and payable additionally.', 0, 50000),
+ ('trademark-registration', 'Trademark Registration Assistance', 'KeyDhan professional assistance fee. Government trademark filing fee is separate and payable additionally; registration is not guaranteed.', 0, 200000);
+
+-- Keep existing sandbox catalogues aligned if this migration is reapplied manually.
+UPDATE business_services SET professional_fee_paise = 100000,
+ description = 'KeyDhan professional assistance fee. Any government/statutory fee, if applicable, is separate and payable additionally.',
+ updated_at = strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE service_key = 'gst-registration';
+UPDATE business_services SET professional_fee_paise = 50000,
+ description = 'KeyDhan professional assistance fee. Any government/authorised-agency fee is separate and payable additionally.',
+ updated_at = strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE service_key = 'pan-application';
+UPDATE business_services SET professional_fee_paise = 50000,
+ description = 'KeyDhan professional assistance fee. Any government/statutory fee, if applicable, is separate and payable additionally.',
+ updated_at = strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE service_key = 'udyam-registration';
+UPDATE business_services SET professional_fee_paise = 200000,
+ description = 'KeyDhan professional assistance fee. Government trademark filing fee is separate and payable additionally; registration is not guaranteed.',
+ updated_at = strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE service_key = 'trademark-registration';
