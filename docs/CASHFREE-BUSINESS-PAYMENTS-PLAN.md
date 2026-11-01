@@ -2,7 +2,7 @@
 
 ## Status
 
-Preparation branch only. Cashfree merchant KYC is currently under review. No production deployment, live credentials, or live transactions are enabled by this change.
+Preparation branch only. Cashfree merchant KYC is currently under review. The public Business Services catalogue and fee presentation have been prepared, but payment checkout, live credentials, and production deployment remain disabled.
 
 ## Scope
 
@@ -29,6 +29,15 @@ The following are KeyDhan's professional/service fees in INR. Government, statut
 | GST return filing assistance | To be confirmed | Separate, if applicable |
 
 These are professional service fees, not government fees. The service catalogue remains inactive until launch approval. No tax/GST treatment on KeyDhan's service fee has been assumed; confirm the applicable tax treatment before enabling checkout.
+
+## Completed before Cashfree activation
+
+- Public Business Services catalogue now presents GST Registration, PAN Application / Correction, MSME / Udyam Registration, and Trademark Assistance.
+- Displays KeyDhan professional fees: ₹1,000, ₹500, ₹500, and ₹2,000 respectively.
+- Clearly states government / statutory / authorised-agency charges are extra and will be confirmed separately.
+- Public page states KeyDhan is not a government portal and is not collecting GST while unregistered.
+- Existing WhatsApp enquiry remains the action path; no payment button or gateway claim is shown.
+- Confirmed service fee amounts are stored in the isolated D1 sandbox catalogue; all services remain inactive pending launch approval.
 
 ## Existing architecture observed
 
@@ -110,6 +119,7 @@ Add a Payment Management navigation item and authenticated screen with:
 
 ### Phase 1 — prerequisites
 - Complete Cashfree merchant KYC and obtain Sandbox access / credentials.
+- Confirm legal trade name / proprietor name, bank settlement details, and final fee / tax wording with the accountant.
 - Confirm the legal merchant name, approved business category, settlement account, and service descriptions.
 - Publish and review Privacy Policy, Terms, Refund & Cancellation Policy, Contact details, service fees, and delivery timelines.
 - Provision D1 and apply migrations in a non-production environment.
