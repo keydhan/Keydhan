@@ -74,6 +74,27 @@ export default {async fetch(req,env,ctx){
   if(path==="/api/content"&&method==="GET")return response({success:true,content:await read(env,keys.content,{})},200,origin);
   if(path==="/api/settings"&&method==="GET")return response({success:true,settings:await read(env,keys.settings,{businessName:"KeyDhan",contactEmail:"hello@keydhan.com"})},200,origin);
 
+
+  if(path==="/api/payments/razorpay/webhook"&&method==="POST"){
+   if(!env.RAZORPAY_WEBHOOK_SECRET)return response({success:false,error:"Razorpay webhook secret is not configured"},503,origin);
+   const rawBody=await req.text(),signature=req.headers.get("X-Razorpay-Signature")||"",eventId=req.headers.get("x-razorpay-event-id")||"";
+   if(!signature||!safeEqual(await hmacHex(env.RAZORPAY_WEBHOOK_SECRET,rawBody),signature))return response({success:false,error:"Invalid webhook signature"},400,origin);
+   if(eventId){const seen=await env.KEYDHAN_DB.get("razorpay_webhook_event:"+eventId);if(seen)return response({success:true,duplicate:true},200,origin);}
+   let event;try{event=JSON.parse(rawBody);}catch{return response({success:false,error:"Invalid webhook payload"},400,origin);}
+   if(!["payment.captured","order.paid"].includes(event.event))return response({success:true,ignored:true},200,origin);
+   const payment=event.payload?.payment?.entity||null,order=event.payload?.order?.entity||null;
+   const orderId=payment?.order_id||order?.id,paymentId=payment?.id;
+   if(!orderId||!paymentId||!payment||payment.status!=="captured")return response({success:false,error:"Captured payment details are missing"},400,origin);
+   const raw=await env.KEYDHAN_DB.get("razorpay_order:"+orderId);if(!raw)return response({success:false,error:"KeyDhan order record not found"},404,origin);
+   const record=JSON.parse(raw);
+   if(payment.amount!==record.amount||payment.currency!=="INR"||payment.order_id!==orderId)return response({success:false,error:"Webhook payment does not match the KeyDhan order"},400,origin);
+   if(record.status==="paid"&&record.paymentId!==paymentId)return response({success:false,error:"Order already reconciled with another payment"},409,origin);
+   if(record.status!=="paid"){record.status="paid";record.paymentId=paymentId;record.paidAt=stamp();await env.KEYDHAN_DB.put("razorpay_order:"+orderId,JSON.stringify(record),{expirationTtl:31536000});}
+   const payments=await read(env,"razorpay_payments",[]);if(!payments.some(x=>x.paymentId===paymentId)){payments.unshift({orderId,paymentId,service:record.service,amount:record.amount,currency:"INR",status:"paid",paidAt:record.paidAt,source:"webhook"});await write(env,"razorpay_payments",payments.slice(0,5000));}
+   if(eventId)await env.KEYDHAN_DB.put("razorpay_webhook_event:"+eventId,"processed",{expirationTtl:31536000});
+   return response({success:true,verified:true,service:record.service,paymentId},200,origin);
+  }
+
   if(path==="/api/payments/razorpay/order"&&method==="POST"){
    if(!env.RAZORPAY_KEY_ID||!env.RAZORPAY_KEY_SECRET)return response({success:false,error:"Razorpay test credentials are not configured"},503,origin);
    const b=await req.json(),service=str(b.service,60),amount=BUSINESS_SERVICE_PRICES[service];
@@ -91,7 +112,7 @@ export default {async fetch(req,env,ctx){
    if(!orderId||!paymentId||!signature)return response({success:false,error:"Payment verification details are incomplete"},400,origin);
    const raw=await env.KEYDHAN_DB.get("razorpay_order:"+orderId);if(!raw)return response({success:false,error:"Payment order not found or expired"},404,origin);
    const record=JSON.parse(raw);
-   if(record.status==="paid")return response({success:true,verified:true,alreadyProcessed:true,service:record.service},200,origin);
+   if(record.status==="paid"){if(record.paymentId!==paymentId)return response({success:false,error:"This order was already paid using a different payment"},409,origin);return response({success:true,verified:true,alreadyProcessed:true,service:record.service,paymentId},200,origin);}
    const expected=await hmacHex(env.RAZORPAY_KEY_SECRET,orderId+"|"+paymentId);
    if(!safeEqual(expected,signature))return response({success:false,error:"Payment signature verification failed"},400,origin);
    const payment=await razorpayRequest(env,"/payments/"+encodeURIComponent(paymentId));
