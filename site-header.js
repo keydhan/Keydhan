@@ -43,12 +43,12 @@
       '<a href="/#services" class="kd-desktop-link">Services</a>' +
       '<a href="/properties.html" class="kd-desktop-link' + (path === "/properties.html" ? " is-active" : "") + '">Properties</a>' +
       '<a href="/delhi-ncr/" class="kd-desktop-link' + (path.startsWith("/delhi-ncr") ? " is-active" : "") + '">Delhi NCR</a>' +
-      '<div class="kd-desktop-dropdown"><button type="button" class="kd-desktop-trigger' + (["/calculator.html","/financial-tools.html","/loan-comparison.html"].includes(path) ? " is-active" : "") + '" aria-haspopup="true">Financial Solutions <span>⌄</span></button><div class="kd-desktop-panel">' +
-      '<a href="/calculator.html">Calculator <span>↗</span></a><a href="/financial-tools.html">Financial Tools <span>↗</span></a><a href="/loan-comparison.html">Loan Planning <span>↗</span></a></div></div>' +
-      '<div class="kd-desktop-dropdown"><button type="button" class="kd-desktop-trigger' + (path.startsWith("/tools") || path.startsWith("/knowledge") || path === "/business-services.html" ? " is-active" : "") + '" aria-haspopup="true">Resources <span>⌄</span></button><div class="kd-desktop-panel">' +
-      '<a href="/tools/">Free Tools <span>↗</span></a><a href="/knowledge/">Knowledge Centre <span>↗</span></a><a href="/business-services.html">Business Services <span>↗</span></a></div></div>' +
-      '<a href="/about.html" class="kd-desktop-link' + (path === "/about.html" ? " is-active" : "") + '">About Us</a>' +
-      '<a href="/contact.html" class="kd-desktop-link' + (path === "/contact.html" ? " is-active" : "") + '">Contact</a>' +
+      '<div class="kd-desktop-dropdown"><button type="button" class="kd-desktop-trigger' + (["/calculator.html","/financial-tools.html","/loan-comparison.html"].includes(path) ? " is-active" : "") + '" aria-haspopup="true">Financial Solutions <span class="kd-chevron" aria-hidden="true"></span></button><div class="kd-desktop-panel">' +
+      '<a href="/calculator.html">EMI Calculator</a><a href="/financial-tools.html">Financial Tools</a><a href="/loan-comparison.html">Loan Planning</a></div></div>' +
+      '<a href="/tools/" class="kd-desktop-link' + (path.startsWith("/tools") ? " is-active" : "") + '">Free Tools</a>' +
+      '<div class="kd-desktop-dropdown"><button type="button" class="kd-desktop-trigger' + (path.startsWith("/knowledge") || path === "/business-services.html" || path === "/about.html" ? " is-active" : "") + '" aria-haspopup="true">More <span class="kd-chevron" aria-hidden="true"></span></button><div class="kd-desktop-panel">' +
+      '<a href="/knowledge/">Knowledge Centre</a><a href="/business-services.html">Business Services</a><a href="/about.html">About Us</a></div></div>' +
+      '<a href="/contact.html" class="kd-desktop-contact">Contact Us</a>' +
       '</nav>';
 
     header.innerHTML =
@@ -72,27 +72,89 @@
       style.textContent = `
 
         @media (min-width:769px) {
-          header { display:flex !important; align-items:center !important; justify-content:space-between !important; gap:clamp(18px,2.2vw,34px) !important; padding:17px clamp(22px,4vw,64px) !important; min-height:82px; }
-          header > .logo { flex:0 0 auto; font-size:clamp(27px,2.3vw,34px) !important; letter-spacing:-.045em; white-space:nowrap; }
-          header .kd-desktop-nav { display:flex !important; flex:1 1 auto; min-width:0; align-items:center; justify-content:flex-end; gap:clamp(12px,1.55vw,25px) !important; white-space:nowrap; }
-          header .kd-desktop-nav .kd-desktop-link, header .kd-desktop-nav .kd-desktop-trigger { display:inline-flex; align-items:center; gap:6px; padding:12px 0; border:0; background:none; color:#e8edf5; font-family:inherit; font-size:clamp(11px,.93vw,14px); font-weight:650; line-height:1.2; text-decoration:none; cursor:pointer; transition:color .2s ease; }
-          header .kd-desktop-nav .kd-desktop-link:hover, header .kd-desktop-nav .kd-desktop-link:focus-visible, header .kd-desktop-nav .kd-desktop-trigger:hover, header .kd-desktop-nav .kd-desktop-trigger:focus-visible, header .kd-desktop-nav .is-active { color:#e4c65b !important; outline:none; }
+          header {
+            display:flex !important; flex-wrap:nowrap !important; align-items:center !important;
+            justify-content:space-between !important; gap:clamp(18px,2.4vw,38px) !important;
+            padding:15px clamp(24px,4.2vw,68px) !important; min-height:86px !important;
+            box-sizing:border-box !important; width:100%;
+          }
+          header > .logo {
+            display:inline-flex !important; align-items:baseline; flex:0 0 auto !important;
+            visibility:visible !important; white-space:nowrap !important;
+            font-size:clamp(27px,2.25vw,34px) !important; line-height:1 !important;
+          }
+          header .kd-desktop-nav {
+            display:flex !important; flex:1 1 auto !important; min-width:0 !important;
+            align-items:center !important; justify-content:flex-end !important;
+            gap:clamp(10px,1.35vw,21px) !important; white-space:nowrap !important;
+          }
+          header .kd-desktop-nav .kd-desktop-link,
+          header .kd-desktop-nav .kd-desktop-trigger {
+            display:inline-flex !important; align-items:center !important; gap:7px !important;
+            padding:13px 0 !important; border:0 !important; background:transparent !important;
+            color:#e8edf5 !important; font-family:inherit !important;
+            font-size:clamp(12px,.96vw,14px) !important; font-weight:650 !important;
+            line-height:1.25 !important; text-decoration:none !important; cursor:pointer !important;
+            transition:color .2s ease !important;
+          }
+          header .kd-desktop-nav .kd-desktop-link:hover,
+          header .kd-desktop-nav .kd-desktop-link:focus-visible,
+          header .kd-desktop-nav .kd-desktop-trigger:hover,
+          header .kd-desktop-nav .kd-desktop-trigger:focus-visible,
+          header .kd-desktop-nav .is-active { color:#e4c65b !important; outline:none !important; }
           header .kd-desktop-nav .is-active { position:relative; }
-          header .kd-desktop-nav .is-active:after { content:""; position:absolute; left:0; right:0; bottom:4px; height:2px; border-radius:2px; background:#d8b94e; }
-          header .kd-desktop-nav .kd-desktop-trigger span { color:#d8b94e; font-size:15px; transition:transform .2s; }
+          header .kd-desktop-nav .is-active:after {
+            content:""; position:absolute; left:0; right:0; bottom:5px; height:2px;
+            border-radius:2px; background:#d8b94e;
+          }
+          header .kd-desktop-nav .kd-chevron {
+            display:inline-block; width:7px; height:7px; margin-top:-4px;
+            border-right:1.5px solid #d8b94e; border-bottom:1.5px solid #d8b94e;
+            transform:rotate(45deg); transition:transform .2s ease;
+          }
           header .kd-desktop-dropdown { position:relative; display:flex; align-items:center; }
-          header .kd-desktop-panel { position:absolute; top:calc(100% + 12px); left:-18px; min-width:236px; padding:9px; border:1px solid rgba(218,184,67,.28); border-radius:16px; background:linear-gradient(155deg,#102039,#050d1b); box-shadow:0 20px 48px rgba(0,0,0,.48),inset 0 1px rgba(255,255,255,.04); opacity:0; visibility:hidden; pointer-events:none; transform:translateY(8px); transition:opacity .18s,transform .18s,visibility .18s; z-index:1010; }
-          header .kd-desktop-dropdown:hover .kd-desktop-panel, header .kd-desktop-dropdown:focus-within .kd-desktop-panel { opacity:1; visibility:visible; pointer-events:auto; transform:translateY(0); }
-          header .kd-desktop-dropdown:hover .kd-desktop-trigger span, header .kd-desktop-dropdown:focus-within .kd-desktop-trigger span { transform:rotate(180deg); }
-          header .kd-desktop-panel a { display:flex; align-items:center; justify-content:space-between; gap:18px; padding:12px 13px; border-radius:10px; color:#edf2f8; font-size:13px; font-weight:600; text-decoration:none; transition:background .18s,color .18s; }
-          header .kd-desktop-panel a span { color:#8798ae; font-size:15px; }
-          header .kd-desktop-panel a:hover, header .kd-desktop-panel a:focus-visible { color:#f1d46b; background:rgba(218,184,67,.10); outline:none; }
+          header .kd-desktop-panel {
+            position:absolute; top:calc(100% + 8px); left:-18px; min-width:220px;
+            padding:8px; border:1px solid rgba(218,184,67,.28); border-radius:15px;
+            background:linear-gradient(155deg,#102039,#050d1b);
+            box-shadow:0 20px 48px rgba(0,0,0,.48),inset 0 1px rgba(255,255,255,.04);
+            opacity:0; visibility:hidden; pointer-events:none; transform:translateY(7px);
+            transition:opacity .18s,transform .18s,visibility .18s; z-index:1010;
+          }
+          header .kd-desktop-dropdown:hover .kd-desktop-panel,
+          header .kd-desktop-dropdown:focus-within .kd-desktop-panel {
+            opacity:1; visibility:visible; pointer-events:auto; transform:translateY(0);
+          }
+          header .kd-desktop-dropdown:hover .kd-chevron,
+          header .kd-desktop-dropdown:focus-within .kd-chevron { transform:rotate(225deg); }
+          header .kd-desktop-panel a {
+            display:flex !important; align-items:center; padding:11px 13px !important;
+            border-radius:9px; color:#edf2f8 !important; font-size:13px !important;
+            font-weight:600 !important; line-height:1.3 !important; text-decoration:none !important;
+            transition:background .18s,color .18s;
+          }
+          header .kd-desktop-panel a:hover,
+          header .kd-desktop-panel a:focus-visible {
+            color:#f1d46b !important; background:rgba(218,184,67,.10); outline:none;
+          }
+          header .kd-desktop-contact {
+            display:inline-flex !important; align-items:center; justify-content:center;
+            flex:0 0 auto; padding:11px 17px !important; border:1px solid rgba(218,184,67,.55) !important;
+            border-radius:999px !important; color:#081321 !important;
+            background:linear-gradient(135deg,#f2d978,#c9a83e) !important;
+            font-size:13px !important; font-weight:750 !important; text-decoration:none !important;
+            box-shadow:0 5px 16px rgba(218,184,67,.16); transition:transform .2s,box-shadow .2s;
+          }
+          header .kd-desktop-contact:hover { transform:translateY(-1px); box-shadow:0 8px 22px rgba(218,184,67,.24); }
           header .menu-btn, header #menu { display:none !important; }
         }
-        @media (min-width:769px) and (max-width:1050px) {
-          header { gap:14px !important; padding-inline:18px !important; }
+        @media (min-width:769px) and (max-width:1120px) {
+          header { gap:14px !important; padding-inline:20px !important; }
+          header > .logo { font-size:26px !important; }
           header .kd-desktop-nav { gap:10px !important; }
-          header .kd-desktop-nav .kd-desktop-link, header .kd-desktop-nav .kd-desktop-trigger { font-size:11px !important; }
+          header .kd-desktop-nav .kd-desktop-link,
+          header .kd-desktop-nav .kd-desktop-trigger { font-size:11.5px !important; }
+          header .kd-desktop-contact { padding:10px 12px !important; font-size:11.5px !important; }
         }
         @media (max-width:768px) { header .kd-desktop-nav { display:none !important; } }
         header #menu .kd-menu-heading, header #menu .kd-nav-group h2, header #menu .kd-menu-footer { display:none; }
