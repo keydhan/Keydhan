@@ -55,3 +55,36 @@
 .tools-directory .popular-links{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
 .tools-directory .popular-links a{display:flex!important;white-space:normal!important;text-decoration:none!important;margin:0!important}
 @media(min-width:601px){.tools-directory .popular-links{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+
+
+/* Catalogue filter polish: no visible scrollbar; wrap neatly on desktop. */
+@media(min-width:601px){
+  .tools-directory .catalog-filters{
+    display:flex!important;
+    flex-wrap:wrap!important;
+    justify-content:center!important;
+    align-items:center!important;
+    overflow:visible!important;
+    gap:10px!important;
+    margin:16px 0 26px!important;
+    padding:0!important;
+  }
+  .tools-directory .catalog-filters button{
+    flex:0 0 auto;
+  }
+}
+@media(max-width:600px){
+  .tools-directory .catalog-filters{
+    flex-wrap:nowrap!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    scrollbar-width:none!important;
+    -ms-overflow-style:none!important;
+    padding-bottom:8px!important;
+  }
+  .tools-directory .catalog-filters::-webkit-scrollbar{
+    display:none!important;
+    width:0!important;
+    height:0!important;
+  }
+}
