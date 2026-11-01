@@ -40,6 +40,12 @@ function knowledgePage(a){
 }
 function knowledgeSitemap(list){const urls=list.filter(a=>a.status==="published"&&a.slug).map(a=>'<url><loc>https://keydhan.com/knowledge/article/'+encodeURIComponent(a.slug)+'/</loc><lastmod>'+htmlEscape((a.updatedAt||a.publishedAt||stamp()).slice(0,10))+'</lastmod></url>').join("");return '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+urls+'</urlset>';}
 function offer(b,old={}){return {id:old.id??b.id??crypto.randomUUID(),title:str(b.title??old.title,180),lender:str(b.lender??old.lender,160),loanType:str(b.loanType??old.loanType,100),interestRate:str(b.interestRate??old.interestRate,80),fees:str(b.fees??old.fees,300),eligibility:str(b.eligibility??old.eligibility,1000),validity:str(b.validity??old.validity,80),url:str(b.url??old.url,1000),description:str(b.description??old.description,2000),status:str(b.status??old.status??"draft",20),createdAt:old.createdAt||stamp(),updatedAt:stamp()};}
+
+const BUSINESS_SERVICE_PRICES=Object.freeze({"msme-udyam":50000,"gst-registration":100000,"trademark-registration":200000,"pan-registration":50000});
+async function hmacHex(secret,message){const key=await crypto.subtle.importKey("raw",new TextEncoder().encode(secret),{name:"HMAC",hash:"SHA-256"},false,["sign"]);const sig=await crypto.subtle.sign("HMAC",key,new TextEncoder().encode(message));return [...new Uint8Array(sig)].map(x=>x.toString(16).padStart(2,"0")).join("");}
+function safeEqual(a,b){if(typeof a!=="string"||typeof b!=="string"||a.length!==b.length)return false;let out=0;for(let i=0;i<a.length;i++)out|=a.charCodeAt(i)^b.charCodeAt(i);return out===0;}
+async function razorpayRequest(env,path,method="GET",body){const auth=btoa(env.RAZORPAY_KEY_ID+":"+env.RAZORPAY_KEY_SECRET);const res=await fetch("https://api.razorpay.com/v1"+path,{method,headers:{"Authorization":"Basic "+auth,"Content-Type":"application/json"},...(body?{body:JSON.stringify(body)}:{})});const data=await res.json().catch(()=>({}));if(!res.ok)throw new Error("Razorpay API request failed");return data;}
+
 export default {async fetch(req,env,ctx){
  const url=new URL(req.url),path=url.pathname.replace(/\/+$/,"")||"/",method=req.method,origin=req.headers.get("Origin")||"https://keydhan.com";
  if(method==="OPTIONS")return new Response(null,{status:204,headers:cors(origin)});
@@ -67,6 +73,56 @@ export default {async fetch(req,env,ctx){
   if(path==="/api/knowledge"&&method==="GET"){const list=await read(env,keys.articles,[]);return response({success:true,articles:list.filter(a=>a.status==="published").sort((a,b)=>String(b.publishedAt||b.updatedAt).localeCompare(String(a.publishedAt||a.updatedAt))).map(({id,title,slug,summary,category,language,author,reviewer,publishedAt,updatedAt,seoTitle,seoDescription})=>({id,title,slug,summary,category,language,author,reviewer,publishedAt,updatedAt,seoTitle,seoDescription}))},200,origin);}
   if(path==="/api/content"&&method==="GET")return response({success:true,content:await read(env,keys.content,{})},200,origin);
   if(path==="/api/settings"&&method==="GET")return response({success:true,settings:await read(env,keys.settings,{businessName:"KeyDhan",contactEmail:"hello@keydhan.com"})},200,origin);
+
+
+  if(path==="/api/payments/razorpay/webhook"&&method==="POST"){
+   if(!env.RAZORPAY_WEBHOOK_SECRET)return response({success:false,error:"Razorpay webhook secret is not configured"},503,origin);
+   const rawBody=await req.text(),signature=req.headers.get("X-Razorpay-Signature")||"",eventId=req.headers.get("x-razorpay-event-id")||"";
+   if(!signature||!safeEqual(await hmacHex(env.RAZORPAY_WEBHOOK_SECRET,rawBody),signature))return response({success:false,error:"Invalid webhook signature"},400,origin);
+   if(eventId){const seen=await env.KEYDHAN_DB.get("razorpay_webhook_event:"+eventId);if(seen)return response({success:true,duplicate:true},200,origin);}
+   let event;try{event=JSON.parse(rawBody);}catch{return response({success:false,error:"Invalid webhook payload"},400,origin);}
+   if(!["payment.captured","order.paid"].includes(event.event))return response({success:true,ignored:true},200,origin);
+   const payment=event.payload?.payment?.entity||null,order=event.payload?.order?.entity||null;
+   const orderId=payment?.order_id||order?.id,paymentId=payment?.id;
+   if(!orderId||!paymentId||!payment||payment.status!=="captured")return response({success:false,error:"Captured payment details are missing"},400,origin);
+   const raw=await env.KEYDHAN_DB.get("razorpay_order:"+orderId);if(!raw)return response({success:false,error:"KeyDhan order record not found"},404,origin);
+   const record=JSON.parse(raw);
+   if(payment.amount!==record.amount||payment.currency!=="INR"||payment.order_id!==orderId)return response({success:false,error:"Webhook payment does not match the KeyDhan order"},400,origin);
+   if(record.status==="paid"&&record.paymentId!==paymentId)return response({success:false,error:"Order already reconciled with another payment"},409,origin);
+   if(record.status!=="paid"){record.status="paid";record.paymentId=paymentId;record.paidAt=stamp();await env.KEYDHAN_DB.put("razorpay_order:"+orderId,JSON.stringify(record),{expirationTtl:31536000});}
+   const payments=await read(env,"razorpay_payments",[]);if(!payments.some(x=>x.paymentId===paymentId)){payments.unshift({orderId,paymentId,service:record.service,amount:record.amount,currency:"INR",status:"paid",paidAt:record.paidAt,source:"webhook"});await write(env,"razorpay_payments",payments.slice(0,5000));}
+   if(eventId)await env.KEYDHAN_DB.put("razorpay_webhook_event:"+eventId,"processed",{expirationTtl:31536000});
+   return response({success:true,verified:true,service:record.service,paymentId},200,origin);
+  }
+
+  if(path==="/api/payments/razorpay/order"&&method==="POST"){
+   if(!env.RAZORPAY_KEY_ID||!env.RAZORPAY_KEY_SECRET)return response({success:false,error:"Razorpay test credentials are not configured"},503,origin);
+   const b=await req.json(),service=str(b.service,60),amount=BUSINESS_SERVICE_PRICES[service];
+   if(!amount)return response({success:false,error:"Invalid business service"},400,origin);
+   const receipt="kd_"+crypto.randomUUID().replace(/-/g,"").slice(0,24);
+   const order=await razorpayRequest(env,"/orders","POST",{amount,currency:"INR",receipt,notes:{service,brand:"KeyDhan"}});
+   if(!order.id||order.amount!==amount||order.currency!=="INR")return response({success:false,error:"Unable to create a valid payment order"},502,origin);
+   const record={orderId:order.id,service,amount,currency:"INR",status:"created",createdAt:stamp()};
+   await env.KEYDHAN_DB.put("razorpay_order:"+order.id,JSON.stringify(record),{expirationTtl:604800});
+   return response({success:true,keyId:env.RAZORPAY_KEY_ID,orderId:order.id,amount:order.amount,currency:order.currency,service},200,origin);
+  }
+  if(path==="/api/payments/razorpay/verify"&&method==="POST"){
+   if(!env.RAZORPAY_KEY_ID||!env.RAZORPAY_KEY_SECRET)return response({success:false,error:"Razorpay test credentials are not configured"},503,origin);
+   const b=await req.json(),orderId=str(b.razorpay_order_id,100),paymentId=str(b.razorpay_payment_id,100),signature=str(b.razorpay_signature,200);
+   if(!orderId||!paymentId||!signature)return response({success:false,error:"Payment verification details are incomplete"},400,origin);
+   const raw=await env.KEYDHAN_DB.get("razorpay_order:"+orderId);if(!raw)return response({success:false,error:"Payment order not found or expired"},404,origin);
+   const record=JSON.parse(raw);
+   if(record.status==="paid"){if(record.paymentId!==paymentId)return response({success:false,error:"This order was already paid using a different payment"},409,origin);return response({success:true,verified:true,alreadyProcessed:true,service:record.service,paymentId},200,origin);}
+   const expected=await hmacHex(env.RAZORPAY_KEY_SECRET,orderId+"|"+paymentId);
+   if(!safeEqual(expected,signature))return response({success:false,error:"Payment signature verification failed"},400,origin);
+   const payment=await razorpayRequest(env,"/payments/"+encodeURIComponent(paymentId));
+   if(payment.order_id!==orderId||payment.amount!==record.amount||payment.currency!=="INR"||payment.status!=="captured")return response({success:false,error:"Payment is not captured or does not match this order"},400,origin);
+   record.status="paid";record.paymentId=paymentId;record.paidAt=stamp();
+   await env.KEYDHAN_DB.put("razorpay_order:"+orderId,JSON.stringify(record),{expirationTtl:31536000});
+   const payments=await read(env,"razorpay_payments",[]);if(!payments.some(x=>x.paymentId===paymentId)){payments.unshift({orderId,paymentId,service:record.service,amount:record.amount,currency:"INR",status:"paid",paidAt:record.paidAt});await write(env,"razorpay_payments",payments.slice(0,5000));}
+   return response({success:true,verified:true,service:record.service,paymentId},200,origin);
+  }
+
   if(path==="/api/leads"&&method==="POST"){
    const b=await req.json();if(str(b.website,200))return response({success:true},201,origin);
    const name=str(b.name,100),phone=str(b.phone??b.mobile,30),email=str(b.email,150),message=str(b.message,2000);
