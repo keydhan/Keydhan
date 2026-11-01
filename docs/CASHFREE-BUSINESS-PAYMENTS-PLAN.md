@@ -16,6 +16,20 @@ Add a centralised payment flow for KeyDhan's paid business-assistance services:
 
 KeyDhan must describe these as assistance / professional services where applicable. It must not imply that KeyDhan is a government portal, that government approval is guaranteed, or that government fees are KeyDhan's own fees.
 
+## Confirmed KeyDhan professional service fees
+
+The following are KeyDhan's professional/service fees in INR. Government, statutory, or authorised-agency charges are separate, are not included in these amounts, and must be shown as a distinct line item only after the actual applicable amount is confirmed:
+
+| Service | KeyDhan service fee | Government fee |
+|---|---:|---|
+| GST registration assistance | ₹1,000 | Extra, as applicable |
+| PAN application / correction assistance | ₹500 | Extra, as applicable |
+| MSME / Udyam registration assistance | ₹500 | Extra, as applicable |
+| Trademark application assistance | ₹2,000 | Extra, as applicable |
+| GST return filing assistance | To be confirmed | Separate, if applicable |
+
+These are professional service fees, not government fees. The service catalogue remains inactive until launch approval. No tax/GST treatment on KeyDhan's service fee has been assumed; confirm the applicable tax treatment before enabling checkout.
+
 ## Existing architecture observed
 
 - Public Business Services page: `business-services.html`
