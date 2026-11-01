@@ -36,8 +36,24 @@
       '</section>'
     ).join("");
 
+
+    const desktopMarkup =
+      '<nav class="kd-desktop-nav" aria-label="Desktop navigation">' +
+      '<a href="/" class="kd-desktop-link' + (path === "/" ? " is-active" : "") + '">Home</a>' +
+      '<a href="/#services" class="kd-desktop-link">Services</a>' +
+      '<a href="/properties.html" class="kd-desktop-link' + (path === "/properties.html" ? " is-active" : "") + '">Properties</a>' +
+      '<a href="/delhi-ncr/" class="kd-desktop-link' + (path.startsWith("/delhi-ncr") ? " is-active" : "") + '">Delhi NCR</a>' +
+      '<div class="kd-desktop-dropdown"><button type="button" class="kd-desktop-trigger' + (["/calculator.html","/financial-tools.html","/loan-comparison.html"].includes(path) ? " is-active" : "") + '" aria-haspopup="true">Financial Solutions <span>⌄</span></button><div class="kd-desktop-panel">' +
+      '<a href="/calculator.html">Calculator <span>↗</span></a><a href="/financial-tools.html">Financial Tools <span>↗</span></a><a href="/loan-comparison.html">Loan Planning <span>↗</span></a></div></div>' +
+      '<div class="kd-desktop-dropdown"><button type="button" class="kd-desktop-trigger' + (path.startsWith("/tools") || path.startsWith("/knowledge") || path === "/business-services.html" ? " is-active" : "") + '" aria-haspopup="true">Resources <span>⌄</span></button><div class="kd-desktop-panel">' +
+      '<a href="/tools/">Free Tools <span>↗</span></a><a href="/knowledge/">Knowledge Centre <span>↗</span></a><a href="/business-services.html">Business Services <span>↗</span></a></div></div>' +
+      '<a href="/about.html" class="kd-desktop-link' + (path === "/about.html" ? " is-active" : "") + '">About Us</a>' +
+      '<a href="/contact.html" class="kd-desktop-link' + (path === "/contact.html" ? " is-active" : "") + '">Contact</a>' +
+      '</nav>';
+
     header.innerHTML =
       '<a class="logo" id="adminLogo" href="/" aria-label="KeyDhan home" style="color:#fff!important;text-decoration:none!important;border:0!important;background:none!important"><span class="logo-key" style="color:#fff!important;text-decoration:none!important">Key</span><span style="color:var(--gold)!important;text-decoration:none!important">Dhan</span><sup style="color:var(--gold)!important;text-decoration:none!important">™</sup></a>' +
+      desktopMarkup +
       '<button class="menu-btn" id="menuBtn" type="button" aria-label="Open navigation menu" aria-controls="menu" aria-expanded="false">☰</button>' +
       '<nav id="menu" aria-label="Main navigation"><div class="kd-menu-heading"><span>KEYDHAN NAVIGATION</span><small>Explore your next move</small></div>' + menuMarkup +
       '<div class="kd-menu-footer">The Key to Your Home. The Power of Finance.</div></nav>';
@@ -54,6 +70,31 @@
       const style = document.createElement("style");
       style.id = "kd-premium-menu-style";
       style.textContent = `
+
+        @media (min-width:769px) {
+          header { display:flex !important; align-items:center !important; justify-content:space-between !important; gap:clamp(18px,2.2vw,34px) !important; padding:17px clamp(22px,4vw,64px) !important; min-height:82px; }
+          header > .logo { flex:0 0 auto; font-size:clamp(27px,2.3vw,34px) !important; letter-spacing:-.045em; white-space:nowrap; }
+          header .kd-desktop-nav { display:flex !important; flex:1 1 auto; min-width:0; align-items:center; justify-content:flex-end; gap:clamp(12px,1.55vw,25px) !important; white-space:nowrap; }
+          header .kd-desktop-nav .kd-desktop-link, header .kd-desktop-nav .kd-desktop-trigger { display:inline-flex; align-items:center; gap:6px; padding:12px 0; border:0; background:none; color:#e8edf5; font-family:inherit; font-size:clamp(11px,.93vw,14px); font-weight:650; line-height:1.2; text-decoration:none; cursor:pointer; transition:color .2s ease; }
+          header .kd-desktop-nav .kd-desktop-link:hover, header .kd-desktop-nav .kd-desktop-link:focus-visible, header .kd-desktop-nav .kd-desktop-trigger:hover, header .kd-desktop-nav .kd-desktop-trigger:focus-visible, header .kd-desktop-nav .is-active { color:#e4c65b !important; outline:none; }
+          header .kd-desktop-nav .is-active { position:relative; }
+          header .kd-desktop-nav .is-active:after { content:""; position:absolute; left:0; right:0; bottom:4px; height:2px; border-radius:2px; background:#d8b94e; }
+          header .kd-desktop-nav .kd-desktop-trigger span { color:#d8b94e; font-size:15px; transition:transform .2s; }
+          header .kd-desktop-dropdown { position:relative; display:flex; align-items:center; }
+          header .kd-desktop-panel { position:absolute; top:calc(100% + 12px); left:-18px; min-width:236px; padding:9px; border:1px solid rgba(218,184,67,.28); border-radius:16px; background:linear-gradient(155deg,#102039,#050d1b); box-shadow:0 20px 48px rgba(0,0,0,.48),inset 0 1px rgba(255,255,255,.04); opacity:0; visibility:hidden; pointer-events:none; transform:translateY(8px); transition:opacity .18s,transform .18s,visibility .18s; z-index:1010; }
+          header .kd-desktop-dropdown:hover .kd-desktop-panel, header .kd-desktop-dropdown:focus-within .kd-desktop-panel { opacity:1; visibility:visible; pointer-events:auto; transform:translateY(0); }
+          header .kd-desktop-dropdown:hover .kd-desktop-trigger span, header .kd-desktop-dropdown:focus-within .kd-desktop-trigger span { transform:rotate(180deg); }
+          header .kd-desktop-panel a { display:flex; align-items:center; justify-content:space-between; gap:18px; padding:12px 13px; border-radius:10px; color:#edf2f8; font-size:13px; font-weight:600; text-decoration:none; transition:background .18s,color .18s; }
+          header .kd-desktop-panel a span { color:#8798ae; font-size:15px; }
+          header .kd-desktop-panel a:hover, header .kd-desktop-panel a:focus-visible { color:#f1d46b; background:rgba(218,184,67,.10); outline:none; }
+          header .menu-btn, header #menu { display:none !important; }
+        }
+        @media (min-width:769px) and (max-width:1050px) {
+          header { gap:14px !important; padding-inline:18px !important; }
+          header .kd-desktop-nav { gap:10px !important; }
+          header .kd-desktop-nav .kd-desktop-link, header .kd-desktop-nav .kd-desktop-trigger { font-size:11px !important; }
+        }
+        @media (max-width:768px) { header .kd-desktop-nav { display:none !important; } }
         header #menu .kd-menu-heading, header #menu .kd-nav-group h2, header #menu .kd-menu-footer { display:none; }
         @media (max-width:768px) {
           header #menu {
