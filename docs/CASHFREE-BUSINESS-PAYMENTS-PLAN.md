@@ -36,7 +36,8 @@ These are professional service fees, not government fees. The service catalogue 
 - Displays KeyDhan professional fees: ₹1,000, ₹500, ₹500, and ₹2,000 respectively.
 - Clearly states government / statutory / authorised-agency charges are extra and will be confirmed separately.
 - Public page states KeyDhan is not a government portal and is not collecting GST while unregistered.
-- Existing WhatsApp enquiry remains the action path; no payment button or gateway claim is shown.
+- Existing WhatsApp enquiry remains the action path; links now use the business WhatsApp number saved in Admin → Settings (with a safe disabled state if no valid number is configured).
+- WhatsApp enquiry messages include the relevant KeyDhan service fee and explain that applicable government charges are extra and GST is not being collected while unregistered.
 - Confirmed service fee amounts are stored in the isolated D1 sandbox catalogue; all services remain inactive pending launch approval.
 
 ## Existing architecture observed
