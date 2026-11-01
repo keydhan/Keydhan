@@ -21,6 +21,10 @@
 .business-service-card h3{margin:18px 0 5px;font-size:13px;letter-spacing:.04em;color:var(--gold);text-transform:uppercase}
 .business-service-card .business-why{margin:0}
 .business-service-card .business-docs{white-space:pre-line}
+.business-price{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:18px 0 4px;padding:13px 14px;border:1px solid rgba(212,175,55,.28);border-radius:12px;background:rgba(212,175,55,.07)}
+.business-price span{font-size:12px;color:var(--muted)}
+.business-price strong{font-size:23px;color:var(--gold);white-space:nowrap}
+.business-fee-note{min-height:42px;margin:5px 0 14px!important;font-size:12px!important;color:var(--muted)!important}
 .business-wa{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;box-sizing:border-box;margin-top:auto;padding:13px 16px;border:0;border-radius:12px;background:var(--gold);color:#111827;font-weight:800;text-decoration:none}
 .business-wa:hover{filter:brightness(1.06)}
 .business-disclaimer{max-width:900px;margin:28px auto 0;padding:18px 20px;border:1px solid var(--border);border-radius:14px;color:var(--muted);font-size:12px;line-height:1.65}
@@ -53,37 +57,49 @@
 <section class="business-services-wrap" aria-label="Business registration services">
   <div class="business-services-grid">
     <article class="business-service-card">
-      <div class="business-service-icon" aria-hidden="true">▦</div>
-      <h2>MSME / Udyam Registration</h2>
-      <p id="businessMsmeDescription">Information and guidance for eligible micro, small and medium enterprises.</p>
-      <h3>Why it matters</h3><p id="businessMsmeWhy" class="business-why">Udyam registration can help eligible businesses access applicable MSME schemes and benefits.</p>
-      <h3>Documents / Notes</h3><p id="businessMsmeDocuments" class="business-docs">Aadhaar and PAN details are commonly required; exact requirements depend on the applicant and official process.</p>
-      <a class="business-wa" data-service="MSME / Udyam Registration" href="#" rel="noopener">Enquire on WhatsApp ↗</a>
-    </article>
-    <article class="business-service-card">
       <div class="business-service-icon" aria-hidden="true">₹</div>
       <h2>GST Registration</h2>
-      <p id="businessGstDescription">Guidance on GST registration, eligibility and the application process.</p>
-      <h3>Why it matters</h3><p id="businessGstWhy" class="business-why">GST registration may be required depending on turnover, business activity and applicable rules.</p>
-      <h3>Documents / Notes</h3><p id="businessGstDocuments" class="business-docs">PAN, business address and identity/contact details may be required. Requirements vary by business structure.</p>
+      <p>Guidance and assistance with GST registration, eligibility and the application process.</p>
+      <div class="business-price"><span>KeyDhan service fee</span><strong>₹1,000</strong></div>
+      <p class="business-fee-note">Government / statutory fee, if applicable, is extra.</p>
+      <h3>Documents / Notes</h3><p class="business-docs">PAN, business address and identity/contact details may be required. Requirements vary by business structure.</p>
       <a class="business-wa" data-service="GST Registration" href="#" rel="noopener">Enquire on WhatsApp ↗</a>
     </article>
     <article class="business-service-card">
+      <div class="business-service-icon" aria-hidden="true">▤</div>
+      <h2>PAN Application / Correction</h2>
+      <p>Assistance with a new PAN application or correction request.</p>
+      <div class="business-price"><span>KeyDhan service fee</span><strong>₹500</strong></div>
+      <p class="business-fee-note">Government / authorised-agency fee is extra.</p>
+      <h3>Documents / Notes</h3><p class="business-docs">Applicant identity, date-of-birth and address details may be required as per the official process.</p>
+      <a class="business-wa" data-service="PAN Application / Correction" href="#" rel="noopener">Enquire on WhatsApp ↗</a>
+    </article>
+    <article class="business-service-card">
+      <div class="business-service-icon" aria-hidden="true">▦</div>
+      <h2>MSME / Udyam Registration</h2>
+      <p>Information and assistance for eligible micro, small and medium enterprises.</p>
+      <div class="business-price"><span>KeyDhan service fee</span><strong>₹500</strong></div>
+      <p class="business-fee-note">Government registration fee, if any, is separate; verify official portal requirements.</p>
+      <h3>Documents / Notes</h3><p class="business-docs">Aadhaar and PAN details are commonly required; exact requirements depend on the applicant and official process.</p>
+      <a class="business-wa" data-service="MSME / Udyam Registration" href="#" rel="noopener">Enquire on WhatsApp ↗</a>
+    </article>
+    <article class="business-service-card">
       <div class="business-service-icon" aria-hidden="true">◇</div>
-      <h2>Trademark Registration</h2>
-      <p id="businessTrademarkDescription">Guidance on applying to protect your business name, brand identity or logo.</p>
-      <h3>Why it matters</h3><p id="businessTrademarkWhy" class="business-why">A registered trademark can provide legal protection for the mark in its registered classes, subject to law.</p>
-      <h3>Documents / Notes</h3><p id="businessTrademarkDocuments" class="business-docs">Brand/logo details, applicant information and the relevant goods/services classes may be needed.</p>
-      <a class="business-wa" data-service="Trademark Registration" href="#" rel="noopener">Enquire on WhatsApp ↗</a>
+      <h2>Trademark Registration Assistance</h2>
+      <p>Guidance on applying to protect your business name, brand identity or logo.</p>
+      <div class="business-price"><span>KeyDhan service fee</span><strong>₹2,000</strong></div>
+      <p class="business-fee-note">Government trademark filing fee is extra and depends on applicant category and filing details.</p>
+      <h3>Documents / Notes</h3><p class="business-docs">Brand/logo details, applicant information and relevant goods/services classes may be needed. Registration is not guaranteed.</p>
+      <a class="business-wa" data-service="Trademark Registration Assistance" href="#" rel="noopener">Enquire on WhatsApp ↗</a>
     </article>
   </div>
-  <p class="business-disclaimer">KeyDhan provides service information and enquiry assistance. Registration eligibility, approval, timelines and government fees are determined by the relevant authority. Government registration or approval is not guaranteed. Please verify current requirements on official portals.</p>
+  <p class="business-disclaimer">Displayed amounts are KeyDhan professional service fees only. Any applicable government / statutory / authorised-agency charges are extra and will be confirmed before the work proceeds. KeyDhan is an independent service provider, not a government portal. GST is not being collected by KeyDhan while it is not GST-registered. Registration eligibility, approval and timelines are determined by the relevant authority; approval is not guaranteed. Please verify requirements on official portals.</p>
 </section>
 </main>
 <div data-keydhan-footer></div>
 <script src="/footer.js?v=20270127-mobile-legal-fix"></script>
 <script src="/app.js?v=20261029-business-services"></script>
-<script src="/business-services.js?v=20261029-business-services"></script>
+<script src="/business-services.js?v=20261101-fees-whatsapp-v2"></script>
 
 <script src="/site-header.js?v=20261101-central-desktop-v8" defer></script>
 </body>

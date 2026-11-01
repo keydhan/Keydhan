@@ -11,3 +11,10 @@ id = "849a5554c02641ba8bed133ae34622f0"
 name = "EMAIL"
 destination_address = "hello@keydhan.com"
 allowed_sender_addresses = ["hello@keydhan.com"]
+
+# Cashfree payment ledger — isolated sandbox database.
+[[d1_databases]]
+binding = "KEYDHAN_PAYMENTS_DB"
+database_name = "keydhan-payments-sandbox"
+database_id = "aff93205-d772-4b5e-a09f-80dd0824e643"
+migrations_dir = "migrations"
