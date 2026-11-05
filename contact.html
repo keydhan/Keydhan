@@ -63,6 +63,7 @@
           <option>Home Loan</option>
           <option>Business Loan</option>
           <option>Loan Against Property</option>
+          <option>Balance Transfer</option>
           <option>Real Estate</option>
         </select>
         <input id="propertyName" type="text" placeholder="Property Name (Optional)" hidden>
@@ -77,7 +78,10 @@
 </main>
 <div data-keydhan-footer></div>
 <script src="/footer.js?v=20270127-mobile-legal-fix"></script>
-<script src="/app.js?v=20261028-footer-cms-fix"></script>
+<script src="/app.js?v=20261105-loan-enquiry-prefill"></script>
+<script>
+(function(){const params=new URLSearchParams(location.search);const requested=params.get("type");const field=document.getElementById("loanType");if(!field||!requested)return;const match=[...field.options].find(o=>o.text.trim().toLowerCase()===requested.trim().toLowerCase());if(match){field.value=match.value;field.dispatchEvent(new Event("change",{bubbles:true}));const message=document.getElementById("message");if(message&&!message.value)message.value="I would like to enquire about "+match.text+".";}})();
+</script>
 
 <script src="/site-header.js?v=20261101-central-desktop-v8" defer></script>
 </body>
