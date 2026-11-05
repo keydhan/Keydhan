@@ -83,6 +83,6 @@
 (function(){const params=new URLSearchParams(location.search);const requested=params.get("type");const field=document.getElementById("loanType");if(!field||!requested)return;const match=[...field.options].find(o=>o.text.trim().toLowerCase()===requested.trim().toLowerCase());if(match){field.value=match.value;field.dispatchEvent(new Event("change",{bubbles:true}));const message=document.getElementById("message");if(message&&!message.value)message.value="I would like to enquire about "+match.text+".";}})();
 </script>
 
-<script src="/site-header.js?v=20261101-central-desktop-v8" defer></script>
+<script src="/site-header.js?v=20261105-loan-services-nav-v2" defer></script>
 </body>
 </html>
