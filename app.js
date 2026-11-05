@@ -353,7 +353,7 @@ function syncEnquiryFields(){
   if(!enquiryTypeField)return;
   const selectedType=enquiryTypeField.value.trim().toLowerCase().replace(/\\s+/g," ");
   const isRealEstate=selectedType==="real estate";
-  const loanAmountTypes=["home loan","business loan","loan against property"];
+  const loanAmountTypes=["home loan","business loan","loan against property","balance transfer"];
   const showLoanAmount=loanAmountTypes.includes(selectedType);
   if(propertyNameField){
     propertyNameField.hidden=!isRealEstate;
