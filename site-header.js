@@ -43,10 +43,10 @@
       '<a href="/properties.html" class="kd-desktop-link' + (path === "/properties.html" ? " is-active" : "") + '">Properties</a>' +
       '<a href="/loan-services/" class="kd-desktop-link' + (path.startsWith("/loan-services") ? " is-active" : "") + '">Loan Services</a>' +
       '<a href="/delhi-ncr/" class="kd-desktop-link' + (path.startsWith("/delhi-ncr") ? " is-active" : "") + '">Delhi NCR</a>' +
-      '<div class="kd-desktop-dropdown"><button type="button" class="kd-desktop-trigger' + (["/calculator.html","/financial-tools.html","/loan-comparison.html"].includes(path) ? " is-active" : "") + '" aria-haspopup="true">Financial Solutions <span class="kd-chevron" aria-hidden="true"></span></button><div class="kd-desktop-panel">' +
+      '<div class="kd-desktop-dropdown"><button type="button" class="kd-desktop-trigger' + (["/calculator.html","/financial-tools.html","/loan-comparison.html"].includes(path) ? " is-active" : "") + '" aria-haspopup="true" aria-expanded="false">Financial Solutions <span class="kd-chevron" aria-hidden="true"></span></button><div class="kd-desktop-panel">' +
       '<a href="/calculator.html">EMI Calculator</a><a href="/financial-tools.html">Financial Tools</a><a href="/loan-comparison.html">Loan Planning</a></div></div>' +
       '<a href="/tools/" class="kd-desktop-link' + (path.startsWith("/tools") ? " is-active" : "") + '">Free Tools</a>' +
-      '<div class="kd-desktop-dropdown"><button type="button" class="kd-desktop-trigger' + (path.startsWith("/knowledge") || path === "/business-services.html" || path === "/about.html" ? " is-active" : "") + '" aria-haspopup="true">More <span class="kd-chevron" aria-hidden="true"></span></button><div class="kd-desktop-panel">' +
+      '<div class="kd-desktop-dropdown"><button type="button" class="kd-desktop-trigger' + (path.startsWith("/knowledge") || path === "/business-services.html" || path === "/about.html" ? " is-active" : "") + '" aria-haspopup="true" aria-expanded="false">More <span class="kd-chevron" aria-hidden="true"></span></button><div class="kd-desktop-panel">' +
       '<a href="/knowledge/">Knowledge Centre</a><a href="/business-services.html">Business Services</a><a href="/about.html">About Us</a></div></div>' +
       '<a href="/contact.html" class="kd-desktop-contact">Contact Us</a>' +
       '</nav>';
@@ -198,36 +198,7 @@
       (document.head || document.documentElement).appendChild(style);
     }
 
-    // Desktop dropdowns open on click as well as hover, matching the clear submenu behaviour.
-    const desktopDropdowns = Array.from(header.querySelectorAll(".kd-desktop-dropdown"));
-    desktopDropdowns.forEach(dropdown => {
-      const trigger = dropdown.querySelector(".kd-desktop-trigger");
-      if (!trigger || trigger.dataset.kdDropdownBound === "true") return;
-      trigger.dataset.kdDropdownBound = "true";
-      trigger.addEventListener("click", event => {
-        event.preventDefault();
-        const shouldOpen = !dropdown.classList.contains("is-open");
-        desktopDropdowns.forEach(item => {
-          item.classList.remove("is-open");
-          const itemTrigger = item.querySelector(".kd-desktop-trigger");
-          if (itemTrigger) itemTrigger.setAttribute("aria-expanded", "false");
-        });
-        if (shouldOpen) {
-          dropdown.classList.add("is-open");
-          trigger.setAttribute("aria-expanded", "true");
-        }
-      });
-    });
-    document.addEventListener("click", event => {
-      if (event.target.closest(".kd-desktop-dropdown")) return;
-      desktopDropdowns.forEach(item => {
-        item.classList.remove("is-open");
-        const itemTrigger = item.querySelector(".kd-desktop-trigger");
-        if (itemTrigger) itemTrigger.setAttribute("aria-expanded", "false");
-      });
-    });
-
-    // Make desktop dropdowns behave consistently: click to open/close, outside click to dismiss.
+    // Desktop dropdowns (Financial Solutions and More): click to toggle, outside click/Escape to close.
     const desktopDropdowns = Array.from(header.querySelectorAll(".kd-desktop-dropdown"));
     desktopDropdowns.forEach(dropdown => {
       const trigger = dropdown.querySelector(".kd-desktop-trigger");
