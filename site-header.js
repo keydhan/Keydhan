@@ -12,12 +12,8 @@
     const groups = [
       { title: "Explore", links: [
         { label: "Home", href: "/", icon: "⌂", match: path === "/" },
-        { label: "Loan Services", href: "/loan-services/", icon: "₹", match: path.startsWith("/loan-services") },
-        { label: "Home Loan", href: "/loan-services/#home-loan", icon: "⌂", match: false },
-        { label: "Business Loan", href: "/loan-services/#business-loan", icon: "▣", match: false },
-        { label: "Loan Against Property", href: "/loan-services/#loan-against-property", icon: "⌑", match: false },
-        { label: "Balance Transfer", href: "/loan-services/#balance-transfer", icon: "↗", match: false },
         { label: "Properties", href: "/properties.html", icon: "⌂", match: path === "/properties.html" },
+        { label: "Loan Services", href: "/loan-services/", icon: "₹", match: path.startsWith("/loan-services") },
         { label: "Delhi NCR", href: "/delhi-ncr/", icon: "⌖", match: path === "/delhi-ncr" || path.startsWith("/delhi-ncr/") }
       ]},
       { title: "Financial Solutions", links: [
@@ -44,9 +40,8 @@
     const desktopMarkup =
       '<nav class="kd-desktop-nav" aria-label="Desktop navigation">' +
       '<a href="/" class="kd-desktop-link' + (path === "/" ? " is-active" : "") + '">Home</a>' +
-      '<div class="kd-desktop-dropdown"><button type="button" class="kd-desktop-trigger' + (path.startsWith("/loan-services") ? " is-active" : "") + '" aria-haspopup="true">Loan Services <span class="kd-chevron" aria-hidden="true"></span></button><div class="kd-desktop-panel">' +
-      '<a href="/loan-services/">All Loan Services</a><a href="/loan-services/#home-loan">Home Loan</a><a href="/loan-services/#business-loan">Business Loan</a><a href="/loan-services/#loan-against-property">Loan Against Property</a><a href="/loan-services/#balance-transfer">Balance Transfer / Top-up</a></div></div>' +
       '<a href="/properties.html" class="kd-desktop-link' + (path === "/properties.html" ? " is-active" : "") + '">Properties</a>' +
+      '<a href="/loan-services/" class="kd-desktop-link' + (path.startsWith("/loan-services") ? " is-active" : "") + '">Loan Services</a>' +
       '<a href="/delhi-ncr/" class="kd-desktop-link' + (path.startsWith("/delhi-ncr") ? " is-active" : "") + '">Delhi NCR</a>' +
       '<div class="kd-desktop-dropdown"><button type="button" class="kd-desktop-trigger' + (["/calculator.html","/financial-tools.html","/loan-comparison.html"].includes(path) ? " is-active" : "") + '" aria-haspopup="true">Financial Solutions <span class="kd-chevron" aria-hidden="true"></span></button><div class="kd-desktop-panel">' +
       '<a href="/calculator.html">EMI Calculator</a><a href="/financial-tools.html">Financial Tools</a><a href="/loan-comparison.html">Loan Planning</a></div></div>' +
