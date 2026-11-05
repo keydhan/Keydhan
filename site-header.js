@@ -122,11 +122,13 @@
             transition:opacity .18s,transform .18s,visibility .18s; z-index:1010;
           }
           header .kd-desktop-dropdown:hover .kd-desktop-panel,
-          header .kd-desktop-dropdown:focus-within .kd-desktop-panel {
+          header .kd-desktop-dropdown:focus-within .kd-desktop-panel,
+          header .kd-desktop-dropdown.is-open .kd-desktop-panel {
             opacity:1; visibility:visible; pointer-events:auto; transform:translateY(0);
           }
           header .kd-desktop-dropdown:hover .kd-chevron,
-          header .kd-desktop-dropdown:focus-within .kd-chevron { transform:rotate(225deg); }
+          header .kd-desktop-dropdown:focus-within .kd-chevron,
+          header .kd-desktop-dropdown.is-open .kd-chevron { transform:rotate(225deg); }
           header .kd-desktop-panel a {
             display:flex !important; align-items:center; padding:11px 13px !important;
             border-radius:9px; color:#edf2f8 !important; font-size:13px !important;
@@ -195,6 +197,35 @@
       `;
       (document.head || document.documentElement).appendChild(style);
     }
+
+    // Desktop dropdowns open on click as well as hover, matching the clear submenu behaviour.
+    const desktopDropdowns = Array.from(header.querySelectorAll(".kd-desktop-dropdown"));
+    desktopDropdowns.forEach(dropdown => {
+      const trigger = dropdown.querySelector(".kd-desktop-trigger");
+      if (!trigger || trigger.dataset.kdDropdownBound === "true") return;
+      trigger.dataset.kdDropdownBound = "true";
+      trigger.addEventListener("click", event => {
+        event.preventDefault();
+        const shouldOpen = !dropdown.classList.contains("is-open");
+        desktopDropdowns.forEach(item => {
+          item.classList.remove("is-open");
+          const itemTrigger = item.querySelector(".kd-desktop-trigger");
+          if (itemTrigger) itemTrigger.setAttribute("aria-expanded", "false");
+        });
+        if (shouldOpen) {
+          dropdown.classList.add("is-open");
+          trigger.setAttribute("aria-expanded", "true");
+        }
+      });
+    });
+    document.addEventListener("click", event => {
+      if (event.target.closest(".kd-desktop-dropdown")) return;
+      desktopDropdowns.forEach(item => {
+        item.classList.remove("is-open");
+        const itemTrigger = item.querySelector(".kd-desktop-trigger");
+        if (itemTrigger) itemTrigger.setAttribute("aria-expanded", "false");
+      });
+    });
 
     const nav = header.querySelector("#menu");
     const button = header.querySelector("#menuBtn");
