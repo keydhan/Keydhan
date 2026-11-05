@@ -88,3 +88,60 @@
     height:0!important;
   }
 }
+
+
+/* KeyDhan premium tools directory v3 */
+.tools-directory .tools-hero{padding:42px 20px 34px;border:1px solid rgba(212,175,55,.12);border-radius:0 0 26px 26px;background:radial-gradient(ellipse at 50% 0,rgba(212,175,55,.17),transparent 65%)}
+.tools-directory .tools-hero p{font-size:clamp(14px,2vw,17px)}
+.tools-directory .catalog-controls{max-width:980px;margin:24px auto 0}
+.tools-directory .catalog-search{min-height:62px;border-radius:16px;box-shadow:0 12px 35px rgba(0,0,0,.16)}
+.tools-directory .catalog-filters{justify-content:flex-start!important;gap:9px!important}
+.tools-directory .catalog-heading{margin-top:24px!important}
+.tools-directory .catalog-heading h2{font-size:clamp(21px,3vw,27px)}
+.catalog-extra{margin:24px 0 30px;padding:20px;border:1px solid rgba(212,175,55,.18);border-radius:20px;background:linear-gradient(145deg,rgba(12,27,46,.8),rgba(7,17,31,.65))}
+.catalog-section-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:0 0 15px}
+.catalog-section-head h2{margin:3px 0 4px;color:#fff;font-size:20px;line-height:1.25}
+.catalog-section-head p{margin:0;color:#94a6bd;font-size:12px;line-height:1.5}
+.catalog-kicker{color:#e5c75a;font-size:9px;font-weight:850;letter-spacing:1.8px}
+.catalog-section-count{flex:0 0 auto;color:#e5c75a;font-size:9px;font-weight:800;letter-spacing:1px;border:1px solid rgba(212,175,55,.24);padding:7px 9px;border-radius:999px}
+.popular-links,.recent-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.popular-links a,.recent-links a{display:flex;align-items:center;gap:10px;min-width:0;min-height:55px;padding:12px;border:1px solid rgba(212,175,55,.18);border-radius:13px;background:#091729;color:#fff;text-decoration:none;transition:.2s}
+.popular-links a:hover,.recent-links a:hover{border-color:#d4af37;transform:translateY(-2px)}
+.popular-links a>span,.recent-links a>span{font-size:21px;flex:0 0 auto}
+.popular-links a strong,.recent-links a strong{font-size:12px;line-height:1.35;flex:1;min-width:0}
+.popular-links a i,.recent-links a i{font-size:10px;font-style:normal;color:#e5c75a;font-weight:800;flex:0 0 auto}
+.catalog-groups{display:grid;gap:28px;margin-top:8px}
+.tool-category-section{min-width:0}
+.category-head{margin-bottom:13px}
+.category-head h2{font-size:21px}
+.category-grid{margin-top:0;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.category-grid .tool-card{min-height:210px;padding:20px;display:flex;flex-direction:column}
+.category-grid .tool-card h2{font-size:16px;line-height:1.35}
+.category-grid .tool-card p{font-size:12px;flex:1}
+.category-grid .tool-card small{margin-top:15px}
+.category-grid .tool-card[hidden]{display:none!important}
+.tool-category-section[hidden],.catalog-extra[hidden]{display:none!important}
+@media(max-width:800px){.category-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.popular-links,.recent-links{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){
+ .tools-directory .tools-hero{padding:27px 12px 23px;border-radius:0 0 20px 20px}
+ .tools-directory .tools-hero h1{font-size:31px}
+ .tools-directory .tools-hero p{font-size:13px;line-height:1.55}
+ .tools-directory .catalog-controls{margin-top:17px}
+ .tools-directory .catalog-heading{margin-top:18px!important}
+ .catalog-extra{padding:14px;margin:18px 0 23px;border-radius:16px}
+ .catalog-section-head{margin-bottom:11px}
+ .catalog-section-head h2{font-size:17px}
+ .catalog-section-head p{font-size:10px}
+ .catalog-section-count{font-size:8px;padding:6px 8px}
+ .popular-links,.recent-links{gap:8px}
+ .popular-links a,.recent-links a{min-height:51px;padding:9px;border-radius:11px;gap:7px}
+ .popular-links a>span,.recent-links a>span{font-size:18px}
+ .popular-links a strong,.recent-links a strong{font-size:10px}
+ .catalog-groups{gap:23px;margin-top:4px}
+ .category-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .category-grid .tool-card{min-height:190px;padding:13px;border-radius:14px}
+ .category-grid .tool-card h2{font-size:13px;margin:10px 0 6px}
+ .category-grid .tool-card p{font-size:10px;line-height:1.5}
+ .category-grid .tool-card small{font-size:10px;margin-top:11px}
+ .category-head h2{font-size:18px}
+}
