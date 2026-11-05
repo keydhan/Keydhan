@@ -227,6 +227,44 @@
       });
     });
 
+    // Make desktop dropdowns behave consistently: click to open/close, outside click to dismiss.
+    const desktopDropdowns = Array.from(header.querySelectorAll(".kd-desktop-dropdown"));
+    desktopDropdowns.forEach(dropdown => {
+      const trigger = dropdown.querySelector(".kd-desktop-trigger");
+      if (!trigger || trigger.dataset.kdDropdownBound === "true") return;
+      trigger.dataset.kdDropdownBound = "true";
+      trigger.setAttribute("aria-expanded", "false");
+      trigger.addEventListener("click", event => {
+        event.preventDefault();
+        const opening = !dropdown.classList.contains("is-open");
+        desktopDropdowns.forEach(item => {
+          item.classList.remove("is-open");
+          const itemTrigger = item.querySelector(".kd-desktop-trigger");
+          if (itemTrigger) itemTrigger.setAttribute("aria-expanded", "false");
+        });
+        if (opening) {
+          dropdown.classList.add("is-open");
+          trigger.setAttribute("aria-expanded", "true");
+        }
+      });
+    });
+    document.addEventListener("click", event => {
+      if (event.target.closest(".kd-desktop-dropdown")) return;
+      desktopDropdowns.forEach(item => {
+        item.classList.remove("is-open");
+        const itemTrigger = item.querySelector(".kd-desktop-trigger");
+        if (itemTrigger) itemTrigger.setAttribute("aria-expanded", "false");
+      });
+    });
+    document.addEventListener("keydown", event => {
+      if (event.key !== "Escape") return;
+      desktopDropdowns.forEach(item => {
+        item.classList.remove("is-open");
+        const itemTrigger = item.querySelector(".kd-desktop-trigger");
+        if (itemTrigger) itemTrigger.setAttribute("aria-expanded", "false");
+      });
+    });
+
     const nav = header.querySelector("#menu");
     const button = header.querySelector("#menuBtn");
     if (button.dataset.kdMenuBound === "true") return;
