@@ -23,7 +23,7 @@ cards.forEach((card,i)=>{
 const sectionRoot=document.createElement('div');sectionRoot.className='catalog-groups';grid.replaceWith(sectionRoot);
 const popular=document.createElement('section');popular.className='catalog-extra popular-section';popular.innerHTML='<div class="catalog-section-head"><div><span class="catalog-kicker">QUICK ACCESS</span><h2>Popular Tools</h2><p>Frequently used tools, ready in one tap</p></div><span class="catalog-section-count">6 PICKS</span></div><div class="popular-links"></div>';
 const popularLinks=popular.querySelector('.popular-links');
-const popularSlugs=['image-to-pdf','merge-pdf','pdf-to-image','pdf-compressor','jpg-to-png','qr-code-generator'];
+const popularSlugs=['image-to-pdf','merge-pdf','pdf-to-image','pdf-compressor','image-pdf-to-pdf','qr-code-generator'];
 popularSlugs.forEach(slug=>{const card=cards.find(c=>(c.href.split('/').filter(Boolean).pop()||'')===slug);if(card){const a=document.createElement('a');a.href=card.href;a.innerHTML='<span>'+((card.querySelector('.tool-icon')||{}).textContent||'✦')+'</span><strong>'+((card.querySelector('h2')||{}).textContent||'Tool')+'</strong><i>↗</i>';popularLinks.appendChild(a);}});
 const recent=document.createElement('section');recent.className='catalog-extra recent-tools';recent.innerHTML='<div class="catalog-section-head"><div><span class="catalog-kicker">FRESH ON KEYDHAN</span><h2>Recently Added</h2><p>Explore the latest additions to the toolbox</p></div><span class="catalog-section-count">NEW</span></div><div class="recent-links"></div>';
 const recentLinks=recent.querySelector('.recent-links');
