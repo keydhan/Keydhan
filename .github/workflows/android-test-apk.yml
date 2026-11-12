@@ -33,16 +33,47 @@ jobs:
           distribution: temurin
           java-version: "21"
 
+      - name: Install SVG renderer
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y librsvg2-bin
+
       - name: Install Capacitor dependencies
         run: npm install
 
       - name: Generate Android project
         run: npx cap add android
 
-      - name: Set Android app version to 0.2
+      - name: Apply KeyDhan launcher icon
         run: |
-          sed -i 's/versionCode 1/versionCode 2/' android/app/build.gradle
-          sed -i "s/versionName '1.0'/versionName '0.2'/" android/app/build.gradle
+          RES="android/app/src/main/res"
+          mkdir -p "$RES/mipmap-mdpi" "$RES/mipmap-hdpi" "$RES/mipmap-xhdpi" "$RES/mipmap-xxhdpi" "$RES/mipmap-xxxhdpi" "$RES/mipmap-anydpi-v26" "$RES/drawable-nodpi" "$RES/values"
+          rsvg-convert -w 48 -h 48 resources/keydhan-app-icon.svg > "$RES/mipmap-mdpi/ic_launcher.png"
+          rsvg-convert -w 72 -h 72 resources/keydhan-app-icon.svg > "$RES/mipmap-hdpi/ic_launcher.png"
+          rsvg-convert -w 96 -h 96 resources/keydhan-app-icon.svg > "$RES/mipmap-xhdpi/ic_launcher.png"
+          rsvg-convert -w 144 -h 144 resources/keydhan-app-icon.svg > "$RES/mipmap-xxhdpi/ic_launcher.png"
+          rsvg-convert -w 192 -h 192 resources/keydhan-app-icon.svg > "$RES/mipmap-xxxhdpi/ic_launcher.png"
+          cp "$RES/mipmap-mdpi/ic_launcher.png" "$RES/mipmap-mdpi/ic_launcher_round.png"
+          cp "$RES/mipmap-hdpi/ic_launcher.png" "$RES/mipmap-hdpi/ic_launcher_round.png"
+          cp "$RES/mipmap-xhdpi/ic_launcher.png" "$RES/mipmap-xhdpi/ic_launcher_round.png"
+          cp "$RES/mipmap-xxhdpi/ic_launcher.png" "$RES/mipmap-xxhdpi/ic_launcher_round.png"
+          cp "$RES/mipmap-xxxhdpi/ic_launcher.png" "$RES/mipmap-xxxhdpi/ic_launcher_round.png"
+          rsvg-convert -w 432 -h 432 resources/keydhan-app-icon.svg > "$RES/drawable-nodpi/ic_launcher_foreground.png"
+          cat > "$RES/values/ic_launcher_background.xml" <<'EOF'
+          <resources><color name="ic_launcher_background">#FFFFFF</color></resources>
+          EOF
+          cat > "$RES/mipmap-anydpi-v26/ic_launcher.xml" <<'EOF'
+          <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+              <background android:drawable="@color/ic_launcher_background" />
+              <foreground android:drawable="@drawable/ic_launcher_foreground" />
+          </adaptive-icon>
+          EOF
+          cp "$RES/mipmap-anydpi-v26/ic_launcher.xml" "$RES/mipmap-anydpi-v26/ic_launcher_round.xml"
+
+      - name: Set Android app version to 0.3
+        run: |
+          sed -i 's/versionCode 1/versionCode 3/' android/app/build.gradle
+          sed -i "s/versionName '1.0'/versionName '0.3'/" android/app/build.gradle
           grep -E 'versionCode|versionName' android/app/build.gradle
 
       - name: Build debug APK
@@ -50,12 +81,12 @@ jobs:
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon
-          cp app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/keydhan-android-v0.2-test.apk
+          cp app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/keydhan-android-v0.3-test.apk
 
-      - name: Upload v0.2 test APK
+      - name: Upload v0.3 test APK
         uses: actions/upload-artifact@v4
         with:
-          name: keydhan-android-v0.2-test-apk
-          path: android-app/android/app/build/outputs/apk/debug/keydhan-android-v0.2-test.apk
+          name: keydhan-android-v0.3-test-apk
+          path: android-app/android/app/build/outputs/apk/debug/keydhan-android-v0.3-test.apk
           if-no-files-found: error
           retention-days: 14
