@@ -1,0 +1,13 @@
+{
+  "appId": "com.keydhan.app",
+  "appName": "KeyDhan",
+  "webDir": "www",
+  "server": {
+    "url": "https://keydhan.com",
+    "cleartext": false,
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false
+  }
+}
