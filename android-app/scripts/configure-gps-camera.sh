@@ -581,6 +581,15 @@ public class GpsCameraActivity extends ComponentActivity {
         topTitles.addView(text("KeyDhan™", 21, Color.WHITE, true));
         topTitles.addView(text("CAMERA SETTINGS", 11, GOLD, true));
         top.addView(topTitles, new LinearLayout.LayoutParams(0, -2, 1));
+        TextView close = text("×", 28, Color.WHITE, true);
+        close.setGravity(Gravity.CENTER);
+        close.setBackground(shape(0xFF243752, GOLD, 50));
+        close.setContentDescription("Close camera settings");
+        close.setClickable(true);
+        close.setFocusable(true);
+        LinearLayout.LayoutParams closeLp = new LinearLayout.LayoutParams((int)(42*d), (int)(42*d));
+        closeLp.leftMargin = (int)(8*d);
+        top.addView(close, closeLp);
         page.addView(top);
 
         TextView heroTitle = text("Camera Control Center", 20, Color.WHITE, true);
@@ -681,6 +690,7 @@ public class GpsCameraActivity extends ComponentActivity {
         android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(this).create();
         dialog.setView(scroll);
         done.setOnClickListener(v -> dialog.dismiss());
+        close.setOnClickListener(v -> dialog.dismiss());
         dialog.show();
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
