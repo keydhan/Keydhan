@@ -219,8 +219,8 @@ public class GpsCameraActivity extends ComponentActivity {
         header.setGravity(Gravity.CENTER_VERTICAL);
         header.setPadding(14, 8, 14, 8);
         header.setBackground(shape(0xE8071228, GOLD, 22));
-        TextView exit = iconControl("‹", "Exit GPS Camera");
-        exit.setTextSize(34);
+        TextView exit = iconControl("×", "Exit GPS Camera");
+        exit.setTextSize(30);
         exit.setOnClickListener(v -> finish());
         header.addView(exit, new LinearLayout.LayoutParams(46, 46));
 
@@ -301,7 +301,7 @@ public class GpsCameraActivity extends ComponentActivity {
         gpsCard.addView(addressLine, addrLp);
         FrameLayout.LayoutParams gpsParams = new FrameLayout.LayoutParams(-1, -2, Gravity.BOTTOM);
         gpsParams.leftMargin = 14; gpsParams.rightMargin = 14;
-        gpsParams.bottomMargin = 174;
+        gpsParams.bottomMargin = (int)(122 * getResources().getDisplayMetrics().density);
         root.addView(gpsCard, gpsParams);
 
         // Bottom dock: Gallery, one large shutter, GPS Photo. No duplicate front/rear selectors.
@@ -348,7 +348,7 @@ public class GpsCameraActivity extends ComponentActivity {
             bottomParams.bottomMargin = bars.bottom + (int)(8 * getResources().getDisplayMetrics().density);
             header.setLayoutParams(headerParams);
             bottom.setLayoutParams(bottomParams);
-            gpsParams.bottomMargin = bars.bottom + (int)(174 * getResources().getDisplayMetrics().density);
+            gpsParams.bottomMargin = bars.bottom + (int)(122 * getResources().getDisplayMetrics().density);
             gpsCard.setLayoutParams(gpsParams);
             return windowInsets;
         });
