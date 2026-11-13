@@ -304,20 +304,33 @@ public class GpsCameraActivity extends ComponentActivity {
         gpsParams.bottomMargin = (int)(122 * getResources().getDisplayMetrics().density);
         root.addView(gpsCard, gpsParams);
 
-        // Bottom dock: Gallery, one large shutter, GPS Photo. No duplicate front/rear selectors.
+        // Bottom dock mirrors the approved reference: wide navy/gold tray with a raised central shutter.
+        FrameLayout dock = new FrameLayout(this);
+        dock.setBackground(shape(0xF5071228, GOLD, 30));
         LinearLayout bottom = new LinearLayout(this);
         bottom.setGravity(Gravity.CENTER_VERTICAL);
-        bottom.setPadding(18, 12, 18, 12);
+        bottom.setPadding(12, 8, 12, 8);
         bottom.setBackground(shape(0xF5071228, GOLD, 30));
 
-        TextView gallery = text("▧\nGALLERY", 11, GOLD, true);
+        TextView gallery = text("▧\\nGALLERY", 11, GOLD, true);
         gallery.setGravity(Gravity.CENTER);
         gallery.setOnClickListener(v -> openGallery());
-        bottom.addView(gallery, new LinearLayout.LayoutParams(0, 68, 1));
+        LinearLayout.LayoutParams sideLp = new LinearLayout.LayoutParams(0, 68, 1);
+        bottom.addView(gallery, sideLp);
+
+        // Reserve a central opening so the shutter overlaps the dock instead of sitting inside the row.
+        View centerGap = new View(this);
+        bottom.addView(centerGap, new LinearLayout.LayoutParams(94, 68));
+
+        TextView gpsPhoto = text("⌖\\nGPS PHOTO", 11, GOLD, true);
+        gpsPhoto.setGravity(Gravity.CENTER);
+        gpsPhoto.setOnClickListener(v -> openGallery());
+        bottom.addView(gpsPhoto, new LinearLayout.LayoutParams(0, 68, 1));
+        dock.addView(bottom, new FrameLayout.LayoutParams(-1, -1));
 
         captureButton = new Button(this);
-        captureButton.setText("");
-        captureButton.setTextSize(1);
+        captureButton.setText("▣");
+        captureButton.setTextSize(29);
         captureButton.setTextColor(NAVY);
         captureButton.setGravity(Gravity.CENTER);
         captureButton.setAllCaps(false);
@@ -327,20 +340,17 @@ public class GpsCameraActivity extends ComponentActivity {
         shutter.setColor(0xFFFFD76A);
         shutter.setStroke((int)(5 * getResources().getDisplayMetrics().density), Color.WHITE);
         captureButton.setBackground(shutter);
-        captureButton.setElevation(8);
-        bottom.addView(captureButton, new LinearLayout.LayoutParams(82, 82));
-
-        TextView gpsPhoto = text("⌖\nGPS PHOTO", 11, GOLD, true);
-        gpsPhoto.setGravity(Gravity.CENTER);
-        gpsPhoto.setOnClickListener(v -> openGallery());
-        bottom.addView(gpsPhoto, new LinearLayout.LayoutParams(0, 68, 1));
+        captureButton.setElevation(12);
+        FrameLayout.LayoutParams shutterLp = new FrameLayout.LayoutParams(88, 88, Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+        shutterLp.topMargin = -7;
+        dock.addView(captureButton, shutterLp);
         captureButton.setOnClickListener(v -> capturePhoto());
         captureButton.setEnabled(false);
 
-        FrameLayout.LayoutParams bottomParams = new FrameLayout.LayoutParams(-1, -2, Gravity.BOTTOM);
+        FrameLayout.LayoutParams bottomParams = new FrameLayout.LayoutParams(-1, 88, Gravity.BOTTOM);
         bottomParams.leftMargin = 10; bottomParams.rightMargin = 10;
         bottomParams.bottomMargin = 8;
-        root.addView(bottom, bottomParams);
+        root.addView(dock, bottomParams);
 
         ViewCompat.setOnApplyWindowInsetsListener(root, (view, windowInsets) -> {
             androidx.core.graphics.Insets bars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
