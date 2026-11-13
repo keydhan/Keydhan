@@ -231,11 +231,11 @@ public class GpsCameraActivity extends ComponentActivity {
                 float d = getResources().getDisplayMetrics().density;
                 float cx = getWidth()/2f, cy = getHeight()/2f;
                 p.setColor(Color.WHITE); p.setStyle(Paint.Style.STROKE);
-                p.setStrokeWidth(3.2f*d); p.setStrokeCap(Paint.Cap.ROUND); p.setStrokeJoin(Paint.Join.ROUND);
+                p.setStrokeWidth(2.4f*d); p.setStrokeCap(Paint.Cap.ROUND); p.setStrokeJoin(Paint.Join.ROUND);
                 Path a = new Path();
-                a.moveTo(cx+12*d,cy); a.lineTo(cx-12*d,cy);
-                a.moveTo(cx-12*d,cy); a.lineTo(cx-2*d,cy-10*d);
-                a.moveTo(cx-12*d,cy); a.lineTo(cx-2*d,cy+10*d);
+                a.moveTo(cx+9*d,cy); a.lineTo(cx-9*d,cy);
+                a.moveTo(cx-9*d,cy); a.lineTo(cx-1*d,cy-7*d);
+                a.moveTo(cx-9*d,cy); a.lineTo(cx-1*d,cy+7*d);
                 canvas.drawPath(a,p);
             }
         };
@@ -289,16 +289,22 @@ public class GpsCameraActivity extends ComponentActivity {
                 float d = getResources().getDisplayMetrics().density;
                 float cx = getWidth()/2f, cy = getHeight()/2f;
                 p.setColor(Color.WHITE); p.setStyle(Paint.Style.STROKE);
-                p.setStrokeWidth(2.8f*d); p.setStrokeCap(Paint.Cap.ROUND);
-                RectF arc = new RectF(cx-15*d,cy-15*d,cx+15*d,cy+15*d);
-                canvas.drawArc(arc,215,285,false,p);
-                p.setStyle(Paint.Style.FILL);
-                Path tip = new Path(); tip.moveTo(cx+15*d,cy-13*d);
-                tip.lineTo(cx+16*d,cy-3*d); tip.lineTo(cx+6*d,cy-7*d); tip.close();
-                canvas.drawPath(tip,p);
-                p.setStyle(Paint.Style.STROKE); p.setStrokeWidth(2.5f*d);
-                canvas.drawRoundRect(cx-8*d,cy-5*d,cx+8*d,cy+7*d,2*d,2*d,p);
-                canvas.drawCircle(cx,cy+1*d,3*d,p);
+                p.setStrokeWidth(2.3f*d); p.setStrokeCap(Paint.Cap.ROUND); p.setStrokeJoin(Paint.Join.ROUND);
+                // Two opposing curved arrows make the camera-switch action unmistakable.
+                RectF upper = new RectF(cx-14*d,cy-14*d,cx+14*d,cy+14*d);
+                canvas.drawArc(upper,205,125,false,p);
+                Path upperTip = new Path();
+                upperTip.moveTo(cx-13*d,cy-10*d); upperTip.lineTo(cx-4*d,cy-12*d); upperTip.lineTo(cx-10*d,cy-3*d); upperTip.close();
+                p.setStyle(Paint.Style.FILL); canvas.drawPath(upperTip,p);
+                p.setStyle(Paint.Style.STROKE);
+                canvas.drawArc(upper,25,125,false,p);
+                Path lowerTip = new Path();
+                lowerTip.moveTo(cx+13*d,cy+10*d); lowerTip.lineTo(cx+4*d,cy+12*d); lowerTip.lineTo(cx+10*d,cy+3*d); lowerTip.close();
+                p.setStyle(Paint.Style.FILL); canvas.drawPath(lowerTip,p);
+                // Small camera body in the center.
+                p.setStyle(Paint.Style.STROKE); p.setStrokeWidth(2.1f*d);
+                canvas.drawRoundRect(cx-7*d,cy-5*d,cx+7*d,cy+5*d,2*d,2*d,p);
+                canvas.drawCircle(cx,cy,2.2f*d,p);
             }
         };
         flip.setBackground(shape(0xAA172640, GOLD, 28));
@@ -361,14 +367,13 @@ public class GpsCameraActivity extends ComponentActivity {
                 super.onDraw(canvas);
                 float d = getResources().getDisplayMetrics().density;
                 float cx = getWidth()/2f, cy = getHeight()/2f;
-                p.setColor(GOLD); p.setStyle(Paint.Style.STROKE); p.setStrokeWidth(2.8f*d);
+                p.setColor(GOLD); p.setStyle(Paint.Style.STROKE); p.setStrokeWidth(2.4f*d);
                 canvas.drawRoundRect(cx-14*d,cy-11*d,cx+14*d,cy+11*d,3*d,3*d,p);
-                p.setStyle(Paint.Style.FILL);
-                canvas.drawCircle(cx+7*d,cy-5*d,2.5f*d,p);
+                canvas.drawCircle(cx+7*d,cy-5*d,2.2f*d,p);
                 Path mountain = new Path();
                 mountain.moveTo(cx-10*d,cy+7*d); mountain.lineTo(cx-3*d,cy-1*d);
                 mountain.lineTo(cx+2*d,cy+4*d); mountain.lineTo(cx+6*d,cy+1*d);
-                mountain.lineTo(cx+11*d,cy+7*d); mountain.close();
+                mountain.lineTo(cx+11*d,cy+7*d);
                 canvas.drawPath(mountain,p);
             }
         };
@@ -391,16 +396,19 @@ public class GpsCameraActivity extends ComponentActivity {
                 super.onDraw(canvas);
                 float d = getResources().getDisplayMetrics().density;
                 float cx = getWidth()/2f, cy = getHeight()/2f;
-                p.setColor(GOLD); p.setStyle(Paint.Style.STROKE); p.setStrokeWidth(2.8f*d);
+                p.setColor(GOLD); p.setStyle(Paint.Style.STROKE); p.setStrokeWidth(2.4f*d);
                 RectF pin = new RectF(cx-12*d,cy-15*d,cx+12*d,cy+9*d);
                 canvas.drawArc(pin,205,310,false,p);
                 Path tail = new Path(); tail.moveTo(cx-8*d,cy+5*d);
                 tail.lineTo(cx,cy+17*d); tail.lineTo(cx+8*d,cy+5*d);
                 canvas.drawPath(tail,p);
-                canvas.drawCircle(cx,cy-4*d,4*d,p);
+                canvas.drawCircle(cx,cy-4*d,3.6f*d,p);
+                // Camera badge overlaps the lower-right edge of the location pin.
                 p.setStyle(Paint.Style.FILL);
-                canvas.drawRoundRect(cx+5*d,cy+1*d,cx+18*d,cy+11*d,2*d,2*d,p);
-                p.setColor(NAVY); canvas.drawCircle(cx+11.5f*d,cy+6*d,2.5f*d,p);
+                canvas.drawRoundRect(cx+4*d,cy+1*d,cx+19*d,cy+12*d,2.5f*d,2.5f*d,p);
+                p.setColor(NAVY); canvas.drawCircle(cx+11.5f*d,cy+6.5f*d,2.8f*d,p);
+                p.setColor(GOLD); p.setStyle(Paint.Style.STROKE); p.setStrokeWidth(1.5f*d);
+                canvas.drawCircle(cx+11.5f*d,cy+6.5f*d,4*d,p);
             }
         };
         gpsPhotoGroup.addView(gpsPhotoIcon, new LinearLayout.LayoutParams(40, 34));
@@ -450,10 +458,10 @@ public class GpsCameraActivity extends ComponentActivity {
                 float d = getResources().getDisplayMetrics().density;
                 float cx = getWidth() / 2f, cy = getHeight() / 2f;
                 p.setColor(NAVY); p.setStyle(Paint.Style.FILL);
-                canvas.drawRoundRect(cx - 22*d, cy - 13*d, cx + 22*d, cy + 14*d, 5*d, 5*d, p);
-                canvas.drawRect(cx - 11*d, cy - 19*d, cx + 5*d, cy - 13*d, p);
-                p.setColor(0xFFFFD76A); p.setStyle(Paint.Style.STROKE); p.setStrokeWidth(3*d);
-                canvas.drawCircle(cx, cy, 8*d, p);
+                canvas.drawRoundRect(cx - 20*d, cy - 12*d, cx + 20*d, cy + 13*d, 5*d, 5*d, p);
+                canvas.drawRoundRect(cx - 10*d, cy - 17*d, cx + 5*d, cy - 12*d, 2*d, 2*d, p);
+                p.setColor(0xFFFFE27A); p.setStyle(Paint.Style.STROKE); p.setStrokeWidth(2.6f*d);
+                canvas.drawCircle(cx, cy, 7.5f*d, p);
                 p.setStyle(Paint.Style.FILL);
             }
         };
