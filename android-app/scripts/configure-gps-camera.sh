@@ -169,6 +169,7 @@ public class GpsCameraActivity extends ComponentActivity {
     private static final int GOLD = 0xFFD2A952;
     private static final String PREFS = "keydhan_gps_camera";
     private static final String PREF_SHOW_IP = "show_public_ip";
+    private static final String PREF_PRIVACY_NOTICE_SEEN = "privacy_notice_seen";
     private PreviewView previewView;
     private TextView status;
     private ImageCapture imageCapture;
@@ -298,6 +299,43 @@ public class GpsCameraActivity extends ComponentActivity {
         FrameLayout.LayoutParams headerParams = new FrameLayout.LayoutParams(-1, -2, Gravity.TOP);
         headerParams.leftMargin = 10; headerParams.rightMargin = 10;
         root.addView(header, headerParams);
+
+        // Compact privacy assurance strip sits directly below the header, over the preview.
+        boolean privacySeen = getPreferences(MODE_PRIVATE).getBoolean(PREF_PRIVACY_NOTICE_SEEN, false);
+        LinearLayout privacyStrip = new LinearLayout(this);
+        privacyStrip.setGravity(Gravity.CENTER_VERTICAL);
+        privacyStrip.setPadding(12, 8, 12, 8);
+        privacyStrip.setBackground(shape(0xE6102944, GOLD, 16));
+        TextView privacyShield = text("◆", 18, GOLD, true);
+        privacyShield.setGravity(Gravity.CENTER);
+        privacyStrip.addView(privacyShield, new LinearLayout.LayoutParams(30, 34));
+        LinearLayout privacyCopy = new LinearLayout(this);
+        privacyCopy.setOrientation(LinearLayout.VERTICAL);
+        privacyCopy.setPadding(7, 0, 5, 0);
+        TextView privacyTitle = text(privacySeen ? "PRIVACY PROTECTED  ·  LOCAL PROCESSING" : "YOUR PRIVACY IS PROTECTED", 11, Color.WHITE, true);
+        TextView privacySub = text(privacySeen ? "Photos are processed and saved on your phone." : "Photos stay on your phone. No photo uploads to KeyDhan servers.", 10, 0xFFE8D8B2, false);
+        privacyCopy.addView(privacyTitle);
+        privacyCopy.addView(privacySub);
+        privacyStrip.addView(privacyCopy, new LinearLayout.LayoutParams(0, -2, 1));
+        TextView privacyAction = text(privacySeen ? "ⓘ" : "GOT IT", privacySeen ? 20 : 10, GOLD, true);
+        privacyAction.setGravity(Gravity.CENTER);
+        privacyAction.setPadding(6, 4, 6, 4);
+        privacyStrip.addView(privacyAction, new LinearLayout.LayoutParams(-2, 38));
+        privacyStrip.setOnClickListener(v -> showPrivacyDetails());
+        FrameLayout.LayoutParams privacyParams = new FrameLayout.LayoutParams(-1, -2, Gravity.TOP);
+        privacyParams.leftMargin = 14; privacyParams.rightMargin = 14;
+        privacyParams.topMargin = 112;
+        root.addView(privacyStrip, privacyParams);
+        if (!privacySeen) {
+            privacyAction.setText("GOT IT");
+            privacyStrip.setOnClickListener(v -> {
+                getPreferences(MODE_PRIVATE).edit().putBoolean(PREF_PRIVACY_NOTICE_SEEN, true).apply();
+                privacyTitle.setText("PRIVACY PROTECTED  ·  LOCAL PROCESSING");
+                privacySub.setText("Photos are processed and saved on your phone.");
+                privacyAction.setText("ⓘ");
+                privacyAction.setTextSize(20);
+            });
+        }
 
         // Right floating camera rail: one circular flip control, zoom controls beneath it.
         LinearLayout rail = new LinearLayout(this);
@@ -504,8 +542,10 @@ public class GpsCameraActivity extends ComponentActivity {
         ViewCompat.setOnApplyWindowInsetsListener(root, (view, windowInsets) -> {
             androidx.core.graphics.Insets bars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
             headerParams.topMargin = bars.top + (int)(8 * getResources().getDisplayMetrics().density);
+            privacyParams.topMargin = bars.top + (int)(112 * getResources().getDisplayMetrics().density);
             bottomParams.bottomMargin = bars.bottom + (int)(8 * getResources().getDisplayMetrics().density);
             header.setLayoutParams(headerParams);
+            privacyStrip.setLayoutParams(privacyParams);
             dock.setLayoutParams(bottomParams);
             gpsParams.bottomMargin = bars.bottom + (int)(128 * getResources().getDisplayMetrics().density);
             gpsCard.setLayoutParams(gpsParams);
@@ -514,6 +554,16 @@ public class GpsCameraActivity extends ComponentActivity {
         setContentView(root);
         ViewCompat.requestApplyInsets(root);
         if (cameraPreview != null) cameraPreview.setSurfaceProvider(previewView.getSurfaceProvider());
+    }
+
+    private void showPrivacyDetails() {
+        new android.app.AlertDialog.Builder(this)
+            .setTitle("KeyDhan Privacy & Data Security")
+            .setMessage("Your photos are processed and saved locally on your phone. Photos are not uploaded to KeyDhan servers. Your location is used to create the GPS stamp on the photo. If you enable Public IP, the app contacts an external IP lookup service to retrieve your public IP address.")
+            .setPositiveButton("Got it", (dialog, which) -> {
+                getPreferences(MODE_PRIVATE).edit().putBoolean(PREF_PRIVACY_NOTICE_SEEN, true).apply();
+            })
+            .show();
     }
 
     private void openGallery() {
