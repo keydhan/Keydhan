@@ -358,44 +358,48 @@ public class GpsCameraActivity extends ComponentActivity {
                 super.onDraw(canvas);
                 float d = getResources().getDisplayMetrics().density;
                 float cx = getWidth()/2f, cy = getHeight()/2f;
+                float radius = 18f*d;
 
-                // Solid navy inset makes the full gold outer ring clearly visible.
+                // Deep navy inset and two balanced circular arrow strokes.
                 p.setStyle(Paint.Style.FILL);
                 p.setColor(NAVY);
                 canvas.drawCircle(cx, cy, 28.5f*d, p);
 
-                // Two complete, opposing curved arrows. No camera glyph in the center.
                 p.setColor(0xFFFFE7A0);
                 p.setStyle(Paint.Style.STROKE);
-                p.setStrokeWidth(3.2f*d);
+                p.setStrokeWidth(3.0f*d);
                 p.setStrokeCap(Paint.Cap.ROUND);
                 p.setStrokeJoin(Paint.Join.ROUND);
-                RectF orbit = new RectF(cx-17.5f*d, cy-17.5f*d, cx+17.5f*d, cy+17.5f*d);
-                canvas.drawArc(orbit, 205, 130, false, p);
-                canvas.drawArc(orbit, 25, 130, false, p);
+                RectF orbit = new RectF(cx-radius, cy-radius, cx+radius, cy+radius);
+                canvas.drawArc(orbit, 135f, 200f, false, p);
+                canvas.drawArc(orbit, 315f, 200f, false, p);
 
-                // Arrowhead at the upper-right end of the first arc.
+                // Arrowheads are tangent-aligned to their arc ends, so they look
+                // like two continuous rotating arrows rather than detached triangles.
                 p.setStyle(Paint.Style.FILL);
-                Path upperArrow = new Path();
-                upperArrow.moveTo(cx+22f*d, cy-12f*d);
-                upperArrow.lineTo(cx+10f*d, cy-14f*d);
-                upperArrow.lineTo(cx+16f*d, cy-3f*d);
-                upperArrow.close();
-                canvas.drawPath(upperArrow, p);
-
-                // Opposing arrowhead at the lower-left end of the second arc.
-                Path lowerArrow = new Path();
-                lowerArrow.moveTo(cx-22f*d, cy+12f*d);
-                lowerArrow.lineTo(cx-10f*d, cy+14f*d);
-                lowerArrow.lineTo(cx-16f*d, cy+3f*d);
-                lowerArrow.close();
-                canvas.drawPath(lowerArrow, p);
+                float[] ends = {335f, 155f};
+                for (float angle : ends) {
+                    double radians = Math.toRadians(angle);
+                    float ex = cx + radius*(float)Math.cos(radians);
+                    float ey = cy + radius*(float)Math.sin(radians);
+                    double tangent = Math.toRadians(angle + 90f);
+                    float tx = (float)Math.cos(tangent), ty = (float)Math.sin(tangent);
+                    float nx = -ty, ny = tx;
+                    float back = 8.5f*d, halfWidth = 5.2f*d;
+                    Path arrow = new Path();
+                    arrow.moveTo(ex, ey);
+                    arrow.lineTo(ex - tx*back + nx*halfWidth, ey - ty*back + ny*halfWidth);
+                    arrow.lineTo(ex - tx*back - nx*halfWidth, ey - ty*back - ny*halfWidth);
+                    arrow.close();
+                    canvas.drawPath(arrow, p);
+                }
             }
         };
         GradientDrawable flipRing = new GradientDrawable(
             GradientDrawable.Orientation.TL_BR,
-            new int[]{0xFFFFF0B8, 0xFFE0B64F, 0xFFB88935});
+            new int[]{0xFFFFF3C7, 0xFFE2B84F, 0xFFB98532});
         flipRing.setShape(GradientDrawable.OVAL);
+        flipRing.setStroke((int)(1.2f * getResources().getDisplayMetrics().density), 0xFFFFE7A0);
         flip.setBackground(flipRing);
         flip.setContentDescription("Switch front and rear camera");
         flip.setOnClickListener(v -> selectCamera(!useFrontCamera));
