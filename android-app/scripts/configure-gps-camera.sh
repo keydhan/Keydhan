@@ -334,6 +334,7 @@ public class GpsCameraActivity extends ComponentActivity {
                 privacySub.setText("Photos are processed and saved on your phone.");
                 privacyAction.setText("ⓘ");
                 privacyAction.setTextSize(20);
+                privacyStrip.setOnClickListener(ignored -> showPrivacyDetails());
             });
         }
 
