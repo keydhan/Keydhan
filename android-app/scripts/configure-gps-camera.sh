@@ -178,6 +178,7 @@ public class GpsCameraActivity extends ComponentActivity {
     private boolean useFrontCamera = false, flashOn = false;
     private File pendingPhoto;
     private Uri lastSavedUri;
+    private boolean photoPreviewVisible = false;
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
@@ -224,6 +225,7 @@ public class GpsCameraActivity extends ComponentActivity {
     private String currentAddress = "Getting address…";
 
     private void buildCameraUi() {
+        photoPreviewVisible = false;
         FrameLayout root = new FrameLayout(this);
         root.setBackgroundColor(Color.BLACK);
         previewView = new PreviewView(this);
@@ -507,6 +509,7 @@ public class GpsCameraActivity extends ComponentActivity {
         });
         setContentView(root);
         ViewCompat.requestApplyInsets(root);
+        if (cameraPreview != null) cameraPreview.setSurfaceProvider(previewView.getSurfaceProvider());
     }
 
     private void openGallery() {
@@ -592,7 +595,9 @@ public class GpsCameraActivity extends ComponentActivity {
         }).start();
     }
     private void bindSelectedCamera() {
-        if (cameraProvider == null || cameraPreview == null || imageCapture == null) return;
+        if (cameraProvider == null || cameraPreview == null || imageCapture == null || previewView == null || photoPreviewVisible) return;
+        // Reattach CameraX preview to the newly created PreviewView after returning from photo preview/save.
+        cameraPreview.setSurfaceProvider(previewView.getSurfaceProvider());
         CameraSelector selector = useFrontCamera ? CameraSelector.DEFAULT_FRONT_CAMERA : CameraSelector.DEFAULT_BACK_CAMERA;
         try {
             if (!cameraProvider.hasCamera(selector)) {
@@ -724,6 +729,7 @@ public class GpsCameraActivity extends ComponentActivity {
     }
     private void showPhotoPreview() {
         if (pendingPhoto == null || !pendingPhoto.exists()) return;
+        photoPreviewVisible = true;
         FrameLayout root = new FrameLayout(this); root.setBackgroundColor(Color.BLACK);
         ImageView image = new ImageView(this); image.setImageURI(Uri.fromFile(pendingPhoto));
         image.setScaleType(ImageView.ScaleType.FIT_CENTER);
@@ -777,6 +783,13 @@ public class GpsCameraActivity extends ComponentActivity {
             if(cameraProvider!=null) bindSelectedCamera();
         } catch(Exception e) { Toast.makeText(this,"Save failed: "+e.getMessage(),Toast.LENGTH_LONG).show(); }
     }
+    @Override protected void onResume() {
+        super.onResume();
+        if (!photoPreviewVisible && cameraProvider != null && cameraPreview != null && imageCapture != null && previewView != null) {
+            previewView.post(() -> bindSelectedCamera());
+        }
+    }
+
     private String fetchPublicIp() {
         HttpURLConnection connection = null;
         try {
