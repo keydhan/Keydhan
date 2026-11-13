@@ -445,8 +445,12 @@ public class GpsCameraActivity extends ComponentActivity {
             }
         };
         galleryGroup.addView(galleryIcon, new LinearLayout.LayoutParams(40, 34));
-        TextView galleryLabel = text("GALLERY", 14, Color.WHITE, true);
-        galleryGroup.addView(galleryLabel);
+        galleryGroup.setGravity(Gravity.CENTER);
+        galleryGroup.setContentDescription("Open Gallery");
+        TextView galleryLabel = text("GALLERY", 13, Color.WHITE, true);
+        galleryLabel.setGravity(Gravity.CENTER);
+        galleryLabel.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        galleryGroup.addView(galleryLabel, new LinearLayout.LayoutParams(-1, -2));
         galleryGroup.setOnClickListener(v -> openGallery());
         bottom.addView(galleryGroup, new LinearLayout.LayoutParams(0, -1, 1));
 
@@ -479,8 +483,12 @@ public class GpsCameraActivity extends ComponentActivity {
             }
         };
         gpsPhotoGroup.addView(gpsPhotoIcon, new LinearLayout.LayoutParams(40, 34));
-        TextView gpsPhotoLabel = text("GPS PHOTO", 14, Color.WHITE, true);
-        gpsPhotoGroup.addView(gpsPhotoLabel);
+        gpsPhotoGroup.setGravity(Gravity.CENTER);
+        gpsPhotoGroup.setContentDescription("Open GPS Photos");
+        TextView gpsPhotoLabel = text("GPS PHOTO", 13, Color.WHITE, true);
+        gpsPhotoLabel.setGravity(Gravity.CENTER);
+        gpsPhotoLabel.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        gpsPhotoGroup.addView(gpsPhotoLabel, new LinearLayout.LayoutParams(-1, -2));
         gpsPhotoGroup.setOnClickListener(v -> openGallery());
         bottom.addView(gpsPhotoGroup, new LinearLayout.LayoutParams(0, -1, 1));
         dock.addView(bottom, new FrameLayout.LayoutParams(-1, -1));
