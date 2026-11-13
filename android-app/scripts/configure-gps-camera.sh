@@ -255,3 +255,216 @@ public class GpsCameraActivity extends ComponentActivity {
         rearButton.setTextColor(useFrontCamera ? Color.WHITE : NAVY);
         frontButton.setTextColor(useFrontCamera ? NAVY : Color.WHITE);
     }
+
+    private boolean hasPermissions() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+            && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+    @Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] results) {
+        super.onRequestPermissionsResult(requestCode, permissions, results);
+        if (requestCode == REQUEST_PERMISSIONS) {
+            if (hasPermissions()) startCameraAndLocation();
+            else { Toast.makeText(this, "Camera and precise location permissions are required.", Toast.LENGTH_LONG).show(); finish(); }
+        }
+    }
+    private void startCameraAndLocation() {
+        ListenableFuture<ProcessCameraProvider> future = ProcessCameraProvider.getInstance(this);
+        future.addListener(() -> {
+            try {
+                cameraProvider = future.get();
+                cameraPreview = new Preview.Builder().build();
+                cameraPreview.setSurfaceProvider(previewView.getSurfaceProvider());
+                imageCapture = new ImageCapture.Builder().setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY).build();
+                bindSelectedCamera();
+            } catch (Exception e) { Toast.makeText(this, "Unable to start camera: " + e.getMessage(), Toast.LENGTH_LONG).show(); }
+        }, ContextCompat.getMainExecutor(this));
+        LocationRequest request = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1500)
+            .setMinUpdateIntervalMillis(1000).build();
+        locationCallback = new LocationCallback() {
+            @Override public void onLocationResult(@NonNull LocationResult result) {
+                if (result.getLastLocation() != null) setGps(result.getLastLocation());
+            }
+        };
+        try {
+            locationClient.requestLocationUpdates(request, locationCallback, Looper.getMainLooper());
+            locationClient.getLastLocation().addOnSuccessListener(location -> { if (location != null) setGps(location); });
+        } catch (SecurityException e) { status.setText("Enable precise location permission."); }
+    }
+    private void setGps(Location location) {
+        latestLocation = location;
+        float accuracy = location.hasAccuracy() ? location.getAccuracy() : -1;
+        status.setText(String.format(Locale.US, "● GPS READY  •  %.6f, %.6f%s",
+            location.getLatitude(), location.getLongitude(),
+            accuracy >= 0 ? String.format(Locale.US, "  •  ±%.0fm", accuracy) : ""));
+        captureButton.setEnabled(imageCapture != null);
+    }
+    private void bindSelectedCamera() {
+        if (cameraProvider == null || cameraPreview == null || imageCapture == null) return;
+        CameraSelector selector = useFrontCamera ? CameraSelector.DEFAULT_FRONT_CAMERA : CameraSelector.DEFAULT_BACK_CAMERA;
+        try {
+            if (!cameraProvider.hasCamera(selector)) {
+                Toast.makeText(this, "Selected camera is not available on this phone.", Toast.LENGTH_SHORT).show();
+                useFrontCamera = !useFrontCamera; updateCameraChoice(); return;
+            }
+            cameraProvider.unbindAll();
+            activeCamera = cameraProvider.bindToLifecycle(this, selector, cameraPreview, imageCapture);
+            syncFlashControl();
+            updateCameraChoice();
+        } catch (Exception e) { Toast.makeText(this, "Camera switch failed: " + e.getMessage(), Toast.LENGTH_LONG).show(); }
+    }
+    private void selectCamera(boolean front) {
+        if (useFrontCamera == front) return;
+        useFrontCamera = front;
+        flashOn = false;
+        bindSelectedCamera();
+    }
+    private void syncFlashControl() {
+        boolean available = activeCamera != null && activeCamera.getCameraInfo().hasFlashUnit() && !useFrontCamera;
+        flashButton.setEnabled(available);
+        flashButton.setAlpha(available ? 1f : 0.45f);
+        flashButton.setText(available ? (flashOn ? "⚡  ON" : "⚡  OFF") : "⚡  N/A");
+        if (!available) flashOn = false;
+        if (available) activeCamera.getCameraControl().enableTorch(flashOn);
+    }
+    private void toggleFlash() {
+        if (activeCamera == null) {
+            Toast.makeText(this, "Camera is still starting. Please wait.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (useFrontCamera || !activeCamera.getCameraInfo().hasFlashUnit()) {
+            flashOn = false;
+            syncFlashControl();
+            Toast.makeText(this, "Flash is available only on the rear camera on this phone.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        final boolean requested = !flashOn;
+        flashButton.setEnabled(false);
+        activeCamera.getCameraControl().enableTorch(requested).addListener(() -> runOnUiThread(() -> {
+            flashOn = requested;
+            syncFlashControl();
+        }), ContextCompat.getMainExecutor(this));
+    }
+    private void capturePhoto() {
+        if (imageCapture == null || latestLocation == null) {
+            Toast.makeText(this, "Waiting for GPS fix. Please try again in an open area.", Toast.LENGTH_LONG).show(); return;
+        }
+        captureButton.setEnabled(false);
+        File raw = new File(getCacheDir(), "gps-raw-" + System.currentTimeMillis() + ".jpg");
+        ImageCapture.OutputFileOptions options = new ImageCapture.OutputFileOptions.Builder(raw).build();
+        imageCapture.takePicture(options, ContextCompat.getMainExecutor(this), new ImageCapture.OnImageSavedCallback() {
+            @Override public void onImageSaved(@NonNull ImageCapture.OutputFileResults result) {
+                Location captured = new Location(latestLocation);
+                new Thread(() -> createPreviewImage(raw, captured)).start();
+            }
+            @Override public void onError(@NonNull ImageCaptureException error) {
+                captureButton.setEnabled(true);
+                Toast.makeText(GpsCameraActivity.this, "Photo failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+    private void createPreviewImage(File raw, Location loc) {
+        Bitmap original = BitmapFactory.decodeFile(raw.getAbsolutePath());
+        if (original == null) { runOnUiThread(() -> captureButton.setEnabled(true)); return; }
+        Bitmap marked = original.copy(Bitmap.Config.ARGB_8888, true); original.recycle();
+        String address = getAddress(loc);
+        String date = new SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault()).format(new Date());
+        Canvas canvas = new Canvas(marked);
+        float scale = Math.max(1f, marked.getWidth() / 1080f), pad = 24f * scale, line = 34f * scale;
+        float boxHeight = pad * 2.25f + line * 4.25f, top = marked.getHeight() - boxHeight - pad;
+        Paint bg = new Paint(Paint.ANTI_ALIAS_FLAG); bg.setColor(0xE6101D33);
+        canvas.drawRoundRect(pad, top, marked.getWidth()-pad, marked.getHeight()-pad, 22f*scale, 22f*scale, bg);
+        Paint gold = new Paint(Paint.ANTI_ALIAS_FLAG); gold.setColor(GOLD);
+        canvas.drawRoundRect(pad, top, pad+7f*scale, marked.getHeight()-pad, 4f*scale, 4f*scale, gold);
+        Paint p = new Paint(Paint.ANTI_ALIAS_FLAG); p.setColor(Color.WHITE); p.setTextSize(25f*scale); p.setFakeBoldText(true);
+        float x=pad*1.8f, y=top+pad*1.25f+line*0.55f;
+        canvas.drawText("KEYDHAN™  GPS PHOTO",x,y,p);
+        p.setColor(0xFFE7C270); p.setTextSize(16f*scale); y+=line*0.72f;
+        canvas.drawText("LIVE LOCATION  •  GPS ACCURACY",x,y,p);
+        p.setColor(Color.WHITE); p.setFakeBoldText(false); p.setTextSize(19f*scale); y+=line*1.05f;
+        canvas.drawText(String.format(Locale.US,"LAT  %.6f     LONG  %.6f",loc.getLatitude(),loc.getLongitude()),x,y,p);
+        y+=line; canvas.drawText(trim(address,72),x,y,p);
+        y+=line; p.setColor(0xFFE1E7F0); canvas.drawText(date,x,y,p);
+        pendingPhoto = new File(getCacheDir(),"keydhan-preview-"+System.currentTimeMillis()+".jpg");
+        try (OutputStream out = new java.io.FileOutputStream(pendingPhoto)) {
+            marked.compress(Bitmap.CompressFormat.JPEG,94,out);
+        } catch (Exception e) { pendingPhoto = null; }
+        marked.recycle(); raw.delete();
+        runOnUiThread(() -> {
+            captureButton.setEnabled(true);
+            if (pendingPhoto != null) showPhotoPreview();
+            else Toast.makeText(this,"Could not prepare photo preview.",Toast.LENGTH_LONG).show();
+        });
+    }
+    private void showPhotoPreview() {
+        if (pendingPhoto == null || !pendingPhoto.exists()) return;
+        FrameLayout root = new FrameLayout(this); root.setBackgroundColor(Color.BLACK);
+        ImageView image = new ImageView(this); image.setImageURI(Uri.fromFile(pendingPhoto));
+        image.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        root.addView(image,new FrameLayout.LayoutParams(-1,-1));
+        LinearLayout panel = new LinearLayout(this); panel.setOrientation(LinearLayout.VERTICAL);
+        panel.setPadding(14,12,14,14); panel.setBackgroundColor(0xEE071228);
+        panel.addView(text("✓  PHOTO PREVIEW",16,GOLD,true));
+        panel.addView(text("Check your GPS watermark before saving.",12,Color.WHITE,false));
+        LinearLayout actions = new LinearLayout(this); actions.setGravity(Gravity.CENTER);
+        Button retake = button("↻  Retake"), save = button("✓  Save"), share = button("↗  Share");
+        retake.setTextSize(12); save.setTextSize(12); share.setTextSize(12);
+        actions.addView(retake,new LinearLayout.LayoutParams(0,-2,1));
+        actions.addView(save,new LinearLayout.LayoutParams(0,-2,1));
+        actions.addView(share,new LinearLayout.LayoutParams(0,-2,1));
+        panel.addView(actions);
+        root.addView(panel,new FrameLayout.LayoutParams(-1,-2,Gravity.BOTTOM));
+        setContentView(root);
+        retake.setOnClickListener(v -> {
+            if (pendingPhoto != null) pendingPhoto.delete();
+            pendingPhoto = null; buildCameraUi();
+            if (cameraProvider != null) bindSelectedCamera();
+        });
+        save.setOnClickListener(v -> savePendingPhoto(false));
+        share.setOnClickListener(v -> savePendingPhoto(true));
+    }
+    private void savePendingPhoto(boolean shareAfter) {
+        if (pendingPhoto == null || !pendingPhoto.exists()) return;
+        try {
+            String name="KeyDhan_GPS_"+new SimpleDateFormat("yyyyMMdd_HHmmss",Locale.US).format(new Date())+".jpg";
+            ContentValues values=new ContentValues();
+            values.put(MediaStore.Images.Media.DISPLAY_NAME,name);
+            values.put(MediaStore.Images.Media.MIME_TYPE,"image/jpeg");
+            values.put(MediaStore.Images.Media.RELATIVE_PATH,"Pictures/KeyDhan GPS Camera");
+            values.put(MediaStore.Images.Media.IS_PENDING,1);
+            Uri uri=getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,values);
+            if(uri==null) throw new Exception("Could not create gallery photo");
+            try(OutputStream out=getContentResolver().openOutputStream(uri);
+                java.io.FileInputStream in=new java.io.FileInputStream(pendingPhoto)) {
+                byte[] buffer=new byte[8192]; int n;
+                while((n=in.read(buffer))>0) out.write(buffer,0,n);
+            }
+            values.clear(); values.put(MediaStore.Images.Media.IS_PENDING,0);
+            getContentResolver().update(uri,values,null,null);
+            pendingPhoto.delete(); pendingPhoto=null;
+            if(shareAfter) {
+                Intent send=new Intent(Intent.ACTION_SEND); send.setType("image/jpeg");
+                send.putExtra(Intent.EXTRA_STREAM,uri); send.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                startActivity(Intent.createChooser(send,"Share KeyDhan GPS Photo"));
+            } else Toast.makeText(this,"Saved to Pictures/KeyDhan GPS Camera",Toast.LENGTH_LONG).show();
+            buildCameraUi();
+            if(cameraProvider!=null) bindSelectedCamera();
+        } catch(Exception e) { Toast.makeText(this,"Save failed: "+e.getMessage(),Toast.LENGTH_LONG).show(); }
+    }
+    private String getAddress(Location loc) {
+        try {
+            if(Geocoder.isPresent()) {
+                Geocoder geocoder=new Geocoder(this,Locale.getDefault());
+                List<Address> list=geocoder.getFromLocation(loc.getLatitude(),loc.getLongitude(),1);
+                if(list!=null&&!list.isEmpty()&&list.get(0).getAddressLine(0)!=null) return list.get(0).getAddressLine(0);
+            }
+        } catch(Exception ignored) {}
+        return "Address unavailable";
+    }
+    private String trim(String s,int max) { if(s==null)return ""; return s.length()<=max?s:s.substring(0,max-1)+"…"; }
+    @Override protected void onDestroy() {
+        super.onDestroy();
+        if(locationClient!=null&&locationCallback!=null) locationClient.removeLocationUpdates(locationCallback);
+        if(pendingPhoto!=null&&pendingPhoto.exists()) pendingPhoto.delete();
+    }
+}
+EOF
