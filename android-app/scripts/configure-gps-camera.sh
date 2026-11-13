@@ -317,10 +317,17 @@ public class GpsCameraActivity extends ComponentActivity {
         privacyCopy.addView(privacyTitle);
         privacyCopy.addView(privacySub);
         privacyStrip.addView(privacyCopy, new LinearLayout.LayoutParams(0, -2, 1));
-        TextView privacyAction = text(privacySeen ? "ⓘ" : "GOT IT", privacySeen ? 20 : 10, GOLD, true);
+        TextView privacyAction = text(privacySeen ? "i" : "GOT IT", privacySeen ? 19 : 10, GOLD, true);
         privacyAction.setGravity(Gravity.CENTER);
-        privacyAction.setPadding(6, 4, 6, 4);
-        privacyStrip.addView(privacyAction, new LinearLayout.LayoutParams(-2, 38));
+        privacyAction.setIncludeFontPadding(false);
+        privacyAction.setPadding(0, 0, 0, 1);
+        if (privacySeen) {
+            privacyAction.setBackground(shape(0x00102238, GOLD, 50));
+            privacyStrip.addView(privacyAction, new LinearLayout.LayoutParams(36, 36));
+        } else {
+            privacyAction.setPadding(6, 4, 6, 4);
+            privacyStrip.addView(privacyAction, new LinearLayout.LayoutParams(-2, 38));
+        }
         privacyStrip.setOnClickListener(v -> showPrivacyDetails());
         FrameLayout.LayoutParams privacyParams = new FrameLayout.LayoutParams(-1, -2, Gravity.TOP);
         privacyParams.leftMargin = 14; privacyParams.rightMargin = 14;
@@ -332,8 +339,15 @@ public class GpsCameraActivity extends ComponentActivity {
                 getPreferences(MODE_PRIVATE).edit().putBoolean(PREF_PRIVACY_NOTICE_SEEN, true).apply();
                 privacyTitle.setText("PRIVACY PROTECTED  ·  LOCAL PROCESSING");
                 privacySub.setText("Photos are processed and saved on your phone.");
-                privacyAction.setText("ⓘ");
-                privacyAction.setTextSize(20);
+                privacyAction.setText("i");
+                privacyAction.setTextSize(19);
+                privacyAction.setIncludeFontPadding(false);
+                privacyAction.setPadding(0, 0, 0, 1);
+                privacyAction.setBackground(shape(0x00102238, GOLD, 50));
+                android.view.ViewGroup.LayoutParams infoSize = privacyAction.getLayoutParams();
+                infoSize.width = (int)(36 * getResources().getDisplayMetrics().density);
+                infoSize.height = (int)(36 * getResources().getDisplayMetrics().density);
+                privacyAction.setLayoutParams(infoSize);
                 privacyStrip.setOnClickListener(ignored -> showPrivacyDetails());
             });
         }
