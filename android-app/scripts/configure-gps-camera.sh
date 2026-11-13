@@ -668,7 +668,7 @@ public class GpsCameraActivity extends ComponentActivity {
         float tmX=brandX+p.measureText("Dhan");
         p.setTextSize(11f*scale); canvas.drawText("™",tmX+2f*scale,y-13f*scale,p);
         p.setTextSize(22f*scale); p.setColor(Color.WHITE);
-        canvas.drawText("  GPS PHOTO",tmX+20f*scale,y,p);
+        canvas.drawText("  Real Time GPS Photo",tmX+20f*scale,y,p);
         p.setColor(0xFFE7C270); p.setTextSize(16f*scale); y+=line*0.78f;
         canvas.drawText("LIVE LOCATION  •  GPS ACCURACY",x,y,p);
         p.setColor(Color.WHITE); p.setFakeBoldText(false); p.setTextSize(19f*scale); y+=line*1.02f;
