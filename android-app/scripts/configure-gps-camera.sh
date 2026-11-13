@@ -706,7 +706,7 @@ public class GpsCameraActivity extends ComponentActivity {
         String date = new SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault()).format(new Date());
         Canvas canvas = new Canvas(marked);
         float scale = Math.max(1f, marked.getWidth() / 1080f), pad = 24f * scale, line = 35f * scale;
-        int qrSize = Math.round(292f * scale);
+        int qrSize = Math.round(310f * scale);
         float boxHeight = Math.max(pad * 2.35f + line * (showIp ? 7.35f : 6.45f), qrSize + pad * 2.1f);
         float top = marked.getHeight() - boxHeight - pad;
         Paint bg = new Paint(Paint.ANTI_ALIAS_FLAG); bg.setColor(0xE6101D33);
@@ -794,18 +794,22 @@ public class GpsCameraActivity extends ComponentActivity {
                 qr.setPixel(xx, yy, matrix.get(xx,yy) ? Color.BLACK : Color.WHITE);
             // Small KeyDhan™ navy/gold center mark; high error correction keeps the location QR scannable.
             Canvas qrCanvas = new Canvas(qr);
+            // Larger, legible KeyDhan™ center badge matching the approved reference mockup.
             Paint logoBg = new Paint(Paint.ANTI_ALIAS_FLAG); logoBg.setColor(Color.WHITE);
-            float logoW=qrSize*0.52f, logoH=qrSize*0.20f, logoCx=qrSize/2f, logoCy=qrSize/2f;
-            qrCanvas.drawRoundRect(logoCx-logoW/2f-3f*scale,logoCy-logoH/2f-3f*scale,
-                logoCx+logoW/2f+3f*scale,logoCy+logoH/2f+3f*scale,7f*scale,7f*scale,logoBg);
+            float logoW=qrSize*0.60f, logoH=qrSize*0.245f, logoCx=qrSize/2f, logoCy=qrSize/2f;
+            qrCanvas.drawRoundRect(logoCx-logoW/2f-4f*scale,logoCy-logoH/2f-4f*scale,
+                logoCx+logoW/2f+4f*scale,logoCy+logoH/2f+4f*scale,10f*scale,10f*scale,logoBg);
             Paint logoP = new Paint(Paint.ANTI_ALIAS_FLAG); logoP.setColor(NAVY);
-            qrCanvas.drawRoundRect(logoCx-logoW/2f,logoCy-logoH/2f,logoCx+logoW/2f,logoCy+logoH/2f,5f*scale,5f*scale,logoP);
+            qrCanvas.drawRoundRect(logoCx-logoW/2f,logoCy-logoH/2f,logoCx+logoW/2f,logoCy+logoH/2f,8f*scale,8f*scale,logoP);
             logoP.setTypeface(Typeface.create("sans-serif",Typeface.BOLD));
-            logoP.setTextSize(17f*scale); logoP.setTextAlign(Paint.Align.CENTER);
-            float logoTextY=logoCy+6f*scale;
-            logoP.setColor(Color.WHITE); qrCanvas.drawText("Key",logoCx-13f*scale,logoTextY,logoP);
-            logoP.setColor(0xFFE7C270); qrCanvas.drawText("Dhan",logoCx+20f*scale,logoTextY,logoP);
-            logoP.setTextSize(7f*scale); qrCanvas.drawText("™",logoCx+43f*scale,logoTextY-10f*scale,logoP);
+            logoP.setTextSize(qrSize*0.078f); logoP.setTextAlign(Paint.Align.LEFT);
+            String keyText="Key", dhanText="Dhan";
+            float keyWidth=logoP.measureText(keyText), dhanWidth=logoP.measureText(dhanText);
+            float tmWidth=qrSize*0.035f, fullWidth=keyWidth+dhanWidth+tmWidth+qrSize*0.018f;
+            float textStart=logoCx-fullWidth/2f, logoTextY=logoCy+qrSize*0.026f;
+            logoP.setColor(Color.WHITE); qrCanvas.drawText(keyText,textStart,logoTextY,logoP);
+            logoP.setColor(0xFFE7C270); qrCanvas.drawText(dhanText,textStart+keyWidth,logoTextY,logoP);
+            logoP.setTextSize(qrSize*0.034f); qrCanvas.drawText("™",textStart+keyWidth+dhanWidth+qrSize*0.012f,logoTextY-qrSize*0.034f,logoP);
             float qy=top+(boxHeight-qrSize)/2f;
             Paint qrFrame = new Paint(Paint.ANTI_ALIAS_FLAG); qrFrame.setColor(GOLD);
             canvas.drawRoundRect(qx-7f*scale,qy-7f*scale,qx+qrSize+7f*scale,qy+qrSize+7f*scale,10f*scale,10f*scale,qrFrame);
