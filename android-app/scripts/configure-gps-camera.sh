@@ -149,6 +149,10 @@ public class GpsCameraActivity extends ComponentActivity {
     private Location latestLocation;
     private LocationCallback locationCallback;
     private Button captureButton;
+    private Button switchCameraButton;
+    private ProcessCameraProvider cameraProvider;
+    private Preview cameraPreview;
+    private boolean useFrontCamera = false;
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
@@ -190,13 +194,24 @@ public class GpsCameraActivity extends ComponentActivity {
         FrameLayout.LayoutParams panelParams = new FrameLayout.LayoutParams(-1, -2, Gravity.BOTTOM);
         root.addView(panel, panelParams);
 
+        LinearLayout header = new LinearLayout(this);
+        header.setGravity(Gravity.CENTER_VERTICAL);
+        header.setPadding(18, 12, 14, 12);
+        header.setBackgroundColor(0xDD071228);
         TextView title = new TextView(this);
-        title.setText("KeyDhan™ GPS Camera");
+        title.setText("KEYDHAN™  |  GPS CAMERA");
         title.setTextColor(Color.WHITE);
-        title.setTextSize(18);
-        title.setPadding(18, 22, 18, 22);
-        title.setBackgroundColor(0x99071828);
-        root.addView(title, new FrameLayout.LayoutParams(-1, -2, Gravity.TOP));
+        title.setTextSize(15);
+        title.setTypeface(null, android.graphics.Typeface.BOLD);
+        header.addView(title, new LinearLayout.LayoutParams(0, -2, 1));
+        switchCameraButton = new Button(this);
+        switchCameraButton.setText("↻  FLIP");
+        switchCameraButton.setTextSize(12);
+        switchCameraButton.setTextColor(Color.WHITE);
+        switchCameraButton.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.rgb(184, 142, 54)));
+        switchCameraButton.setOnClickListener(v -> switchCamera());
+        header.addView(switchCameraButton, new LinearLayout.LayoutParams(-2, -2));
+        root.addView(header, new FrameLayout.LayoutParams(-1, -2, Gravity.TOP));
         setContentView(root);
         captureButton.setEnabled(false);
     }
@@ -221,13 +236,12 @@ public class GpsCameraActivity extends ComponentActivity {
         ListenableFuture<ProcessCameraProvider> future = ProcessCameraProvider.getInstance(this);
         future.addListener(() -> {
             try {
-                ProcessCameraProvider provider = future.get();
-                Preview preview = new Preview.Builder().build();
-                preview.setSurfaceProvider(previewView.getSurfaceProvider());
+                cameraProvider = future.get();
+                cameraPreview = new Preview.Builder().build();
+                cameraPreview.setSurfaceProvider(previewView.getSurfaceProvider());
                 imageCapture = new ImageCapture.Builder()
                     .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY).build();
-                provider.unbindAll();
-                provider.bindToLifecycle(this, CameraSelector.DEFAULT_BACK_CAMERA, preview, imageCapture);
+                bindSelectedCamera();
             } catch (Exception e) {
                 Toast.makeText(this, "Unable to start camera: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
@@ -258,6 +272,30 @@ public class GpsCameraActivity extends ComponentActivity {
         } catch (SecurityException e) {
             status.setText("Enable precise location permission to take a GPS photo.");
         }
+    }
+
+    private void bindSelectedCamera() {
+        if (cameraProvider == null || cameraPreview == null || imageCapture == null) return;
+        CameraSelector selector = useFrontCamera
+            ? CameraSelector.DEFAULT_FRONT_CAMERA : CameraSelector.DEFAULT_BACK_CAMERA;
+        try {
+            if (!cameraProvider.hasCamera(selector)) {
+                Toast.makeText(this, "This camera is not available on this device.", Toast.LENGTH_SHORT).show();
+                useFrontCamera = !useFrontCamera;
+                return;
+            }
+            cameraProvider.unbindAll();
+            cameraProvider.bindToLifecycle(this, selector, cameraPreview, imageCapture);
+            if (switchCameraButton != null)
+                switchCameraButton.setText(useFrontCamera ? "↻  FRONT" : "↻  BACK");
+        } catch (Exception e) {
+            Toast.makeText(this, "Could not switch camera: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void switchCamera() {
+        useFrontCamera = !useFrontCamera;
+        bindSelectedCamera();
     }
 
     private void capturePhoto() {
