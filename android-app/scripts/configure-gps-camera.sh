@@ -355,26 +355,38 @@ public class GpsCameraActivity extends ComponentActivity {
                 super.onDraw(canvas);
                 float d = getResources().getDisplayMetrics().density;
                 float cx = getWidth()/2f, cy = getHeight()/2f;
-                p.setColor(Color.WHITE); p.setStyle(Paint.Style.STROKE);
-                p.setStrokeWidth(2.3f*d); p.setStrokeCap(Paint.Cap.ROUND); p.setStrokeJoin(Paint.Join.ROUND);
-                // Two opposing curved arrows make the camera-switch action unmistakable.
-                RectF upper = new RectF(cx-19*d,cy-19*d,cx+19*d,cy+19*d);
-                canvas.drawArc(upper,205,125,false,p);
-                Path upperTip = new Path();
-                upperTip.moveTo(cx-18*d,cy-13*d); upperTip.lineTo(cx-7*d,cy-17*d); upperTip.lineTo(cx-12*d,cy-5*d); upperTip.close();
-                p.setStyle(Paint.Style.FILL); canvas.drawPath(upperTip,p);
+                // Two clean opposing circular arrows only — no camera glyph in the center.
+                canvas.drawCircle(cx, cy, 31f*d, p);
+                p.setColor(0xFFF5D989);
                 p.setStyle(Paint.Style.STROKE);
-                canvas.drawArc(upper,25,125,false,p);
+                p.setStrokeWidth(2.8f*d);
+                p.setStrokeCap(Paint.Cap.ROUND);
+                p.setStrokeJoin(Paint.Join.ROUND);
+                RectF orbit = new RectF(cx-19*d, cy-19*d, cx+19*d, cy+19*d);
+                canvas.drawArc(orbit, 205, 125, false, p);
+                Path upperTip = new Path();
+                upperTip.moveTo(cx-18*d, cy-13*d);
+                upperTip.lineTo(cx-7*d, cy-17*d);
+                upperTip.lineTo(cx-12*d, cy-5*d);
+                upperTip.close();
+                p.setStyle(Paint.Style.FILL);
+                canvas.drawPath(upperTip, p);
+                p.setStyle(Paint.Style.STROKE);
+                canvas.drawArc(orbit, 25, 125, false, p);
                 Path lowerTip = new Path();
-                lowerTip.moveTo(cx+18*d,cy+13*d); lowerTip.lineTo(cx+7*d,cy+17*d); lowerTip.lineTo(cx+12*d,cy+5*d); lowerTip.close();
-                p.setStyle(Paint.Style.FILL); canvas.drawPath(lowerTip,p);
-                // Small camera body in the center.
-                p.setStyle(Paint.Style.STROKE); p.setStrokeWidth(2.5f*d);
-                canvas.drawRoundRect(cx-10*d,cy-7*d,cx+10*d,cy+7*d,2.5f*d,2.5f*d,p);
-                canvas.drawCircle(cx,cy,3.2f*d,p);
+                lowerTip.moveTo(cx+18*d, cy+13*d);
+                lowerTip.lineTo(cx+7*d, cy+17*d);
+                lowerTip.lineTo(cx+12*d, cy+5*d);
+                lowerTip.close();
+                p.setStyle(Paint.Style.FILL);
+                canvas.drawPath(lowerTip, p);
             }
         };
-        flip.setBackground(shape(0xAA172640, GOLD, 28));
+        GradientDrawable flipRing = new GradientDrawable(
+            GradientDrawable.Orientation.TL_BR,
+            new int[]{0xFFFFE7A0, 0xFFD2A952, 0xFFB88935});
+        flipRing.setShape(GradientDrawable.OVAL);
+        flip.setBackground(flipRing);
         flip.setContentDescription("Switch front and rear camera");
         flip.setOnClickListener(v -> selectCamera(!useFrontCamera));
         rail.addView(flip, new LinearLayout.LayoutParams(74, 74));
