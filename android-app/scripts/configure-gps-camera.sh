@@ -156,6 +156,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import java.util.HashMap;
+import java.util.Map;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.common.BitMatrix;
 
@@ -671,7 +675,7 @@ public class GpsCameraActivity extends ComponentActivity {
         String date = new SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault()).format(new Date());
         Canvas canvas = new Canvas(marked);
         float scale = Math.max(1f, marked.getWidth() / 1080f), pad = 24f * scale, line = 34f * scale;
-        int qrSize = Math.round(142f * scale);
+        int qrSize = Math.round(184f * scale);
         float boxHeight = pad * 2.45f + line * (showIp ? 6.15f : 5.15f), top = marked.getHeight() - boxHeight - pad;
         Paint bg = new Paint(Paint.ANTI_ALIAS_FLAG); bg.setColor(0xE6101D33);
         canvas.drawRoundRect(pad, top, marked.getWidth()-pad, marked.getHeight()-pad, 22f*scale, 22f*scale, bg);
@@ -705,13 +709,30 @@ public class GpsCameraActivity extends ComponentActivity {
         // Per-photo QR encodes a direct Google Maps query for this exact GPS fix.
         try {
             String mapUrl = String.format(Locale.US,"https://maps.google.com/?q=%.6f,%.6f",loc.getLatitude(),loc.getLongitude());
-            BitMatrix matrix = new QRCodeWriter().encode(mapUrl, BarcodeFormat.QR_CODE, qrSize, qrSize);
+            Map<EncodeHintType,Object> qrHints = new HashMap<>();
+            qrHints.put(EncodeHintType.MARGIN, 1);
+            qrHints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
+            BitMatrix matrix = new QRCodeWriter().encode(mapUrl, BarcodeFormat.QR_CODE, qrSize, qrSize, qrHints);
             Bitmap qr = Bitmap.createBitmap(qrSize, qrSize, Bitmap.Config.ARGB_8888);
             for (int yy=0; yy<qrSize; yy++) for (int xx=0; xx<qrSize; xx++)
                 qr.setPixel(xx, yy, matrix.get(xx,yy) ? Color.BLACK : Color.WHITE);
+            // Small KeyDhan™ navy/gold center mark; high error correction keeps the location QR scannable.
+            Canvas qrCanvas = new Canvas(qr);
+            Paint logoBg = new Paint(Paint.ANTI_ALIAS_FLAG); logoBg.setColor(Color.WHITE);
+            float logoW=qrSize*0.52f, logoH=qrSize*0.20f, logoCx=qrSize/2f, logoCy=qrSize/2f;
+            qrCanvas.drawRoundRect(logoCx-logoW/2f-3f*scale,logoCy-logoH/2f-3f*scale,
+                logoCx+logoW/2f+3f*scale,logoCy+logoH/2f+3f*scale,7f*scale,7f*scale,logoBg);
+            Paint logoP = new Paint(Paint.ANTI_ALIAS_FLAG); logoP.setColor(NAVY);
+            qrCanvas.drawRoundRect(logoCx-logoW/2f,logoCy-logoH/2f,logoCx+logoW/2f,logoCy+logoH/2f,5f*scale,5f*scale,logoP);
+            logoP.setTypeface(Typeface.create("sans-serif",Typeface.BOLD));
+            logoP.setTextSize(17f*scale); logoP.setTextAlign(Paint.Align.CENTER);
+            float logoTextY=logoCy+6f*scale;
+            logoP.setColor(Color.WHITE); qrCanvas.drawText("Key",logoCx-13f*scale,logoTextY,logoP);
+            logoP.setColor(0xFFE7C270); qrCanvas.drawText("Dhan",logoCx+20f*scale,logoTextY,logoP);
+            logoP.setTextSize(7f*scale); qrCanvas.drawText("™",logoCx+43f*scale,logoTextY-10f*scale,logoP);
             float qx=marked.getWidth()-pad-qrSize-24f*scale, qy=top+(boxHeight-qrSize)/2f;
             Paint qrBg = new Paint(Paint.ANTI_ALIAS_FLAG); qrBg.setColor(Color.WHITE);
-            canvas.drawRoundRect(qx-7f*scale,qy-7f*scale,qx+qrSize+7f*scale,qy+qrSize+7f*scale,8f*scale,8f*scale,qrBg);
+            canvas.drawRoundRect(qx-4f*scale,qy-4f*scale,qx+qrSize+4f*scale,qy+qrSize+4f*scale,6f*scale,6f*scale,qrBg);
             canvas.drawBitmap(qr,qx,qy,null); qr.recycle();
         } catch (Exception qrError) {
             android.util.Log.e("KeyDhanGPS","Could not generate location QR",qrError);
