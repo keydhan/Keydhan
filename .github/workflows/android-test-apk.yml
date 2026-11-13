@@ -91,10 +91,10 @@ jobs:
           test -s "$RES/mipmap-xxxhdpi/ic_launcher.png"
           test -s "$RES/drawable-nodpi/ic_launcher_foreground.png"
 
-      - name: Set Android app version to 0.7
+      - name: Set Android app version to 0.8
         run: |
-          sed -i 's/versionCode 1/versionCode 7/' android/app/build.gradle
-          sed -i "s/versionName '1.0'/versionName '0.7'/" android/app/build.gradle
+          sed -i 's/versionCode 1/versionCode 8/' android/app/build.gradle
+          sed -i "s/versionName '1.0'/versionName '0.8'/" android/app/build.gradle
           grep -E 'versionCode|versionName' android/app/build.gradle
 
       - name: Build debug APK
@@ -102,16 +102,16 @@ jobs:
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon
-          cp app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/keydhan-android-v0.7-test.apk
+          cp app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/keydhan-android-v0.8-test.apk
 
       - name: Verify APK launcher icon metadata
         run: |
-          "$ANDROID_HOME/build-tools/$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -1)/aapt" dump badging android/app/build/outputs/apk/debug/keydhan-android-v0.7-test.apk | grep -E "package:|application-icon"
+          "$ANDROID_HOME/build-tools/$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -1)/aapt" dump badging android/app/build/outputs/apk/debug/keydhan-android-v0.8-test.apk | grep -E "package:|application-icon"
 
-      - name: Upload v0.7 test APK
+      - name: Upload v0.8 test APK
         uses: actions/upload-artifact@v4
         with:
-          name: keydhan-android-v0.7-test-apk
-          path: android-app/android/app/build/outputs/apk/debug/keydhan-android-v0.7-test.apk
+          name: keydhan-android-v0.8-test-apk
+          path: android-app/android/app/build/outputs/apk/debug/keydhan-android-v0.8-test.apk
           if-no-files-found: error
           retention-days: 14
