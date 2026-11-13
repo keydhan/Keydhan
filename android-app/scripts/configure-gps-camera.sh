@@ -14,7 +14,7 @@ needle="dependencies {"
 if needle not in s:
     raise SystemExit("Could not find app dependencies block")
 deps='''dependencies {
-    implementation "androidx.camera:camera-core:1.4.2"
+    implementation "androidx.activity:activity:1.10.1"\n    implementation "androidx.camera:camera-core:1.4.2"
     implementation "androidx.camera:camera-camera2:1.4.2"
     implementation "androidx.camera:camera-lifecycle:1.4.2"
     implementation "androidx.camera:camera-view:1.4.2"
@@ -41,7 +41,7 @@ activity='''        <activity
             android:name="com.keydhan.app.GpsCameraActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@android:style/Theme.Material.Light.NoActionBar" />
 '''
 if "GpsCameraActivity" not in s:
     s=s.replace("</application>",activity+"</application>")
@@ -93,7 +93,7 @@ cat > "$PKG/GpsCameraActivity.java" <<'EOF'
 package com.keydhan.app;
 
 import android.Manifest;
-import android.app.Activity;
+import androidx.activity.ComponentActivity;
 import android.content.ContentValues;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -140,7 +140,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executor;
 
-public class GpsCameraActivity extends Activity {
+public class GpsCameraActivity extends ComponentActivity {
     private static final int REQUEST_PERMISSIONS = 410;
     private PreviewView previewView;
     private TextView status;
