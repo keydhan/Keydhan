@@ -528,3 +528,5 @@ public class GpsCameraActivity extends ComponentActivity {
     }
 }
 EOF
+
+# Premium KeyDhan black-and-royal-gold camera layout with safe status-bar spacing and circular shutter.
