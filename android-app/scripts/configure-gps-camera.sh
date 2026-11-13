@@ -399,7 +399,8 @@ public class GpsCameraActivity extends ComponentActivity {
         flip.setBackground(flipRing);
         flip.setContentDescription("Switch front and rear camera");
         flip.setOnClickListener(v -> selectCamera(!useFrontCamera));
-        rail.addView(flip, new LinearLayout.LayoutParams(74, 74));
+        int flipSize = (int)(74 * getResources().getDisplayMetrics().density);
+        rail.addView(flip, new LinearLayout.LayoutParams(flipSize, flipSize));
         cameraModeLabel = text("REAR", 11, NAVY, true);
         cameraModeLabel.setGravity(Gravity.CENTER);
         cameraModeLabel.setBackground(shape(GOLD, 0, 14));
