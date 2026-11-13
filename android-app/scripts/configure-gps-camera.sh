@@ -193,6 +193,13 @@ public class GpsCameraActivity extends ComponentActivity {
         b.setPadding(12, 4, 12, 4);
         return b;
     }
+    private TextView iconControl(String label, String description) {
+        TextView v = text(label, 21, Color.WHITE, true);
+        v.setGravity(Gravity.CENTER);
+        v.setContentDescription(description);
+        v.setBackground(shape(0xAA172640, GOLD, 28));
+        return v;
+    }
     private void buildCameraUi() {
         FrameLayout root = new FrameLayout(this);
         root.setBackgroundColor(Color.BLACK);
@@ -200,61 +207,52 @@ public class GpsCameraActivity extends ComponentActivity {
         previewView.setScaleType(PreviewView.ScaleType.FILL_CENTER);
         root.addView(previewView, new FrameLayout.LayoutParams(-1, -1));
 
-        // Premium header: system status icons remain in the OS status-bar area.
+        // Compact header: one clear Exit action, centered brand and flash control.
         LinearLayout header = new LinearLayout(this);
         header.setGravity(Gravity.CENTER_VERTICAL);
-        header.setPadding(14, 9, 14, 9);
-        header.setBackground(shape(0xF2071228, 0, 0));
-        Button exit = button("‹");
-        exit.setTextSize(28);
-        exit.setContentDescription("Exit GPS Camera");
+        header.setPadding(14, 8, 14, 8);
+        header.setBackground(shape(0xE8071228, 0, 0));
+
+        TextView exit = iconControl("×", "Exit GPS Camera");
+        exit.setTextSize(30);
         exit.setOnClickListener(v -> finish());
-        header.addView(exit, new LinearLayout.LayoutParams(46, 46));
+        header.addView(exit, new LinearLayout.LayoutParams(44, 44));
 
         LinearLayout brand = new LinearLayout(this);
         brand.setOrientation(LinearLayout.VERTICAL);
         brand.setGravity(Gravity.CENTER);
         TextView title = text("KEYDHAN™", 17, Color.WHITE, true);
         title.setGravity(Gravity.CENTER);
-        TextView subtitle = text("GPS CAMERA", 11, GOLD, true);
+        TextView subtitle = text("GPS CAMERA", 10, GOLD, true);
         subtitle.setGravity(Gravity.CENTER);
         brand.addView(title);
         brand.addView(subtitle);
         header.addView(brand, new LinearLayout.LayoutParams(0, -2, 1));
 
-        flashButton = button("⚡");
-        flashButton.setTextSize(21);
-        flashButton.setContentDescription("Toggle flash");
+        flashButton = button("⚡  OFF");
+        flashButton.setTextSize(12);
+        flashButton.setContentDescription("Toggle rear camera flash");
         flashButton.setOnClickListener(v -> toggleFlash());
-        header.addView(flashButton, new LinearLayout.LayoutParams(46, 46));
-        Button exitRight = button("↗");
-        exitRight.setTextSize(18);
-        exitRight.setContentDescription("Close camera");
-        exitRight.setOnClickListener(v -> finish());
-        LinearLayout.LayoutParams exitParams = new LinearLayout.LayoutParams(46, 46);
-        exitParams.leftMargin = 7;
-        header.addView(exitRight, exitParams);
+        header.addView(flashButton, new LinearLayout.LayoutParams(-2, 44));
         root.addView(header, new FrameLayout.LayoutParams(-1, -2, Gravity.TOP));
 
-        // GPS information floats above the camera controls, never in the status bar.
-        status = text("●  GPS SEARCHING…", 12, Color.WHITE, true);
-        status.setGravity(Gravity.CENTER);
-        status.setPadding(14, 12, 14, 12);
-        status.setBackground(shape(0xD9071228, GOLD, 24));
-        FrameLayout.LayoutParams gpsParams = new FrameLayout.LayoutParams(
-            -1, -2, Gravity.BOTTOM);
-        gpsParams.setMargins(18, 0, 18, 174);
-        root.addView(status, gpsParams);
-
+        // One integrated bottom control deck prevents GPS text and camera controls overlapping.
         LinearLayout bottom = new LinearLayout(this);
         bottom.setOrientation(LinearLayout.VERTICAL);
         bottom.setGravity(Gravity.CENTER_HORIZONTAL);
-        bottom.setPadding(16, 14, 16, 15);
-        bottom.setBackground(shape(0xF9071228, 0, 28));
+        bottom.setPadding(16, 14, 16, 14);
+        bottom.setBackground(shape(0xF5071228, 0, 26));
+
+        status = text("●  GPS SEARCHING…", 12, 0xFFF3F5F8, true);
+        status.setGravity(Gravity.CENTER);
+        status.setPadding(10, 11, 10, 11);
+        status.setBackground(shape(0xCC1B2A43, GOLD, 20));
+        LinearLayout.LayoutParams gpsLp = new LinearLayout.LayoutParams(-1, -2);
+        gpsLp.bottomMargin = 12;
+        bottom.addView(status, gpsLp);
 
         LinearLayout cameraChoices = new LinearLayout(this);
         cameraChoices.setGravity(Gravity.CENTER);
-        cameraChoices.setPadding(0, 0, 0, 10);
         rearButton = button("✓  REAR CAMERA");
         frontButton = button("FRONT CAMERA");
         rearButton.setTextSize(12);
@@ -262,43 +260,53 @@ public class GpsCameraActivity extends ComponentActivity {
         rearButton.setOnClickListener(v -> selectCamera(false));
         frontButton.setOnClickListener(v -> selectCamera(true));
         LinearLayout.LayoutParams choice = new LinearLayout.LayoutParams(0, 46, 1);
-        choice.setMargins(3, 0, 3, 0);
+        choice.setMargins(3, 0, 3, 12);
         cameraChoices.addView(rearButton, choice);
         cameraChoices.addView(frontButton, choice);
         bottom.addView(cameraChoices);
 
         LinearLayout shutterRow = new LinearLayout(this);
-        shutterRow.setGravity(Gravity.CENTER);
-        shutterRow.setPadding(0, 0, 0, 1);
-        TextView galleryHint = text("GALLERY", 10, 0xFFE7C270, true);
-        galleryHint.setGravity(Gravity.CENTER);
-        shutterRow.addView(galleryHint, new LinearLayout.LayoutParams(0, 72, 1));
+        shutterRow.setGravity(Gravity.CENTER_VERTICAL);
+        shutterRow.setPadding(2, 0, 2, 0);
+
+        TextView gallery = text("▣\nGALLERY", 11, GOLD, true);
+        gallery.setGravity(Gravity.CENTER);
+        gallery.setContentDescription("Open photo gallery");
+        gallery.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setType("image/*");
+            intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            try { startActivity(intent); }
+            catch (Exception e) { Toast.makeText(this, "Gallery is not available.", Toast.LENGTH_SHORT).show(); }
+        });
+        shutterRow.addView(gallery, new LinearLayout.LayoutParams(0, 66, 1));
 
         captureButton = new Button(this);
         captureButton.setText("●");
-        captureButton.setTextSize(29);
+        captureButton.setTextSize(28);
         captureButton.setTextColor(NAVY);
         captureButton.setGravity(Gravity.CENTER);
         captureButton.setPadding(0, 0, 0, 2);
         captureButton.setAllCaps(false);
-        captureButton.setContentDescription("Take GPS photo");
+        captureButton.setContentDescription("Capture GPS photo");
         GradientDrawable shutter = new GradientDrawable();
         shutter.setShape(GradientDrawable.OVAL);
         shutter.setColor(Color.WHITE);
         shutter.setStroke((int)(5 * getResources().getDisplayMetrics().density), GOLD);
         captureButton.setBackground(shutter);
-        captureButton.setElevation(8);
-        shutterRow.addView(captureButton, new LinearLayout.LayoutParams(82, 82));
+        captureButton.setElevation(7);
+        shutterRow.addView(captureButton, new LinearLayout.LayoutParams(76, 76));
 
-        TextView gpsPhotoLabel = text("GPS PHOTO", 10, 0xFFE7C270, true);
-        gpsPhotoLabel.setGravity(Gravity.CENTER);
-        shutterRow.addView(gpsPhotoLabel, new LinearLayout.LayoutParams(0, 72, 1));
+        TextView photoLabel = text("⌖\nGPS PHOTO", 11, GOLD, true);
+        photoLabel.setGravity(Gravity.CENTER);
+        shutterRow.addView(photoLabel, new LinearLayout.LayoutParams(0, 66, 1));
         bottom.addView(shutterRow);
+
         TextView hint = text("LOCATION-STAMPED PHOTO", 9, 0xFF9AA8BC, true);
         hint.setGravity(Gravity.CENTER);
-        LinearLayout.LayoutParams hintParams = new LinearLayout.LayoutParams(-1, -2);
-        hintParams.topMargin = 4;
-        bottom.addView(hint, hintParams);
+        LinearLayout.LayoutParams hintLp = new LinearLayout.LayoutParams(-1, -2);
+        hintLp.topMargin = 7;
+        bottom.addView(hint, hintLp);
 
         captureButton.setOnClickListener(v -> capturePhoto());
         captureButton.setEnabled(false);
