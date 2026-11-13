@@ -316,9 +316,25 @@ public class GpsCameraActivity extends ComponentActivity {
         LinearLayout galleryGroup = new LinearLayout(this);
         galleryGroup.setOrientation(LinearLayout.VERTICAL);
         galleryGroup.setGravity(Gravity.CENTER);
-        TextView galleryIcon = text("▧", 23, GOLD, true);
-        TextView galleryLabel = text("GALLERY", 13, Color.WHITE, true);
-        galleryGroup.addView(galleryIcon);
+        View galleryIcon = new View(this) {
+            private final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
+            @Override protected void onDraw(Canvas canvas) {
+                super.onDraw(canvas);
+                float d = getResources().getDisplayMetrics().density;
+                float cx = getWidth()/2f, cy = getHeight()/2f;
+                p.setColor(GOLD); p.setStyle(Paint.Style.STROKE); p.setStrokeWidth(2.8f*d);
+                canvas.drawRoundRect(cx-14*d,cy-11*d,cx+14*d,cy+11*d,3*d,3*d,p);
+                p.setStyle(Paint.Style.FILL);
+                canvas.drawCircle(cx+7*d,cy-5*d,2.5f*d,p);
+                Path mountain = new Path();
+                mountain.moveTo(cx-10*d,cy+7*d); mountain.lineTo(cx-3*d,cy-1*d);
+                mountain.lineTo(cx+2*d,cy+4*d); mountain.lineTo(cx+6*d,cy+1*d);
+                mountain.lineTo(cx+11*d,cy+7*d); mountain.close();
+                canvas.drawPath(mountain,p);
+            }
+        };
+        galleryGroup.addView(galleryIcon, new LinearLayout.LayoutParams(40, 34));
+        TextView galleryLabel = text("GALLERY", 14, Color.WHITE, true);
         galleryGroup.addView(galleryLabel);
         galleryGroup.setOnClickListener(v -> openGallery());
         bottom.addView(galleryGroup, new LinearLayout.LayoutParams(0, -1, 1));
@@ -330,13 +346,41 @@ public class GpsCameraActivity extends ComponentActivity {
         LinearLayout gpsPhotoGroup = new LinearLayout(this);
         gpsPhotoGroup.setOrientation(LinearLayout.VERTICAL);
         gpsPhotoGroup.setGravity(Gravity.CENTER);
-        TextView gpsPhotoIcon = text("⌖", 23, GOLD, true);
-        TextView gpsPhotoLabel = text("GPS PHOTO", 13, Color.WHITE, true);
-        gpsPhotoGroup.addView(gpsPhotoIcon);
+        View gpsPhotoIcon = new View(this) {
+            private final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
+            @Override protected void onDraw(Canvas canvas) {
+                super.onDraw(canvas);
+                float d = getResources().getDisplayMetrics().density;
+                float cx = getWidth()/2f, cy = getHeight()/2f;
+                p.setColor(GOLD); p.setStyle(Paint.Style.STROKE); p.setStrokeWidth(2.8f*d);
+                RectF pin = new RectF(cx-12*d,cy-15*d,cx+12*d,cy+9*d);
+                canvas.drawArc(pin,205,310,false,p);
+                Path tail = new Path(); tail.moveTo(cx-8*d,cy+5*d);
+                tail.lineTo(cx,cy+17*d); tail.lineTo(cx+8*d,cy+5*d);
+                canvas.drawPath(tail,p);
+                canvas.drawCircle(cx,cy-4*d,4*d,p);
+                p.setStyle(Paint.Style.FILL);
+                canvas.drawRoundRect(cx+5*d,cy+1*d,cx+18*d,cy+11*d,2*d,2*d,p);
+                p.setColor(NAVY); canvas.drawCircle(cx+11.5f*d,cy+6*d,2.5f*d,p);
+            }
+        };
+        gpsPhotoGroup.addView(gpsPhotoIcon, new LinearLayout.LayoutParams(40, 34));
+        TextView gpsPhotoLabel = text("GPS PHOTO", 14, Color.WHITE, true);
         gpsPhotoGroup.addView(gpsPhotoLabel);
         gpsPhotoGroup.setOnClickListener(v -> openGallery());
         bottom.addView(gpsPhotoGroup, new LinearLayout.LayoutParams(0, -1, 1));
         dock.addView(bottom, new FrameLayout.LayoutParams(-1, -1));
+
+        // Fine royal-gold outer halo around the raised shutter.
+        View shutterHalo = new View(this);
+        GradientDrawable halo = new GradientDrawable();
+        halo.setShape(GradientDrawable.OVAL);
+        halo.setColor(0x00000000);
+        halo.setStroke((int)(2 * getResources().getDisplayMetrics().density), GOLD);
+        shutterHalo.setBackground(halo);
+        FrameLayout.LayoutParams haloLp = new FrameLayout.LayoutParams(120, 120, Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+        haloLp.topMargin = -16;
+        dock.addView(shutterHalo, haloLp);
 
         captureButton = new Button(this);
         captureButton.setText("");
