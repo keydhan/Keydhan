@@ -280,7 +280,7 @@ public class GpsCameraActivity extends ComponentActivity {
         LinearLayout rail = new LinearLayout(this);
         rail.setOrientation(LinearLayout.VERTICAL);
         rail.setGravity(Gravity.CENTER);
-        rail.setPadding(6, 12, 6, 12);
+        rail.setPadding(7, 13, 7, 13);
         rail.setBackground(shape(0xD9071228, GOLD, 28));
         View flip = new View(this) {
             private final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -291,42 +291,42 @@ public class GpsCameraActivity extends ComponentActivity {
                 p.setColor(Color.WHITE); p.setStyle(Paint.Style.STROKE);
                 p.setStrokeWidth(2.3f*d); p.setStrokeCap(Paint.Cap.ROUND); p.setStrokeJoin(Paint.Join.ROUND);
                 // Two opposing curved arrows make the camera-switch action unmistakable.
-                RectF upper = new RectF(cx-14*d,cy-14*d,cx+14*d,cy+14*d);
+                RectF upper = new RectF(cx-19*d,cy-19*d,cx+19*d,cy+19*d);
                 canvas.drawArc(upper,205,125,false,p);
                 Path upperTip = new Path();
-                upperTip.moveTo(cx-13*d,cy-10*d); upperTip.lineTo(cx-4*d,cy-12*d); upperTip.lineTo(cx-10*d,cy-3*d); upperTip.close();
+                upperTip.moveTo(cx-18*d,cy-13*d); upperTip.lineTo(cx-7*d,cy-17*d); upperTip.lineTo(cx-12*d,cy-5*d); upperTip.close();
                 p.setStyle(Paint.Style.FILL); canvas.drawPath(upperTip,p);
                 p.setStyle(Paint.Style.STROKE);
                 canvas.drawArc(upper,25,125,false,p);
                 Path lowerTip = new Path();
-                lowerTip.moveTo(cx+13*d,cy+10*d); lowerTip.lineTo(cx+4*d,cy+12*d); lowerTip.lineTo(cx+10*d,cy+3*d); lowerTip.close();
+                lowerTip.moveTo(cx+18*d,cy+13*d); lowerTip.lineTo(cx+7*d,cy+17*d); lowerTip.lineTo(cx+12*d,cy+5*d); lowerTip.close();
                 p.setStyle(Paint.Style.FILL); canvas.drawPath(lowerTip,p);
                 // Small camera body in the center.
-                p.setStyle(Paint.Style.STROKE); p.setStrokeWidth(2.1f*d);
-                canvas.drawRoundRect(cx-7*d,cy-5*d,cx+7*d,cy+5*d,2*d,2*d,p);
-                canvas.drawCircle(cx,cy,2.2f*d,p);
+                p.setStyle(Paint.Style.STROKE); p.setStrokeWidth(2.5f*d);
+                canvas.drawRoundRect(cx-10*d,cy-7*d,cx+10*d,cy+7*d,2.5f*d,2.5f*d,p);
+                canvas.drawCircle(cx,cy,3.2f*d,p);
             }
         };
         flip.setBackground(shape(0xAA172640, GOLD, 28));
         flip.setContentDescription("Switch front and rear camera");
         flip.setOnClickListener(v -> selectCamera(!useFrontCamera));
-        rail.addView(flip, new LinearLayout.LayoutParams(62, 62));
+        rail.addView(flip, new LinearLayout.LayoutParams(74, 74));
         cameraModeLabel = text("REAR", 11, NAVY, true);
         cameraModeLabel.setGravity(Gravity.CENTER);
         cameraModeLabel.setBackground(shape(GOLD, 0, 14));
-        LinearLayout.LayoutParams modeLp = new LinearLayout.LayoutParams(68, 30);
+        LinearLayout.LayoutParams modeLp = new LinearLayout.LayoutParams(76, 32);
         modeLp.topMargin = 8; modeLp.bottomMargin = 9;
         rail.addView(cameraModeLabel, modeLp);
-        Button zoomIn = button("+"); zoomIn.setTextSize(22);
-        Button zoomOut = button("−"); zoomOut.setTextSize(22);
+        Button zoomIn = button("+"); zoomIn.setTextSize(24);
+        Button zoomOut = button("−"); zoomOut.setTextSize(24);
         zoomLabel = text("1.0×", 12, NAVY, true);
         zoomLabel.setGravity(Gravity.CENTER);
         zoomLabel.setBackground(shape(GOLD, 0, 16));
-        rail.addView(zoomIn, new LinearLayout.LayoutParams(68, 56));
-        LinearLayout.LayoutParams zlp = new LinearLayout.LayoutParams(68, 38);
+        rail.addView(zoomIn, new LinearLayout.LayoutParams(76, 60));
+        LinearLayout.LayoutParams zlp = new LinearLayout.LayoutParams(76, 40);
         zlp.topMargin = 3; zlp.bottomMargin = 3;
         rail.addView(zoomLabel, zlp);
-        rail.addView(zoomOut, new LinearLayout.LayoutParams(68, 56));
+        rail.addView(zoomOut, new LinearLayout.LayoutParams(76, 60));
         zoomIn.setOnClickListener(v -> changeZoom(0.5f));
         zoomOut.setOnClickListener(v -> changeZoom(-0.5f));
         FrameLayout.LayoutParams railParams = new FrameLayout.LayoutParams(-2, -2, Gravity.END | Gravity.CENTER_VERTICAL);
