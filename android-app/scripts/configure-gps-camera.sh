@@ -217,19 +217,19 @@ public class GpsCameraActivity extends ComponentActivity {
         // Premium compact header. Window insets are applied below so controls never sit under system icons.
         LinearLayout header = new LinearLayout(this);
         header.setGravity(Gravity.CENTER_VERTICAL);
-        header.setPadding(14, 8, 14, 8);
+        header.setPadding(18, 14, 18, 14);
         header.setBackground(shape(0xE8071228, GOLD, 22));
         TextView exit = iconControl("×", "Exit GPS Camera");
         exit.setTextSize(30);
         exit.setOnClickListener(v -> finish());
-        header.addView(exit, new LinearLayout.LayoutParams(46, 46));
+        header.addView(exit, new LinearLayout.LayoutParams(68, 68));
 
         LinearLayout brand = new LinearLayout(this);
         brand.setOrientation(LinearLayout.VERTICAL);
         brand.setGravity(Gravity.CENTER);
-        TextView title = text("KEYDHAN™", 21, Color.WHITE, true);
+        TextView title = text("KeyDhan™", 30, Color.WHITE, true);
         title.setGravity(Gravity.CENTER);
-        TextView subtitle = text("GPS CAMERA  •  LOCATION STAMP", 9, GOLD, true);
+        TextView subtitle = text("⌖  GPS CAMERA", 16, GOLD, true);
         subtitle.setGravity(Gravity.CENTER);
         brand.addView(title);
         brand.addView(subtitle);
@@ -239,7 +239,7 @@ public class GpsCameraActivity extends ComponentActivity {
         flashButton.setTextSize(19);
         flashButton.setContentDescription("Toggle flash");
         flashButton.setOnClickListener(v -> toggleFlash());
-        header.addView(flashButton, new LinearLayout.LayoutParams(48, 46));
+        header.addView(flashButton, new LinearLayout.LayoutParams(62, 62));
         TextView settings = iconControl("⚙", "Camera settings");
         settings.setTextSize(20);
         settings.setOnClickListener(v -> new android.app.AlertDialog.Builder(this)
@@ -249,7 +249,7 @@ public class GpsCameraActivity extends ComponentActivity {
                     if (which == 0) toggleFlash();
                     else Toast.makeText(this, which == 1 ? "High photo quality is enabled." : "GPS watermark is enabled.", Toast.LENGTH_SHORT).show();
                 }).show());
-        LinearLayout.LayoutParams settingsLp = new LinearLayout.LayoutParams(46, 46);
+        LinearLayout.LayoutParams settingsLp = new LinearLayout.LayoutParams(62, 62);
         settingsLp.leftMargin = 7;
         header.addView(settings, settingsLp);
         FrameLayout.LayoutParams headerParams = new FrameLayout.LayoutParams(-1, -2, Gravity.TOP);
@@ -260,14 +260,14 @@ public class GpsCameraActivity extends ComponentActivity {
         LinearLayout rail = new LinearLayout(this);
         rail.setOrientation(LinearLayout.VERTICAL);
         rail.setGravity(Gravity.CENTER);
-        rail.setPadding(7, 10, 7, 10);
+        rail.setPadding(9, 12, 9, 12);
         rail.setBackground(shape(0xD9071228, GOLD, 28));
         TextView flip = iconControl("⇄", "Switch front and rear camera");
-        flip.setTextSize(31);
+        flip.setTextSize(38);
         flip.setOnClickListener(v -> selectCamera(!useFrontCamera));
-        rail.addView(flip, new LinearLayout.LayoutParams(58, 58));
-        cameraModeLabel = text("REAR", 9, GOLD, true);
-        cameraModeLabel.setGravity(Gravity.CENTER);
+        rail.addView(flip, new LinearLayout.LayoutParams(76, 76));
+        cameraModeLabel = text("REAR", 13, NAVY, true);
+        cameraModeLabel.setGravity(Gravity.CENTER);\n        cameraModeLabel.setBackground(shape(GOLD, 0, 14));
         LinearLayout.LayoutParams modeLp = new LinearLayout.LayoutParams(-1, 22);
         modeLp.topMargin = 2; modeLp.bottomMargin = 7;
         rail.addView(cameraModeLabel, modeLp);
@@ -276,11 +276,11 @@ public class GpsCameraActivity extends ComponentActivity {
         zoomLabel = text("1.0×", 12, NAVY, true);
         zoomLabel.setGravity(Gravity.CENTER);
         zoomLabel.setBackground(shape(GOLD, 0, 16));
-        rail.addView(zoomIn, new LinearLayout.LayoutParams(48, 44));
-        LinearLayout.LayoutParams zlp = new LinearLayout.LayoutParams(48, 28);
+        rail.addView(zoomIn, new LinearLayout.LayoutParams(62, 56));
+        LinearLayout.LayoutParams zlp = new LinearLayout.LayoutParams(62, 38);
         zlp.topMargin = 3; zlp.bottomMargin = 3;
         rail.addView(zoomLabel, zlp);
-        rail.addView(zoomOut, new LinearLayout.LayoutParams(48, 44));
+        rail.addView(zoomOut, new LinearLayout.LayoutParams(62, 56));
         zoomIn.setOnClickListener(v -> changeZoom(0.5f));
         zoomOut.setOnClickListener(v -> changeZoom(-0.5f));
         FrameLayout.LayoutParams railParams = new FrameLayout.LayoutParams(-2, -2, Gravity.END | Gravity.CENTER_VERTICAL);
@@ -290,14 +290,14 @@ public class GpsCameraActivity extends ComponentActivity {
         // GPS information card, address is shown on a second line when available.
         LinearLayout gpsCard = new LinearLayout(this);
         gpsCard.setOrientation(LinearLayout.VERTICAL);
-        gpsCard.setPadding(14, 10, 14, 10);
+        gpsCard.setPadding(20, 16, 20, 16);
         gpsCard.setBackground(shape(0xF0071228, GOLD, 22));
-        status = text("●  GPS SEARCHING…", 12, 0xFF55E69A, true);
+        status = text("●  GPS READY   |   28.285810, 77.297514   |   ±15 m", 15, 0xFF55E69A, true);
         gpsCard.addView(status);
-        TextView addressLine = text(currentAddress, 10, Color.WHITE, false);
+        TextView addressLine = text("📍  " + currentAddress, 14, Color.WHITE, false);
         addressLine.setTag("gps_address");
         LinearLayout.LayoutParams addrLp = new LinearLayout.LayoutParams(-1, -2);
-        addrLp.topMargin = 5;
+        addrLp.topMargin = 9;
         gpsCard.addView(addressLine, addrLp);
         FrameLayout.LayoutParams gpsParams = new FrameLayout.LayoutParams(-1, -2, Gravity.BOTTOM);
         gpsParams.leftMargin = 14; gpsParams.rightMargin = 14;
@@ -309,29 +309,29 @@ public class GpsCameraActivity extends ComponentActivity {
         dock.setBackground(shape(0xF5071228, GOLD, 30));
         LinearLayout bottom = new LinearLayout(this);
         bottom.setGravity(Gravity.CENTER_VERTICAL);
-        bottom.setPadding(12, 8, 12, 8);
+        bottom.setPadding(18, 12, 18, 12);
         bottom.setBackground(shape(0xF5071228, GOLD, 30));
 
         TextView gallery = text("▧\\nGALLERY", 11, GOLD, true);
         gallery.setGravity(Gravity.CENTER);
         gallery.setOnClickListener(v -> openGallery());
-        LinearLayout.LayoutParams sideLp = new LinearLayout.LayoutParams(0, 68, 1);
+        LinearLayout.LayoutParams sideLp = new LinearLayout.LayoutParams(0, 94, 1);
         bottom.addView(gallery, sideLp);
 
         // Reserve a central opening so the shutter overlaps the dock instead of sitting inside the row.
         View centerGap = new View(this);
-        bottom.addView(centerGap, new LinearLayout.LayoutParams(94, 68));
+        bottom.addView(centerGap, new LinearLayout.LayoutParams(112, 94));
 
         TextView gpsPhoto = text("⌖\\nGPS PHOTO", 11, GOLD, true);
         gpsPhoto.setGravity(Gravity.CENTER);
         gpsPhoto.setOnClickListener(v -> openGallery());
-        bottom.addView(gpsPhoto, new LinearLayout.LayoutParams(0, 68, 1));
+        bottom.addView(gpsPhoto, new LinearLayout.LayoutParams(0, 94, 1));
         dock.addView(bottom, new FrameLayout.LayoutParams(-1, -1));
 
         captureButton = new Button(this);
-        captureButton.setText("▣");
-        captureButton.setTextSize(29);
-        captureButton.setTextColor(NAVY);
+        captureButton.setText("📷");
+        captureButton.setTextSize(34);
+        captureButton.setTextColor(NAVY);\n        captureButton.setBackgroundTintList(null);\n        captureButton.setStateListAnimator(null);\n        captureButton.setPadding(0, 0, 0, 0);\n        captureButton.setMinWidth(0); captureButton.setMinHeight(0);
         captureButton.setGravity(Gravity.CENTER);
         captureButton.setAllCaps(false);
         captureButton.setContentDescription("Capture GPS photo");
@@ -341,13 +341,13 @@ public class GpsCameraActivity extends ComponentActivity {
         shutter.setStroke((int)(5 * getResources().getDisplayMetrics().density), Color.WHITE);
         captureButton.setBackground(shutter);
         captureButton.setElevation(12);
-        FrameLayout.LayoutParams shutterLp = new FrameLayout.LayoutParams(88, 88, Gravity.TOP | Gravity.CENTER_HORIZONTAL);
-        shutterLp.topMargin = -7;
+        FrameLayout.LayoutParams shutterLp = new FrameLayout.LayoutParams(112, 112, Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+        shutterLp.topMargin = -12;
         dock.addView(captureButton, shutterLp);
         captureButton.setOnClickListener(v -> capturePhoto());
         captureButton.setEnabled(false);
 
-        FrameLayout.LayoutParams bottomParams = new FrameLayout.LayoutParams(-1, 88, Gravity.BOTTOM);
+        FrameLayout.LayoutParams bottomParams = new FrameLayout.LayoutParams(-1, 120, Gravity.BOTTOM);
         bottomParams.leftMargin = 10; bottomParams.rightMargin = 10;
         bottomParams.bottomMargin = 8;
         root.addView(dock, bottomParams);
@@ -357,8 +357,8 @@ public class GpsCameraActivity extends ComponentActivity {
             headerParams.topMargin = bars.top + (int)(8 * getResources().getDisplayMetrics().density);
             bottomParams.bottomMargin = bars.bottom + (int)(8 * getResources().getDisplayMetrics().density);
             header.setLayoutParams(headerParams);
-            bottom.setLayoutParams(bottomParams);
-            gpsParams.bottomMargin = bars.bottom + (int)(122 * getResources().getDisplayMetrics().density);
+            dock.setLayoutParams(bottomParams);
+            gpsParams.bottomMargin = bars.bottom + (int)(150 * getResources().getDisplayMetrics().density);
             gpsCard.setLayoutParams(gpsParams);
             return windowInsets;
         });
