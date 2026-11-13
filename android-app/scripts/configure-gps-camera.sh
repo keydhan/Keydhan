@@ -356,6 +356,8 @@ public class GpsCameraActivity extends ComponentActivity {
                 float d = getResources().getDisplayMetrics().density;
                 float cx = getWidth()/2f, cy = getHeight()/2f;
                 // Two clean opposing circular arrows only — no camera glyph in the center.
+                p.setColor(NAVY);
+                p.setStyle(Paint.Style.FILL);
                 canvas.drawCircle(cx, cy, 31f*d, p);
                 p.setColor(0xFFF5D989);
                 p.setStyle(Paint.Style.STROKE);
