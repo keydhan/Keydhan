@@ -227,9 +227,9 @@ public class GpsCameraActivity extends ComponentActivity {
         LinearLayout brand = new LinearLayout(this);
         brand.setOrientation(LinearLayout.VERTICAL);
         brand.setGravity(Gravity.CENTER);
-        TextView title = text("KeyDhan™", 22, Color.WHITE, true);
+        TextView title = text("KEYDHAN™", 21, Color.WHITE, true);
         title.setGravity(Gravity.CENTER);
-        TextView subtitle = text("⌖  GPS CAMERA", 11, GOLD, true);
+        TextView subtitle = text("GPS CAMERA  •  LOCATION STAMP", 9, GOLD, true);
         subtitle.setGravity(Gravity.CENTER);
         brand.addView(title);
         brand.addView(subtitle);
@@ -262,7 +262,7 @@ public class GpsCameraActivity extends ComponentActivity {
         rail.setGravity(Gravity.CENTER);
         rail.setPadding(7, 10, 7, 10);
         rail.setBackground(shape(0xD9071228, GOLD, 28));
-        TextView flip = iconControl("⟳", "Switch front and rear camera");
+        TextView flip = iconControl("⇄", "Switch front and rear camera");
         flip.setTextSize(31);
         flip.setOnClickListener(v -> selectCamera(!useFrontCamera));
         rail.addView(flip, new LinearLayout.LayoutParams(58, 58));
@@ -310,14 +310,14 @@ public class GpsCameraActivity extends ComponentActivity {
         bottom.setPadding(18, 12, 18, 12);
         bottom.setBackground(shape(0xF5071228, GOLD, 30));
 
-        TextView gallery = text("▣\nGALLERY", 11, GOLD, true);
+        TextView gallery = text("▧\nGALLERY", 11, GOLD, true);
         gallery.setGravity(Gravity.CENTER);
         gallery.setOnClickListener(v -> openGallery());
         bottom.addView(gallery, new LinearLayout.LayoutParams(0, 68, 1));
 
         captureButton = new Button(this);
-        captureButton.setText("●");
-        captureButton.setTextSize(30);
+        captureButton.setText("");
+        captureButton.setTextSize(1);
         captureButton.setTextColor(NAVY);
         captureButton.setGravity(Gravity.CENTER);
         captureButton.setAllCaps(false);
