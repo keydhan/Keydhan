@@ -812,17 +812,18 @@ public class GpsCameraActivity extends ComponentActivity {
             // Small KeyDhan™ navy/gold center mark; high error correction keeps the location QR scannable.
             Canvas qrCanvas = new Canvas(qr);
             // Compact premium navy badge with a distinct gold keyline, matching the approved reference.
-            float logoW=qrSize*0.50f, logoH=qrSize*0.205f, logoCx=qrSize/2f, logoCy=qrSize/2f;
+            // Smaller center badge leaves more QR modules exposed; larger wordmark stays legible.
+            float logoW=qrSize*0.42f, logoH=qrSize*0.17f, logoCx=qrSize/2f, logoCy=qrSize/2f;
             Paint logoGold = new Paint(Paint.ANTI_ALIAS_FLAG); logoGold.setColor(GOLD);
             qrCanvas.drawRoundRect(logoCx-logoW/2f-3.5f*scale,logoCy-logoH/2f-3.5f*scale,
                 logoCx+logoW/2f+3.5f*scale,logoCy+logoH/2f+3.5f*scale,12f*scale,12f*scale,logoGold);
             Paint logoP = new Paint(Paint.ANTI_ALIAS_FLAG); logoP.setColor(NAVY);
             qrCanvas.drawRoundRect(logoCx-logoW/2f,logoCy-logoH/2f,logoCx+logoW/2f,logoCy+logoH/2f,9f*scale,9f*scale,logoP);
             logoP.setTypeface(Typeface.create("sans-serif",Typeface.BOLD));
-            logoP.setTextSize(qrSize*0.078f); logoP.setTextAlign(Paint.Align.LEFT);
+            logoP.setTextSize(qrSize*0.092f); logoP.setTextAlign(Paint.Align.LEFT);
             String keyText="Key", dhanText="Dhan";
             float keyWidth=logoP.measureText(keyText), dhanWidth=logoP.measureText(dhanText);
-            float tmWidth=qrSize*0.035f, fullWidth=keyWidth+dhanWidth+tmWidth+qrSize*0.018f;
+            float tmWidth=qrSize*0.030f, fullWidth=keyWidth+dhanWidth+tmWidth+qrSize*0.012f;
             float textStart=logoCx-fullWidth/2f, logoTextY=logoCy+qrSize*0.026f;
             logoP.setColor(Color.WHITE); qrCanvas.drawText(keyText,textStart,logoTextY,logoP);
             logoP.setColor(0xFFE7C270); qrCanvas.drawText(dhanText,textStart+keyWidth,logoTextY,logoP);
