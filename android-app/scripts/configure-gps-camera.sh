@@ -267,7 +267,8 @@ public class GpsCameraActivity extends ComponentActivity {
         flip.setOnClickListener(v -> selectCamera(!useFrontCamera));
         rail.addView(flip, new LinearLayout.LayoutParams(76, 76));
         cameraModeLabel = text("REAR", 13, NAVY, true);
-        cameraModeLabel.setGravity(Gravity.CENTER);\n        cameraModeLabel.setBackground(shape(GOLD, 0, 14));
+        cameraModeLabel.setGravity(Gravity.CENTER);
+        cameraModeLabel.setBackground(shape(GOLD, 0, 14));
         LinearLayout.LayoutParams modeLp = new LinearLayout.LayoutParams(-1, 22);
         modeLp.topMargin = 2; modeLp.bottomMargin = 7;
         rail.addView(cameraModeLabel, modeLp);
@@ -331,7 +332,11 @@ public class GpsCameraActivity extends ComponentActivity {
         captureButton = new Button(this);
         captureButton.setText("📷");
         captureButton.setTextSize(34);
-        captureButton.setTextColor(NAVY);\n        captureButton.setBackgroundTintList(null);\n        captureButton.setStateListAnimator(null);\n        captureButton.setPadding(0, 0, 0, 0);\n        captureButton.setMinWidth(0); captureButton.setMinHeight(0);
+        captureButton.setTextColor(NAVY);
+        captureButton.setBackgroundTintList(null);
+        captureButton.setStateListAnimator(null);
+        captureButton.setPadding(0, 0, 0, 0);
+        captureButton.setMinWidth(0); captureButton.setMinHeight(0);
         captureButton.setGravity(Gravity.CENTER);
         captureButton.setAllCaps(false);
         captureButton.setContentDescription("Capture GPS photo");
