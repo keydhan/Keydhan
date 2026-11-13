@@ -100,6 +100,7 @@ package com.keydhan.app;
 
 import android.Manifest;
 import androidx.activity.ComponentActivity;
+import androidx.activity.OnBackPressedCallback;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.content.Intent;
@@ -190,6 +191,7 @@ public class GpsCameraActivity extends ComponentActivity {
     private File pendingPhoto;
     private Uri lastSavedUri;
     private boolean photoPreviewVisible = false;
+    private OnBackPressedCallback gpsPhotosBackCallback;
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
@@ -895,35 +897,81 @@ public class GpsCameraActivity extends ComponentActivity {
         }
     }
 
+    // Return to the live camera from the in-app KeyDhan GPS photo album.
+    private void closeGpsPhotos() {
+        if (gpsPhotosBackCallback != null) gpsPhotosBackCallback.setEnabled(false);
+        buildCameraUi();
+        if (cameraProvider != null) bindSelectedCamera();
+    }
+
     // Show only photos captured and saved by KeyDhan GPS Camera.
     private void openGpsPhotos() {
+        if (gpsPhotosBackCallback == null) {
+            gpsPhotosBackCallback = new OnBackPressedCallback(false) {
+                @Override public void handleOnBackPressed() {
+                    closeGpsPhotos();
+                }
+            };
+            getOnBackPressedDispatcher().addCallback(this, gpsPhotosBackCallback);
+        }
+        gpsPhotosBackCallback.setEnabled(true);
+
+        final float density = getResources().getDisplayMetrics().density;
         LinearLayout page = new LinearLayout(this);
         page.setOrientation(LinearLayout.VERTICAL);
-        page.setPadding(14, 18, 14, 12);
+        page.setPadding((int)(14*density), (int)(10*density),
+            (int)(14*density), (int)(12*density));
         page.setBackgroundColor(NAVY);
 
         LinearLayout top = new LinearLayout(this);
         top.setGravity(Gravity.CENTER_VERTICAL);
-        TextView back = text("‹", 36, GOLD, true);
-        back.setGravity(Gravity.CENTER);
-        top.addView(back, new LinearLayout.LayoutParams(48, 52));
+        top.setPadding(0, 0, 0, (int)(12*density));
+
+        // Draw a clear gold back arrow instead of a font glyph that can render as a dash.
+        View back = new View(this) {
+            private final Paint arrowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            @Override protected void onDraw(Canvas canvas) {
+                super.onDraw(canvas);
+                float cx = getWidth()/2f, cy = getHeight()/2f;
+                float d = getResources().getDisplayMetrics().density;
+                arrowPaint.setColor(0xFFFFE7A0);
+                arrowPaint.setStyle(Paint.Style.STROKE);
+                arrowPaint.setStrokeWidth(2.5f*d);
+                arrowPaint.setStrokeCap(Paint.Cap.ROUND);
+                arrowPaint.setStrokeJoin(Paint.Join.ROUND);
+                Path path = new Path();
+                path.moveTo(cx+9*d, cy);
+                path.lineTo(cx-9*d, cy);
+                path.moveTo(cx-9*d, cy);
+                path.lineTo(cx-1*d, cy-8*d);
+                path.moveTo(cx-9*d, cy);
+                path.lineTo(cx-1*d, cy+8*d);
+                canvas.drawPath(path, arrowPaint);
+            }
+        };
+        back.setBackground(shape(0xFF142944, GOLD, 28));
+        back.setContentDescription("Back to GPS Camera");
+        back.setClickable(true);
+        back.setFocusable(true);
+        top.addView(back, new LinearLayout.LayoutParams((int)(48*density), (int)(48*density)));
+        back.setOnClickListener(v -> closeGpsPhotos());
+
         LinearLayout heading = new LinearLayout(this);
         heading.setOrientation(LinearLayout.VERTICAL);
-        heading.setPadding(8, 0, 0, 0);
-        heading.addView(text("KeyDhan GPS Photos", 20, Color.WHITE, true));
-        heading.addView(text("Photos captured with KeyDhan GPS Camera", 11, GOLD, false));
+        heading.setPadding((int)(12*density), 0, 0, 0);
+        TextView albumTitle = text("KeyDhan GPS Photos", 19, Color.WHITE, true);
+        TextView albumSubtitle = text("Photos captured with KeyDhan GPS Camera", 11, 0xFFE7C270, false);
+        heading.addView(albumTitle);
+        heading.addView(albumSubtitle);
         top.addView(heading, new LinearLayout.LayoutParams(0, -2, 1));
         page.addView(top);
-        back.setOnClickListener(v -> {
-            buildCameraUi();
-            if (cameraProvider != null) bindSelectedCamera();
-        });
 
         ScrollView scroll = new ScrollView(this);
+        scroll.setFillViewport(true);
         GridLayout grid = new GridLayout(this);
         grid.setColumnCount(3);
         grid.setUseDefaultMargins(true);
-        grid.setPadding(2, 12, 2, 12);
+        grid.setPadding(2, 4, 2, 12);
 
         int count = 0;
         String[] projection = {
@@ -949,7 +997,7 @@ public class GpsCameraActivity extends ComponentActivity {
                     thumb.setImageURI(imageUri);
                     GridLayout.LayoutParams tile = new GridLayout.LayoutParams();
                     tile.width = getResources().getDisplayMetrics().widthPixels / 3
-                        - (int)(18 * getResources().getDisplayMetrics().density);
+                        - (int)(18 * density);
                     tile.height = tile.width;
                     tile.setMargins(3, 3, 3, 3);
                     grid.addView(thumb, tile);
@@ -971,7 +1019,7 @@ public class GpsCameraActivity extends ComponentActivity {
             android.util.Log.e("KeyDhanGPS", "Could not load KeyDhan GPS photos", e);
         }
         if (count == 0) {
-            TextView empty = text("No KeyDhan GPS photos yet.\nCapture and save a GPS photo to see it here.", 15, 0xFFE8D8B2, false);
+            TextView empty = text("No KeyDhan GPS photos yet.\\nCapture and save a GPS photo to see it here.", 15, 0xFFE8D8B2, false);
             empty.setGravity(Gravity.CENTER);
             empty.setPadding(24, 48, 24, 48);
             page.addView(empty, new LinearLayout.LayoutParams(-1, -2));
@@ -979,7 +1027,17 @@ public class GpsCameraActivity extends ComponentActivity {
             scroll.addView(grid);
             page.addView(scroll, new LinearLayout.LayoutParams(-1, 0, 1));
         }
+
+        // Respect Android status/navigation bars: keep title clear of status icons.
+        ViewCompat.setOnApplyWindowInsetsListener(page, (view, windowInsets) -> {
+            androidx.core.graphics.Insets bars =
+                windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+            page.setPadding((int)(14*density), bars.top + (int)(8*density),
+                (int)(14*density), bars.bottom + (int)(10*density));
+            return windowInsets;
+        });
         setContentView(page);
+        ViewCompat.requestApplyInsets(page);
     }
 
     private void changeZoom(float delta) {
