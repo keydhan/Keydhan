@@ -709,12 +709,20 @@ public class GpsCameraActivity extends ComponentActivity {
         int qrSize = Math.round(310f * scale);
         float boxHeight = Math.max(pad * 2.25f + line * (showIp ? 7.55f : 6.55f), qrSize + pad * 2.05f);
         float top = marked.getHeight() - boxHeight - pad;
-        Paint bg = new Paint(Paint.ANTI_ALIAS_FLAG); bg.setColor(0xF5071833);
-        canvas.drawRoundRect(pad, top, marked.getWidth()-pad, marked.getHeight()-pad, 22f*scale, 22f*scale, bg);
-        Paint gold = new Paint(Paint.ANTI_ALIAS_FLAG); gold.setColor(GOLD);
+        // Layered premium card: soft shadow, deep navy face, gold outer keyline and fine inner highlight.
+        Paint shadow = new Paint(Paint.ANTI_ALIAS_FLAG); shadow.setColor(0xF5071833);
+        shadow.setShadowLayer(12f*scale, 0f, 5f*scale, 0x99000000);
+        canvas.drawRoundRect(pad, top, marked.getWidth()-pad, marked.getHeight()-pad, 25f*scale, 25f*scale, shadow);
+        Paint bg = new Paint(Paint.ANTI_ALIAS_FLAG); bg.setColor(0xF9071833);
+        canvas.drawRoundRect(pad+2f*scale, top+2f*scale, marked.getWidth()-pad-2f*scale, marked.getHeight()-pad-2f*scale, 23f*scale, 23f*scale, bg);
+        Paint gold = new Paint(Paint.ANTI_ALIAS_FLAG); gold.setColor(0xFFE4BD68);
         gold.setStyle(Paint.Style.STROKE); gold.setStrokeWidth(5.5f*scale);
         canvas.drawRoundRect(pad+2f*scale, top+2f*scale, marked.getWidth()-pad-2f*scale,
-            marked.getHeight()-pad-2f*scale, 22f*scale, 22f*scale, gold);
+            marked.getHeight()-pad-2f*scale, 23f*scale, 23f*scale, gold);
+        Paint innerKeyline = new Paint(Paint.ANTI_ALIAS_FLAG); innerKeyline.setColor(0x668F713C);
+        innerKeyline.setStyle(Paint.Style.STROKE); innerKeyline.setStrokeWidth(1f*scale);
+        canvas.drawRoundRect(pad+9f*scale, top+9f*scale, marked.getWidth()-pad-9f*scale,
+            marked.getHeight()-pad-9f*scale, 18f*scale, 18f*scale, innerKeyline);
         gold.setStyle(Paint.Style.FILL);
         Paint p = new Paint(Paint.ANTI_ALIAS_FLAG); p.setColor(Color.WHITE);
         p.setTypeface(Typeface.create("sans-serif",Typeface.BOLD));
@@ -739,14 +747,21 @@ public class GpsCameraActivity extends ComponentActivity {
         Paint divider = new Paint(Paint.ANTI_ALIAS_FLAG); divider.setColor(0xBFE7C270); divider.setStrokeWidth(1.6f*scale);
         canvas.drawLine(x,y,qx-12f*scale,y,divider);
         y+=line*0.78f;
-        float iconX=x+12f*scale, textX=x+44f*scale, iconSize=21f*scale;
+        float iconX=x+15f*scale, textX=x+48f*scale, iconSize=20f*scale;
         p.setTypeface(Typeface.create("sans-serif",Typeface.NORMAL)); p.setFakeBoldText(false);
         p.setColor(Color.WHITE); p.setTextSize(26f*scale);
+        Paint iconDisc = new Paint(Paint.ANTI_ALIAS_FLAG); iconDisc.setColor(0xFF203B5B);
+        canvas.drawCircle(iconX,y-7f*scale,15f*scale,iconDisc);
+        Paint iconRing = new Paint(Paint.ANTI_ALIAS_FLAG); iconRing.setColor(0xFFB99550);
+        iconRing.setStyle(Paint.Style.STROKE); iconRing.setStrokeWidth(1.2f*scale);
+        canvas.drawCircle(iconX,y-7f*scale,15f*scale,iconRing);
         drawGpsStampIcon(canvas,p,0,iconX,y-6f*scale,iconSize);
         String coords=String.format(Locale.US,"LAT  %.6f     LONG  %.6f",loc.getLatitude(),loc.getLongitude());
         p.setTextSize(Math.min(26f*scale, textMax*0.040f));
         canvas.drawText(coords,textX,y,p);
         y+=line*0.92f;
+        canvas.drawCircle(iconX,y-7f*scale,15f*scale,iconDisc);
+        canvas.drawCircle(iconX,y-7f*scale,15f*scale,iconRing);
         drawGpsStampIcon(canvas,p,1,iconX,y-6f*scale,iconSize);
         p.setTextSize(24f*scale);
         String addressText=address == null ? "" : address;
@@ -759,6 +774,8 @@ public class GpsCameraActivity extends ComponentActivity {
             if(addressStart<addressText.length()) y+=line*0.72f;
         }
         y+=line*0.88f;
+        canvas.drawCircle(iconX,y-7f*scale,15f*scale,iconDisc);
+        canvas.drawCircle(iconX,y-7f*scale,15f*scale,iconRing);
         drawGpsStampIcon(canvas,p,2,iconX,y-6f*scale,iconSize);
         p.setTextSize(24f*scale); p.setColor(0xFFF4F6FA);
         canvas.drawText(date,textX,y,p);
