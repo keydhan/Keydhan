@@ -224,8 +224,23 @@ public class GpsCameraActivity extends ComponentActivity {
         header.setGravity(Gravity.CENTER_VERTICAL);
         header.setPadding(18, 14, 18, 14);
         header.setBackground(shape(0xE8071228, GOLD, 22));
-        TextView exit = iconControl("←", "Back");
-        exit.setTextSize(30);
+        View exit = new View(this) {
+            private final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
+            @Override protected void onDraw(Canvas canvas) {
+                super.onDraw(canvas);
+                float d = getResources().getDisplayMetrics().density;
+                float cx = getWidth()/2f, cy = getHeight()/2f;
+                p.setColor(Color.WHITE); p.setStyle(Paint.Style.STROKE);
+                p.setStrokeWidth(3.2f*d); p.setStrokeCap(Paint.Cap.ROUND); p.setStrokeJoin(Paint.Join.ROUND);
+                Path a = new Path();
+                a.moveTo(cx+12*d,cy); a.lineTo(cx-12*d,cy);
+                a.moveTo(cx-12*d,cy); a.lineTo(cx-2*d,cy-10*d);
+                a.moveTo(cx-12*d,cy); a.lineTo(cx-2*d,cy+10*d);
+                canvas.drawPath(a,p);
+            }
+        };
+        exit.setBackground(shape(0xAA172640, GOLD, 28));
+        exit.setContentDescription("Back");
         exit.setOnClickListener(v -> finish());
         header.addView(exit, new LinearLayout.LayoutParams(68, 68));
 
@@ -267,8 +282,27 @@ public class GpsCameraActivity extends ComponentActivity {
         rail.setGravity(Gravity.CENTER);
         rail.setPadding(6, 12, 6, 12);
         rail.setBackground(shape(0xD9071228, GOLD, 28));
-        TextView flip = iconControl("⟳", "Switch front and rear camera");
-        flip.setTextSize(27);
+        View flip = new View(this) {
+            private final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
+            @Override protected void onDraw(Canvas canvas) {
+                super.onDraw(canvas);
+                float d = getResources().getDisplayMetrics().density;
+                float cx = getWidth()/2f, cy = getHeight()/2f;
+                p.setColor(Color.WHITE); p.setStyle(Paint.Style.STROKE);
+                p.setStrokeWidth(2.8f*d); p.setStrokeCap(Paint.Cap.ROUND);
+                RectF arc = new RectF(cx-15*d,cy-15*d,cx+15*d,cy+15*d);
+                canvas.drawArc(arc,215,285,false,p);
+                p.setStyle(Paint.Style.FILL);
+                Path tip = new Path(); tip.moveTo(cx+15*d,cy-13*d);
+                tip.lineTo(cx+16*d,cy-3*d); tip.lineTo(cx+6*d,cy-7*d); tip.close();
+                canvas.drawPath(tip,p);
+                p.setStyle(Paint.Style.STROKE); p.setStrokeWidth(2.5f*d);
+                canvas.drawRoundRect(cx-8*d,cy-5*d,cx+8*d,cy+7*d,2*d,2*d,p);
+                canvas.drawCircle(cx,cy+1*d,3*d,p);
+            }
+        };
+        flip.setBackground(shape(0xAA172640, GOLD, 28));
+        flip.setContentDescription("Switch front and rear camera");
         flip.setOnClickListener(v -> selectCamera(!useFrontCamera));
         rail.addView(flip, new LinearLayout.LayoutParams(62, 62));
         cameraModeLabel = text("REAR", 11, NAVY, true);
@@ -384,7 +418,7 @@ public class GpsCameraActivity extends ComponentActivity {
         halo.setStroke((int)(2 * getResources().getDisplayMetrics().density), GOLD);
         shutterHalo.setBackground(halo);
         FrameLayout.LayoutParams haloLp = new FrameLayout.LayoutParams(120, 120, Gravity.TOP | Gravity.CENTER_HORIZONTAL);
-        haloLp.topMargin = -16;
+        haloLp.topMargin = -8;
         dock.addView(shutterHalo, haloLp);
 
         captureButton = new Button(this);
@@ -406,7 +440,7 @@ public class GpsCameraActivity extends ComponentActivity {
         captureButton.setBackground(shutter);
         captureButton.setElevation(12);
         FrameLayout.LayoutParams shutterLp = new FrameLayout.LayoutParams(112, 112, Gravity.TOP | Gravity.CENTER_HORIZONTAL);
-        shutterLp.topMargin = -12;
+        shutterLp.topMargin = -4;
         dock.addView(captureButton, shutterLp);
         // Draw a crisp monochrome camera glyph over the gold shutter (avoid platform emoji rendering).
         View cameraGlyph = new View(this) {
