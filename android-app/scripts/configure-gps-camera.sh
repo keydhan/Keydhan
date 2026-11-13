@@ -34,6 +34,7 @@ s=p.read_text()
 marker="<application"
 perms='''    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 '''
 if "android.permission.CAMERA" not in s:
@@ -146,6 +147,8 @@ import com.google.android.gms.location.Priority;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.io.File;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -158,6 +161,8 @@ public class GpsCameraActivity extends ComponentActivity {
     private static final int REQUEST_PERMISSIONS = 410;
     private static final int NAVY = 0xFF071228;
     private static final int GOLD = 0xFFD2A952;
+    private static final String PREFS = "keydhan_gps_camera";
+    private static final String PREF_SHOW_IP = "show_public_ip";
     private PreviewView previewView;
     private TextView status;
     private ImageCapture imageCapture;
@@ -268,10 +273,16 @@ public class GpsCameraActivity extends ComponentActivity {
         settings.setTextSize(20);
         settings.setOnClickListener(v -> new android.app.AlertDialog.Builder(this)
             .setTitle("GPS Camera Settings")
-            .setItems(new String[]{"Flash: " + (flashOn ? "On" : "Off"), "Photo quality: High", "GPS watermark: On"},
+            .setItems(new String[]{"Flash: " + (flashOn ? "On" : "Off"), "Photo quality: High", "GPS watermark: On", "Show public IP on photo: " + (getPreferences(MODE_PRIVATE).getBoolean(PREF_SHOW_IP, false) ? "On" : "Off")},
                 (dialog, which) -> {
                     if (which == 0) toggleFlash();
-                    else Toast.makeText(this, which == 1 ? "High photo quality is enabled." : "GPS watermark is enabled.", Toast.LENGTH_SHORT).show();
+                    else if (which == 1) Toast.makeText(this, "High photo quality is enabled.", Toast.LENGTH_SHORT).show();
+                    else if (which == 2) Toast.makeText(this, "GPS watermark is enabled.", Toast.LENGTH_SHORT).show();
+                    else {
+                        boolean enabled = !getPreferences(MODE_PRIVATE).getBoolean(PREF_SHOW_IP, false);
+                        getPreferences(MODE_PRIVATE).edit().putBoolean(PREF_SHOW_IP, enabled).apply();
+                        Toast.makeText(this, "Public IP on photo: " + (enabled ? "On" : "Off"), Toast.LENGTH_SHORT).show();
+                    }
                 }).show());
         LinearLayout.LayoutParams settingsLp = new LinearLayout.LayoutParams(62, 62);
         settingsLp.leftMargin = 7;
@@ -648,11 +659,13 @@ public class GpsCameraActivity extends ComponentActivity {
         if (original == null) { runOnUiThread(() -> captureButton.setEnabled(true)); return; }
         Bitmap marked = original.copy(Bitmap.Config.ARGB_8888, true); original.recycle();
         String address = getAddress(loc);
+        boolean showIp = getPreferences(MODE_PRIVATE).getBoolean(PREF_SHOW_IP, false);
+        String publicIp = showIp ? fetchPublicIp() : null;
         String date = new SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault()).format(new Date());
         Canvas canvas = new Canvas(marked);
         float scale = Math.max(1f, marked.getWidth() / 1080f), pad = 24f * scale, line = 34f * scale;
         int qrSize = Math.round(142f * scale);
-        float boxHeight = pad * 2.45f + line * 5.15f, top = marked.getHeight() - boxHeight - pad;
+        float boxHeight = pad * 2.45f + line * (showIp ? 6.15f : 5.15f), top = marked.getHeight() - boxHeight - pad;
         Paint bg = new Paint(Paint.ANTI_ALIAS_FLAG); bg.setColor(0xE6101D33);
         canvas.drawRoundRect(pad, top, marked.getWidth()-pad, marked.getHeight()-pad, 22f*scale, 22f*scale, bg);
         Paint gold = new Paint(Paint.ANTI_ALIAS_FLAG); gold.setColor(GOLD);
@@ -678,6 +691,10 @@ public class GpsCameraActivity extends ComponentActivity {
         y+=line; p.setColor(0xFFFFD76A); p.setFakeBoldText(true); p.setTextSize(17f*scale);
         canvas.drawText("Made in India",x,y,p);
         p.setTextSize(18f*scale); canvas.drawText("  🇮🇳",x+p.measureText("Made in India"),y,p);
+        if (showIp) {
+            y+=line; p.setColor(0xFFE1E7F0); p.setFakeBoldText(false); p.setTextSize(17f*scale);
+            canvas.drawText("PUBLIC IP  " + (publicIp == null ? "Not Available" : publicIp),x,y,p);
+        }
         // Per-photo QR encodes a direct Google Maps query for this exact GPS fix.
         try {
             String mapUrl = String.format(Locale.US,"https://maps.google.com/?q=%.6f,%.6f",loc.getLatitude(),loc.getLongitude());
@@ -758,6 +775,23 @@ public class GpsCameraActivity extends ComponentActivity {
             if(cameraProvider!=null) bindSelectedCamera();
         } catch(Exception e) { Toast.makeText(this,"Save failed: "+e.getMessage(),Toast.LENGTH_LONG).show(); }
     }
+    private String fetchPublicIp() {
+        HttpURLConnection connection = null;
+        try {
+            connection = (HttpURLConnection) new URL("https://api.ipify.org").openConnection();
+            connection.setRequestMethod("GET");
+            connection.setConnectTimeout(2500);
+            connection.setReadTimeout(2500);
+            connection.setUseCaches(false);
+            try (java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(connection.getInputStream(), java.nio.charset.StandardCharsets.UTF_8))) {
+                String ip = reader.readLine();
+                if (ip != null && ip.matches("[0-9a-fA-F:.]{3,45}")) return ip;
+            }
+        } catch (Exception e) { android.util.Log.w("KeyDhanGPS", "Public IP unavailable", e); }
+        finally { if (connection != null) connection.disconnect(); }
+        return null;
+    }
+
     private String getAddress(Location loc) {
         try {
             if(Geocoder.isPresent()) {
