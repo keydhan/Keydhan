@@ -380,6 +380,12 @@ public class GpsCameraActivity extends ComponentActivity {
         }
     }
 
+    private void updateCameraChoice() {
+        if (cameraModeLabel != null) cameraModeLabel.setText(useFrontCamera ? "FRONT" : "REAR");
+        zoomRatio = 1.0f;
+        if (zoomLabel != null) zoomLabel.setText("1.0×");
+    }
+
     private boolean hasPermissions() {
         return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
             && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
