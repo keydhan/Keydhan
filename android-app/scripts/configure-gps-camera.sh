@@ -559,20 +559,96 @@ public class GpsCameraActivity extends ComponentActivity {
 
     private void showPrivacyDetails() {
         boolean publicIpEnabled = getPreferences(MODE_PRIVATE).getBoolean(PREF_SHOW_IP, false);
-        StringBuilder privacyMessage = new StringBuilder();
-        privacyMessage.append("Your photos are processed and saved locally on your phone. Photos are not uploaded to KeyDhan servers. Your location is used to create the GPS stamp on the photo.");
+        float density = getResources().getDisplayMetrics().density;
+        int pad = (int)(20 * density);
+        LinearLayout card = new LinearLayout(this);
+        card.setOrientation(LinearLayout.VERTICAL);
+        card.setPadding(pad, pad, pad, (int)(14 * density));
+        card.setBackground(shape(0xFF071A32, GOLD, 22));
+
+        LinearLayout heading = new LinearLayout(this);
+        heading.setGravity(Gravity.CENTER_VERTICAL);
+        TextView shield = text("⬡", 25, GOLD, true);
+        shield.setGravity(Gravity.CENTER);
+        heading.addView(shield, new LinearLayout.LayoutParams((int)(38*density), -2));
+        TextView headingText = text("KeyDhan Privacy & Data Security", 18, Color.WHITE, true);
+        headingText.setPadding((int)(8*density), 0, 0, 0);
+        heading.addView(headingText, new LinearLayout.LayoutParams(0, -2, 1));
+        card.addView(heading);
+
+        TextView localTitle = text("100% LOCAL PHOTO PROCESSING", 12, GOLD, true);
+        localTitle.setPadding(0, (int)(18*density), 0, (int)(7*density));
+        card.addView(localTitle);
+        TextView localCopy = text("Your photos are processed and saved locally on your phone. Photos are not uploaded to KeyDhan servers. Your location is used to create the GPS stamp on the photo.", 14, 0xFFF1F4FA, false);
+        localCopy.setLineSpacing(2*density, 1.05f);
+        card.addView(localCopy);
+
         if (publicIpEnabled) {
-            privacyMessage.append("\\n\\nPUBLIC IP IS ON\\nThe app contacts an external IP lookup service to retrieve your public IP address for the photo.");
-            privacyMessage.append("\\n\\nWant to turn it OFF?\\nOpen GPS Camera → Settings ⚙ → Show public IP on photo → OFF.");
-            privacyMessage.append("\\n\\nWhen OFF, the app will not make the public IP lookup request and no Public IP will be added to your photo.");
+            View divider = new View(this);
+            divider.setBackgroundColor(0x668F7748);
+            LinearLayout.LayoutParams dividerParams = new LinearLayout.LayoutParams(-1, (int)(1*density));
+            dividerParams.setMargins(0, (int)(17*density), 0, (int)(14*density));
+            card.addView(divider);
+
+            LinearLayout ipHeading = new LinearLayout(this);
+            ipHeading.setGravity(Gravity.CENTER_VERTICAL);
+            TextView globe = text("◎", 21, GOLD, true);
+            ipHeading.addView(globe);
+            TextView ipTitle = text("PUBLIC IP IS ON", 14, Color.WHITE, true);
+            ipTitle.setPadding((int)(9*density), 0, 0, 0);
+            ipHeading.addView(ipTitle);
+            TextView enabled = text("ON", 10, 0xFF071A32, true);
+            enabled.setGravity(Gravity.CENTER);
+            enabled.setPadding((int)(10*density), (int)(4*density), (int)(10*density), (int)(4*density));
+            enabled.setBackground(shape(0xFFE5BD63, 0, 18));
+            LinearLayout.LayoutParams enabledParams = new LinearLayout.LayoutParams(-2, -2);
+            enabledParams.leftMargin = (int)(8*density);
+            ipHeading.addView(enabled, enabledParams);
+            card.addView(ipHeading);
+
+            TextView ipCopy = text("An external IP lookup service is contacted to retrieve your public IP address for the photo.", 13, 0xFFE5EAF2, false);
+            ipCopy.setPadding(0, (int)(9*density), 0, (int)(13*density));
+            ipCopy.setLineSpacing(2*density, 1.04f);
+            card.addView(ipCopy);
+
+            TextView turnOffTitle = text("Want to turn it OFF?", 14, GOLD, true);
+            card.addView(turnOffTitle);
+            TextView turnOffSteps = text("GPS Camera  →  Settings ⚙  →  Show Public IP on Photo  →  OFF", 13, Color.WHITE, true);
+            turnOffSteps.setPadding(0, (int)(7*density), 0, (int)(7*density));
+            turnOffSteps.setLineSpacing(2*density, 1.04f);
+            card.addView(turnOffSteps);
+            TextView offNote = text("When OFF, the app will not request your public IP and no IP address will be added to your photo.", 12, 0xFFB8C4D5, false);
+            offNote.setLineSpacing(1*density, 1.02f);
+            card.addView(offNote);
         }
-        new android.app.AlertDialog.Builder(this)
-            .setTitle("KeyDhan Privacy & Data Security")
-            .setMessage(privacyMessage.toString())
-            .setPositiveButton("Got it", (dialog, which) -> {
-                getPreferences(MODE_PRIVATE).edit().putBoolean(PREF_PRIVACY_NOTICE_SEEN, true).apply();
-            })
-            .show();
+
+        Button gotIt = new Button(this);
+        gotIt.setText("Got it");
+        gotIt.setAllCaps(false);
+        gotIt.setTextSize(14);
+        gotIt.setTypeface(null, Typeface.BOLD);
+        gotIt.setTextColor(0xFF071A32);
+        gotIt.setBackground(shape(GOLD, 0, 18));
+        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(-1, (int)(48*density));
+        buttonParams.topMargin = (int)(18*density);
+        card.addView(gotIt, buttonParams);
+
+        android.widget.ScrollView scroll = new android.widget.ScrollView(this);
+        scroll.setFillViewport(true);
+        scroll.setClipToPadding(false);
+        scroll.addView(card);
+        android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(this).create();
+        dialog.setView(scroll);
+        gotIt.setOnClickListener(v -> {
+            getPreferences(MODE_PRIVATE).edit().putBoolean(PREF_PRIVACY_NOTICE_SEEN, true).apply();
+            dialog.dismiss();
+        });
+        dialog.show();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
+            dialog.getWindow().setDimAmount(0.72f);
+            dialog.getWindow().setLayout((int)(getResources().getDisplayMetrics().widthPixels * 0.90f), -2);
+        }
     }
 
     private void openGallery() {
