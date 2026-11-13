@@ -54,6 +54,9 @@ package com.keydhan.app;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Path;
+import android.graphics.RectF;
+import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Gravity;
