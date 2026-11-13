@@ -1,8 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="432" height="432" viewBox="0 0 432 432">
-  <path d="M70 250 L216 135 L362 250" fill="none" stroke="#0B2B5B" stroke-width="27" stroke-linecap="round" stroke-linejoin="round"/>
-  <g fill="#0B2B5B">
-    <rect x="180" y="195" width="31" height="31" rx="3"/><rect x="222" y="195" width="31" height="31" rx="3"/>
-    <rect x="180" y="237" width="31" height="31" rx="3"/><rect x="222" y="237" width="31" height="31" rx="3"/>
-  </g>
-  <path d="M150 300 H282" stroke="#D99A16" stroke-width="12" stroke-linecap="round"/>
+  <!-- Transparent adaptive foreground: only the approved KeyDhan wordmark. -->
+  <text x="216" y="246" text-anchor="middle"
+        font-family="DejaVu Sans, Arial, sans-serif"
+        font-size="62" font-weight="700" letter-spacing="-2">
+    <tspan fill="#FFFFFF">Key</tspan><tspan fill="#D9A441">Dhan</tspan>
+  </text>
+  <text x="383" y="178" text-anchor="middle"
+        font-family="DejaVu Sans, Arial, sans-serif"
+        font-size="18" font-weight="700" fill="#F6D27A">TM</text>
 </svg>
