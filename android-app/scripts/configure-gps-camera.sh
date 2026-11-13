@@ -426,7 +426,7 @@ public class GpsCameraActivity extends ComponentActivity {
         halo.setStroke((int)(2 * getResources().getDisplayMetrics().density), GOLD);
         shutterHalo.setBackground(halo);
         FrameLayout.LayoutParams haloLp = new FrameLayout.LayoutParams(120, 120, Gravity.TOP | Gravity.CENTER_HORIZONTAL);
-        haloLp.topMargin = 0;
+        haloLp.topMargin = 22;
         dock.addView(shutterHalo, haloLp);
 
         captureButton = new Button(this);
@@ -448,7 +448,7 @@ public class GpsCameraActivity extends ComponentActivity {
         captureButton.setBackground(shutter);
         captureButton.setElevation(12);
         FrameLayout.LayoutParams shutterLp = new FrameLayout.LayoutParams(112, 112, Gravity.TOP | Gravity.CENTER_HORIZONTAL);
-        shutterLp.topMargin = 4;
+        shutterLp.topMargin = 26;
         dock.addView(captureButton, shutterLp);
         // Draw a crisp monochrome camera glyph over the gold shutter (avoid platform emoji rendering).
         View cameraGlyph = new View(this) {
@@ -468,7 +468,7 @@ public class GpsCameraActivity extends ComponentActivity {
         cameraGlyph.setClickable(false);
         cameraGlyph.setElevation(14);
         FrameLayout.LayoutParams glyphLp = new FrameLayout.LayoutParams(64, 64, Gravity.TOP | Gravity.CENTER_HORIZONTAL);
-        glyphLp.topMargin = 20;
+        glyphLp.topMargin = 50;
         dock.addView(cameraGlyph, glyphLp);
         captureButton.setOnClickListener(v -> capturePhoto());
         captureButton.setEnabled(false);
