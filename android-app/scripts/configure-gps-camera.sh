@@ -60,6 +60,7 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+// GPS photo watermark: KeyDhan brand, per-photo map QR, Made in India, optional public IP.
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
