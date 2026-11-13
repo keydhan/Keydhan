@@ -707,7 +707,7 @@ public class GpsCameraActivity extends ComponentActivity {
         Canvas canvas = new Canvas(marked);
         float scale = Math.max(0.72f, marked.getWidth() / 1080f), pad = 29f * scale, line = 50f * scale;
         int qrSize = Math.round(330f * scale);
-        float boxHeight = Math.max(pad * 2.25f + line * (showIp ? 8.15f : 7.15f), qrSize + pad * 2.05f);
+        float boxHeight = Math.max(pad * 1.4f + line * (showIp ? 7.05f : 6.2f), qrSize + pad * 1.4f); // Tighter top/bottom card margins; content and QR remain safely inside.
         float top = marked.getHeight() - boxHeight - pad;
         // Layered premium card: soft shadow, deep navy face, gold outer keyline and fine inner highlight.
         // Do not paint an opaque shadow fill: it would cancel the glass transparency.
@@ -728,7 +728,7 @@ public class GpsCameraActivity extends ComponentActivity {
         gold.setStyle(Paint.Style.FILL);
         Paint p = new Paint(Paint.ANTI_ALIAS_FLAG); p.setColor(Color.WHITE);
         p.setTypeface(Typeface.create("sans-serif",Typeface.BOLD));
-        float x=pad*1.8f, y=top+pad*1.22f+line*0.52f;
+        float x=pad*1.8f, y=top+pad*0.95f+line*0.52f;
         float qx=marked.getWidth()-pad-qrSize-24f*scale;
         float textMax=Math.max(180f*scale,qx-x-22f*scale);
         // Responsive brand line: preserve Key white / Dhan gold / raised trademark.
