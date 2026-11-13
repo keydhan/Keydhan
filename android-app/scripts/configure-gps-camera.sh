@@ -181,6 +181,7 @@ public class GpsCameraActivity extends ComponentActivity {
     private Camera activeCamera;
     private Preview cameraPreview;
     private boolean useFrontCamera = false, flashOn = false;
+    private TextView flashSettingsStatus;
     private File pendingPhoto;
     private Uri lastSavedUri;
     private boolean photoPreviewVisible = false;
@@ -587,10 +588,10 @@ public class GpsCameraActivity extends ComponentActivity {
         page.addView(heroSub);
         addSettingsSection(page, "01  CAMERA PREFERENCES", d);
         LinearLayout cameraCard = settingsCard(d);
-        addSettingsRow(cameraCard, "⚡", "Flash", "Control camera flash", flashOn ? "ON" : "OFF", () -> {
-            toggleFlash();
-            Toast.makeText(this, "Flash setting updated.", Toast.LENGTH_SHORT).show();
-        }, d);
+        flashSettingsStatus = addSettingsRow(cameraCard, "⚡", "Flash", "Control camera flash",
+            flashOn ? "ON" : "OFF", () -> {
+                toggleFlash();
+            }, d);
         addSettingsDivider(cameraCard, d);
         addSettingsRow(cameraCard, "▧", "Photo Quality", "Choose your image quality", "HIGH", () ->
             Toast.makeText(this, "High photo quality is enabled.", Toast.LENGTH_SHORT).show(), d);
@@ -708,7 +709,7 @@ public class GpsCameraActivity extends ComponentActivity {
         parent.addView(line, lp);
     }
 
-    private void addSettingsRow(LinearLayout parent, String icon, String title, String description, String value, Runnable action, float d) {
+    private TextView addSettingsRow(LinearLayout parent, String icon, String title, String description, String value, Runnable action, float d) {
         LinearLayout row = new LinearLayout(this);
         row.setGravity(Gravity.CENTER_VERTICAL);
         row.setPadding((int)(12*d), (int)(12*d), (int)(12*d), (int)(12*d));
@@ -730,6 +731,7 @@ public class GpsCameraActivity extends ComponentActivity {
         row.setBackgroundResource(android.R.drawable.list_selector_background);
         row.setOnClickListener(v -> action.run());
         parent.addView(row);
+        return status;
     }
 
     private void showPrivacyDetails() {
@@ -939,6 +941,14 @@ public class GpsCameraActivity extends ComponentActivity {
         if (!available) flashOn = false;
         if (available) activeCamera.getCameraControl().enableTorch(flashOn);
     }
+    private void updateFlashSettingsStatus() {
+        if (flashSettingsStatus != null) {
+            flashSettingsStatus.setText(flashOn ? "ON" : "OFF");
+            flashSettingsStatus.setTextColor(flashOn ? 0xFF63D99A : GOLD);
+            flashSettingsStatus.setBackground(shape(flashOn ? 0x333A9B70 : 0x332C405A,
+                flashOn ? 0x8870D6A0 : 0x667E8EA5, 20));
+        }
+    }
     private void toggleFlash() {
         if (activeCamera == null) {
             Toast.makeText(this, "Camera is still starting. Please wait.", Toast.LENGTH_SHORT).show();
@@ -947,6 +957,7 @@ public class GpsCameraActivity extends ComponentActivity {
         if (useFrontCamera || !activeCamera.getCameraInfo().hasFlashUnit()) {
             flashOn = false;
             syncFlashControl();
+            updateFlashSettingsStatus();
             Toast.makeText(this, "Flash is available only on the rear camera on this phone.", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -955,6 +966,7 @@ public class GpsCameraActivity extends ComponentActivity {
         activeCamera.getCameraControl().enableTorch(requested).addListener(() -> runOnUiThread(() -> {
             flashOn = requested;
             syncFlashControl();
+            updateFlashSettingsStatus();
         }), ContextCompat.getMainExecutor(this));
     }
     private void capturePhoto() {
