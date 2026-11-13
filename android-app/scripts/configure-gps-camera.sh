@@ -358,7 +358,9 @@ public class GpsCameraActivity extends ComponentActivity {
             private final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
             @Override protected void onDraw(Canvas canvas) {
                 super.onDraw(canvas);
-                float d = getResources().getDisplayMetrics().density;
+                // Scale artwork to the fixed legacy 74px control footprint,
+                // so high-density phones do not make the switch button oversized.
+                float d = Math.min(getWidth(), getHeight()) / 74f;
                 float cx = getWidth()/2f, cy = getHeight()/2f;
                 float radius = 18f*d;
 
@@ -405,8 +407,7 @@ public class GpsCameraActivity extends ComponentActivity {
         flip.setBackground(flipRing);
         flip.setContentDescription("Switch front and rear camera");
         flip.setOnClickListener(v -> selectCamera(!useFrontCamera));
-        int flipSize = (int)(74 * getResources().getDisplayMetrics().density);
-        rail.addView(flip, new LinearLayout.LayoutParams(flipSize, flipSize));
+        rail.addView(flip, new LinearLayout.LayoutParams(74, 74));
         cameraModeLabel = text("REAR", 11, NAVY, true);
         cameraModeLabel.setGravity(Gravity.CENTER);
         cameraModeLabel.setBackground(shape(GOLD, 0, 14));
