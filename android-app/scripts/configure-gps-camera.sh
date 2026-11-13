@@ -762,7 +762,12 @@ public class GpsCameraActivity extends ComponentActivity {
         drawGpsStampIcon(canvas,p,2,iconX,y-6f*scale,iconSize);
         p.setTextSize(19f*scale); p.setColor(0xFFE1E7F0);
         canvas.drawText(date,textX,y,p);
-        y+=line*0.92f;
+        y+=line*0.42f;
+        // Visually separate the national identity and optional network metadata from live location details.
+        Paint footerDivider = new Paint(Paint.ANTI_ALIAS_FLAG);
+        footerDivider.setColor(0xBFE7C270); footerDivider.setStrokeWidth(1.8f*scale);
+        canvas.drawLine(x,y,qx-12f*scale,y,footerDivider);
+        y+=line*0.78f;
         p.setColor(0xFFFFD76A); p.setTypeface(Typeface.create("sans-serif",Typeface.BOLD)); p.setTextSize(19f*scale);
         canvas.drawText("Made in India",textX,y,p);
         float flagX=textX+p.measureText("Made in India")+12f*scale, flagY=y-15f*scale;
