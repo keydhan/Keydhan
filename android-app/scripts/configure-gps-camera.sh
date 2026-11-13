@@ -710,10 +710,12 @@ public class GpsCameraActivity extends ComponentActivity {
         float boxHeight = Math.max(pad * 2.25f + line * (showIp ? 8.15f : 7.15f), qrSize + pad * 2.05f);
         float top = marked.getHeight() - boxHeight - pad;
         // Layered premium card: soft shadow, deep navy face, gold outer keyline and fine inner highlight.
-        Paint shadow = new Paint(Paint.ANTI_ALIAS_FLAG); shadow.setColor(0xF5071833);
-        shadow.setShadowLayer(12f*scale, 0f, 5f*scale, 0x99000000);
+        // Do not paint an opaque shadow fill: it would cancel the glass transparency.
+        Paint shadow = new Paint(Paint.ANTI_ALIAS_FLAG); shadow.setColor(0x55304058);
+        shadow.setStyle(Paint.Style.STROKE); shadow.setStrokeWidth(2f*scale);
+        shadow.setShadowLayer(10f*scale, 0f, 4f*scale, 0x66000000);
         canvas.drawRoundRect(pad, top, marked.getWidth()-pad, marked.getHeight()-pad, 25f*scale, 25f*scale, shadow);
-        Paint bg = new Paint(Paint.ANTI_ALIAS_FLAG); bg.setColor(0x99071833); // 60% navy glass transparency; QR keeps its opaque white safe zone.
+        Paint bg = new Paint(Paint.ANTI_ALIAS_FLAG); bg.setColor(0x66071833); // 40% navy opacity / 60% transparent; QR stays opaque white.
         canvas.drawRoundRect(pad+2f*scale, top+2f*scale, marked.getWidth()-pad-2f*scale, marked.getHeight()-pad-2f*scale, 23f*scale, 23f*scale, bg);
         Paint gold = new Paint(Paint.ANTI_ALIAS_FLAG); gold.setColor(0xFFE4BD68);
         gold.setStyle(Paint.Style.STROKE); gold.setStrokeWidth(5.5f*scale);
