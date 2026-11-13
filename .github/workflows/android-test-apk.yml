@@ -44,6 +44,9 @@ jobs:
       - name: Generate Android project
         run: npx cap add android
 
+      - name: Configure native KeyDhan GPS Camera
+        run: bash scripts/configure-gps-camera.sh
+
       - name: Apply complete KeyDhan logo to all launcher icon variants
         run: |
           RES="android/app/src/main/res"
