@@ -101,6 +101,7 @@ package com.keydhan.app;
 import android.Manifest;
 import androidx.activity.ComponentActivity;
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -127,6 +128,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.GridLayout;
+import android.widget.ScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -465,7 +468,7 @@ public class GpsCameraActivity extends ComponentActivity {
         galleryLabel.setGravity(Gravity.CENTER);
         galleryLabel.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         galleryGroup.addView(galleryLabel, new LinearLayout.LayoutParams(-1, -2));
-        galleryGroup.setOnClickListener(v -> openGallery());
+        galleryGroup.setOnClickListener(v -> openDeviceGallery());
         bottom.addView(galleryGroup, new LinearLayout.LayoutParams(0, -1, 1));
 
         // Raised shutter opening in the middle of the dock.
@@ -503,7 +506,7 @@ public class GpsCameraActivity extends ComponentActivity {
         gpsPhotoLabel.setGravity(Gravity.CENTER);
         gpsPhotoLabel.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         gpsPhotoGroup.addView(gpsPhotoLabel, new LinearLayout.LayoutParams(-1, -2));
-        gpsPhotoGroup.setOnClickListener(v -> openGallery());
+        gpsPhotoGroup.setOnClickListener(v -> openGpsPhotos());
         bottom.addView(gpsPhotoGroup, new LinearLayout.LayoutParams(0, -1, 1));
         dock.addView(bottom, new FrameLayout.LayoutParams(-1, -1));
 
@@ -863,15 +866,110 @@ public class GpsCameraActivity extends ComponentActivity {
         }
     }
 
-    private void openGallery() {
+    // Open the device's installed Gallery app when available; never force Google Photos.
+    private void openDeviceGallery() {
         try {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setType("image/*");
-            intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivity(intent);
+            Intent gallery = new Intent(Intent.ACTION_MAIN);
+            gallery.addCategory(Intent.CATEGORY_APP_GALLERY);
+            if (gallery.resolveActivity(getPackageManager()) != null) {
+                startActivity(gallery);
+                return;
+            }
+            // System image picker fallback for devices whose Gallery app has no launcher category.
+            Intent picker = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            picker.setType("image/*");
+            if (picker.resolveActivity(getPackageManager()) != null) startActivity(picker);
+            else Toast.makeText(this, "Gallery is not available.", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Toast.makeText(this, "Gallery is not available.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    // Show only photos captured and saved by KeyDhan GPS Camera.
+    private void openGpsPhotos() {
+        LinearLayout page = new LinearLayout(this);
+        page.setOrientation(LinearLayout.VERTICAL);
+        page.setPadding(14, 18, 14, 12);
+        page.setBackgroundColor(NAVY);
+
+        LinearLayout top = new LinearLayout(this);
+        top.setGravity(Gravity.CENTER_VERTICAL);
+        TextView back = text("‹", 36, GOLD, true);
+        back.setGravity(Gravity.CENTER);
+        top.addView(back, new LinearLayout.LayoutParams(48, 52));
+        LinearLayout heading = new LinearLayout(this);
+        heading.setOrientation(LinearLayout.VERTICAL);
+        heading.setPadding(8, 0, 0, 0);
+        heading.addView(text("KeyDhan GPS Photos", 20, Color.WHITE, true));
+        heading.addView(text("Photos captured with KeyDhan GPS Camera", 11, GOLD, false));
+        top.addView(heading, new LinearLayout.LayoutParams(0, -2, 1));
+        page.addView(top);
+        back.setOnClickListener(v -> {
+            buildCameraUi();
+            if (cameraProvider != null) bindSelectedCamera();
+        });
+
+        ScrollView scroll = new ScrollView(this);
+        GridLayout grid = new GridLayout(this);
+        grid.setColumnCount(3);
+        grid.setUseDefaultMargins(true);
+        grid.setPadding(2, 12, 2, 12);
+
+        int count = 0;
+        String[] projection = {
+            MediaStore.Images.Media._ID,
+            MediaStore.Images.Media.DISPLAY_NAME,
+            MediaStore.Images.Media.RELATIVE_PATH
+        };
+        String selection = MediaStore.Images.Media.RELATIVE_PATH + "=?";
+        String[] selectionArgs = {"Pictures/KeyDhan GPS Camera/"};
+        try (Cursor cursor = getContentResolver().query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                projection, selection, selectionArgs,
+                MediaStore.Images.Media.DATE_ADDED + " DESC")) {
+            if (cursor != null) {
+                int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
+                while (cursor.moveToNext()) {
+                    long imageId = cursor.getLong(idColumn);
+                    Uri imageUri = Uri.withAppendedPath(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, String.valueOf(imageId));
+                    ImageView thumb = new ImageView(this);
+                    thumb.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    thumb.setBackground(shape(0xFF142944, GOLD, 10));
+                    thumb.setImageURI(imageUri);
+                    GridLayout.LayoutParams tile = new GridLayout.LayoutParams();
+                    tile.width = getResources().getDisplayMetrics().widthPixels / 3
+                        - (int)(18 * getResources().getDisplayMetrics().density);
+                    tile.height = tile.width;
+                    tile.setMargins(3, 3, 3, 3);
+                    grid.addView(thumb, tile);
+                    thumb.setContentDescription("Open saved KeyDhan GPS photo");
+                    thumb.setOnClickListener(v -> {
+                        try {
+                            Intent view = new Intent(Intent.ACTION_VIEW);
+                            view.setDataAndType(imageUri, "image/*");
+                            view.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            startActivity(view);
+                        } catch (Exception e) {
+                            Toast.makeText(this, "Could not open this photo.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    count++;
+                }
+            }
+        } catch (Exception e) {
+            android.util.Log.e("KeyDhanGPS", "Could not load KeyDhan GPS photos", e);
+        }
+        if (count == 0) {
+            TextView empty = text("No KeyDhan GPS photos yet.\nCapture and save a GPS photo to see it here.", 15, 0xFFE8D8B2, false);
+            empty.setGravity(Gravity.CENTER);
+            empty.setPadding(24, 48, 24, 48);
+            page.addView(empty, new LinearLayout.LayoutParams(-1, -2));
+        } else {
+            scroll.addView(grid);
+            page.addView(scroll, new LinearLayout.LayoutParams(-1, 0, 1));
+        }
+        setContentView(page);
     }
 
     private void changeZoom(float delta) {
