@@ -19,6 +19,7 @@ deps='''dependencies {
     implementation "androidx.camera:camera-lifecycle:1.4.2"
     implementation "androidx.camera:camera-view:1.4.2"
     implementation "com.google.android.gms:play-services-location:21.3.0"
+    implementation "com.google.zxing:core:3.5.3"
 '''
 s=s.replace(needle,deps,1)
 p.write_text(s)
@@ -149,6 +150,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.qrcode.QRCodeWriter;
+import com.google.zxing.common.BitMatrix;
 
 public class GpsCameraActivity extends ComponentActivity {
     private static final int REQUEST_PERMISSIONS = 410;
@@ -647,20 +651,47 @@ public class GpsCameraActivity extends ComponentActivity {
         String date = new SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault()).format(new Date());
         Canvas canvas = new Canvas(marked);
         float scale = Math.max(1f, marked.getWidth() / 1080f), pad = 24f * scale, line = 34f * scale;
-        float boxHeight = pad * 2.25f + line * 4.25f, top = marked.getHeight() - boxHeight - pad;
+        int qrSize = Math.round(142f * scale);
+        float boxHeight = pad * 2.45f + line * 5.15f, top = marked.getHeight() - boxHeight - pad;
         Paint bg = new Paint(Paint.ANTI_ALIAS_FLAG); bg.setColor(0xE6101D33);
         canvas.drawRoundRect(pad, top, marked.getWidth()-pad, marked.getHeight()-pad, 22f*scale, 22f*scale, bg);
         Paint gold = new Paint(Paint.ANTI_ALIAS_FLAG); gold.setColor(GOLD);
         canvas.drawRoundRect(pad, top, pad+7f*scale, marked.getHeight()-pad, 4f*scale, 4f*scale, gold);
         Paint p = new Paint(Paint.ANTI_ALIAS_FLAG); p.setColor(Color.WHITE); p.setTextSize(25f*scale); p.setFakeBoldText(true);
         float x=pad*1.8f, y=top+pad*1.25f+line*0.55f;
-        canvas.drawText("KEYDHAN™  GPS PHOTO",x,y,p);
-        p.setColor(0xFFE7C270); p.setTextSize(16f*scale); y+=line*0.72f;
+        // KeyDhan brand: Key in white, Dhan in royal gold, with a small raised trademark.
+        p.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+        p.setTextSize(25f*scale); p.setColor(Color.WHITE);
+        canvas.drawText("Key",x,y,p);
+        float brandX=x+p.measureText("Key");
+        p.setColor(0xFFE7C270); canvas.drawText("Dhan",brandX,y,p);
+        float tmX=brandX+p.measureText("Dhan");
+        p.setTextSize(11f*scale); canvas.drawText("™",tmX+2f*scale,y-13f*scale,p);
+        p.setTextSize(22f*scale); p.setColor(Color.WHITE);
+        canvas.drawText("  GPS PHOTO",tmX+20f*scale,y,p);
+        p.setColor(0xFFE7C270); p.setTextSize(16f*scale); y+=line*0.78f;
         canvas.drawText("LIVE LOCATION  •  GPS ACCURACY",x,y,p);
-        p.setColor(Color.WHITE); p.setFakeBoldText(false); p.setTextSize(19f*scale); y+=line*1.05f;
+        p.setColor(Color.WHITE); p.setFakeBoldText(false); p.setTextSize(19f*scale); y+=line*1.02f;
         canvas.drawText(String.format(Locale.US,"LAT  %.6f     LONG  %.6f",loc.getLatitude(),loc.getLongitude()),x,y,p);
-        y+=line; canvas.drawText(trim(address,72),x,y,p);
+        y+=line; canvas.drawText(trim(address,52),x,y,p);
         y+=line; p.setColor(0xFFE1E7F0); canvas.drawText(date,x,y,p);
+        y+=line; p.setColor(0xFFFFD76A); p.setFakeBoldText(true); p.setTextSize(17f*scale);
+        canvas.drawText("Made in India",x,y,p);
+        p.setTextSize(18f*scale); canvas.drawText("  🇮🇳",x+p.measureText("Made in India"),y,p);
+        // Per-photo QR encodes a direct Google Maps query for this exact GPS fix.
+        try {
+            String mapUrl = String.format(Locale.US,"https://maps.google.com/?q=%.6f,%.6f",loc.getLatitude(),loc.getLongitude());
+            BitMatrix matrix = new QRCodeWriter().encode(mapUrl, BarcodeFormat.QR_CODE, qrSize, qrSize);
+            Bitmap qr = Bitmap.createBitmap(qrSize, qrSize, Bitmap.Config.ARGB_8888);
+            for (int yy=0; yy<qrSize; yy++) for (int xx=0; xx<qrSize; xx++)
+                qr.setPixel(xx, yy, matrix.get(xx,yy) ? Color.BLACK : Color.WHITE);
+            float qx=marked.getWidth()-pad-qrSize-24f*scale, qy=top+(boxHeight-qrSize)/2f;
+            Paint qrBg = new Paint(Paint.ANTI_ALIAS_FLAG); qrBg.setColor(Color.WHITE);
+            canvas.drawRoundRect(qx-7f*scale,qy-7f*scale,qx+qrSize+7f*scale,qy+qrSize+7f*scale,8f*scale,8f*scale,qrBg);
+            canvas.drawBitmap(qr,qx,qy,null); qr.recycle();
+        } catch (Exception qrError) {
+            android.util.Log.e("KeyDhanGPS","Could not generate location QR",qrError);
+        }
         pendingPhoto = new File(getCacheDir(),"keydhan-preview-"+System.currentTimeMillis()+".jpg");
         try (OutputStream out = new java.io.FileOutputStream(pendingPhoto)) {
             marked.compress(Bitmap.CompressFormat.JPEG,94,out);
