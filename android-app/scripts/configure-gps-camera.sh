@@ -310,32 +310,32 @@ public class GpsCameraActivity extends ComponentActivity {
         dock.setBackground(shape(0xF5071228, GOLD, 30));
         LinearLayout bottom = new LinearLayout(this);
         bottom.setGravity(Gravity.CENTER_VERTICAL);
-        bottom.setPadding(18, 8, 18, 8);
+        bottom.setPadding(18, 4, 18, 4);
         bottom.setBackground(shape(0xF5071228, GOLD, 30));
 
         LinearLayout galleryGroup = new LinearLayout(this);
         galleryGroup.setOrientation(LinearLayout.VERTICAL);
         galleryGroup.setGravity(Gravity.CENTER);
-        TextView galleryIcon = text("▧", 27, GOLD, true);
-        TextView galleryLabel = text("GALLERY", 15, Color.WHITE, true);
+        TextView galleryIcon = text("▧", 23, GOLD, true);
+        TextView galleryLabel = text("GALLERY", 13, Color.WHITE, true);
         galleryGroup.addView(galleryIcon);
         galleryGroup.addView(galleryLabel);
         galleryGroup.setOnClickListener(v -> openGallery());
-        bottom.addView(galleryGroup, new LinearLayout.LayoutParams(0, 116, 1));
+        bottom.addView(galleryGroup, new LinearLayout.LayoutParams(0, -1, 1));
 
         // Raised shutter opening in the middle of the dock.
         View centerGap = new View(this);
-        bottom.addView(centerGap, new LinearLayout.LayoutParams(112, 116));
+        bottom.addView(centerGap, new LinearLayout.LayoutParams(112, -1));
 
         LinearLayout gpsPhotoGroup = new LinearLayout(this);
         gpsPhotoGroup.setOrientation(LinearLayout.VERTICAL);
         gpsPhotoGroup.setGravity(Gravity.CENTER);
-        TextView gpsPhotoIcon = text("⌖", 27, GOLD, true);
-        TextView gpsPhotoLabel = text("GPS PHOTO", 15, Color.WHITE, true);
+        TextView gpsPhotoIcon = text("⌖", 23, GOLD, true);
+        TextView gpsPhotoLabel = text("GPS PHOTO", 13, Color.WHITE, true);
         gpsPhotoGroup.addView(gpsPhotoIcon);
         gpsPhotoGroup.addView(gpsPhotoLabel);
         gpsPhotoGroup.setOnClickListener(v -> openGallery());
-        bottom.addView(gpsPhotoGroup, new LinearLayout.LayoutParams(0, 94, 1));
+        bottom.addView(gpsPhotoGroup, new LinearLayout.LayoutParams(0, -1, 1));
         dock.addView(bottom, new FrameLayout.LayoutParams(-1, -1));
 
         captureButton = new Button(this);
@@ -382,7 +382,7 @@ public class GpsCameraActivity extends ComponentActivity {
         captureButton.setOnClickListener(v -> capturePhoto());
         captureButton.setEnabled(false);
 
-        FrameLayout.LayoutParams bottomParams = new FrameLayout.LayoutParams(-1, 148, Gravity.BOTTOM);
+        FrameLayout.LayoutParams bottomParams = new FrameLayout.LayoutParams(-1, 164, Gravity.BOTTOM);
         bottomParams.leftMargin = 10; bottomParams.rightMargin = 10;
         bottomParams.bottomMargin = 8;
         root.addView(dock, bottomParams);
