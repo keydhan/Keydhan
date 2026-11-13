@@ -705,9 +705,9 @@ public class GpsCameraActivity extends ComponentActivity {
         String publicIp = showIp ? fetchPublicIp() : null;
         String date = new SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault()).format(new Date());
         Canvas canvas = new Canvas(marked);
-        float scale = Math.max(1f, marked.getWidth() / 1080f), pad = 27f * scale, line = 43f * scale;
-        int qrSize = Math.round(310f * scale);
-        float boxHeight = Math.max(pad * 2.25f + line * (showIp ? 7.55f : 6.55f), qrSize + pad * 2.05f);
+        float scale = Math.max(0.72f, marked.getWidth() / 1080f), pad = 29f * scale, line = 50f * scale;
+        int qrSize = Math.round(330f * scale);
+        float boxHeight = Math.max(pad * 2.25f + line * (showIp ? 8.15f : 7.15f), qrSize + pad * 2.05f);
         float top = marked.getHeight() - boxHeight - pad;
         // Layered premium card: soft shadow, deep navy face, gold outer keyline and fine inner highlight.
         Paint shadow = new Paint(Paint.ANTI_ALIAS_FLAG); shadow.setColor(0xF5071833);
@@ -730,40 +730,40 @@ public class GpsCameraActivity extends ComponentActivity {
         float qx=marked.getWidth()-pad-qrSize-24f*scale;
         float textMax=Math.max(180f*scale,qx-x-22f*scale);
         // Responsive brand line: preserve Key white / Dhan gold / raised trademark.
-        p.setTextSize(40f*scale); p.setColor(Color.WHITE);
+        p.setTextSize(46f*scale); p.setColor(Color.WHITE);
         canvas.drawText("Key",x,y,p);
         float brandX=x+p.measureText("Key");
         p.setColor(0xFFE7C270); canvas.drawText("Dhan",brandX,y,p);
         float tmX=brandX+p.measureText("Dhan");
-        p.setTextSize(14f*scale); canvas.drawText("™",tmX+3f*scale,y-20f*scale,p);
-        p.setTextSize(29f*scale); p.setColor(Color.WHITE);
+        p.setTextSize(16f*scale); canvas.drawText("™",tmX+3f*scale,y-23f*scale,p);
+        p.setTextSize(33f*scale); p.setColor(Color.WHITE);
         String title="Real Time GPS Photo";
-        p.setTextSize(Math.min(29f*scale, Math.max(20f*scale, textMax*0.050f)));
+        p.setTextSize(Math.min(33f*scale, Math.max(22f*scale, textMax*0.052f)));
         canvas.drawText(title,Math.min(tmX+24f*scale, qx-textMax*0.68f),y,p);
         y+=line*0.92f;
-        p.setColor(0xFFFFD36A); p.setTextSize(23f*scale); p.setFakeBoldText(true);
+        p.setColor(0xFFFFD36A); p.setTextSize(27f*scale); p.setFakeBoldText(true);
         canvas.drawText("LIVE LOCATION  •  GPS ACCURACY",x+textMax*0.16f,y,p);
         y+=line*0.28f;
         Paint divider = new Paint(Paint.ANTI_ALIAS_FLAG); divider.setColor(0xBFE7C270); divider.setStrokeWidth(1.6f*scale);
         canvas.drawLine(x,y,qx-12f*scale,y,divider);
         y+=line*0.78f;
-        float iconX=x+15f*scale, textX=x+48f*scale, iconSize=20f*scale;
+        float iconX=x+17f*scale, textX=x+54f*scale, iconSize=23f*scale;
         p.setTypeface(Typeface.create("sans-serif",Typeface.NORMAL)); p.setFakeBoldText(false);
-        p.setColor(Color.WHITE); p.setTextSize(26f*scale);
+        p.setColor(Color.WHITE); p.setTextSize(30f*scale);
         Paint iconDisc = new Paint(Paint.ANTI_ALIAS_FLAG); iconDisc.setColor(0xFF203B5B);
-        canvas.drawCircle(iconX,y-7f*scale,15f*scale,iconDisc);
+        canvas.drawCircle(iconX,y-8f*scale,17f*scale,iconDisc);
         Paint iconRing = new Paint(Paint.ANTI_ALIAS_FLAG); iconRing.setColor(0xFFB99550);
         iconRing.setStyle(Paint.Style.STROKE); iconRing.setStrokeWidth(1.2f*scale);
-        canvas.drawCircle(iconX,y-7f*scale,15f*scale,iconRing);
+        canvas.drawCircle(iconX,y-8f*scale,17f*scale,iconRing);
         drawGpsStampIcon(canvas,p,0,iconX,y-6f*scale,iconSize);
         String coords=String.format(Locale.US,"LAT  %.6f     LONG  %.6f",loc.getLatitude(),loc.getLongitude());
-        p.setTextSize(Math.min(26f*scale, textMax*0.040f));
+        p.setTextSize(Math.min(30f*scale, textMax*0.043f));
         canvas.drawText(coords,textX,y,p);
         y+=line*0.92f;
         canvas.drawCircle(iconX,y-7f*scale,15f*scale,iconDisc);
         canvas.drawCircle(iconX,y-7f*scale,15f*scale,iconRing);
         drawGpsStampIcon(canvas,p,1,iconX,y-6f*scale,iconSize);
-        p.setTextSize(24f*scale);
+        p.setTextSize(28f*scale);
         String addressText=address == null ? "" : address;
         int addressStart=0;
         while(addressStart<addressText.length()) {
@@ -777,7 +777,7 @@ public class GpsCameraActivity extends ComponentActivity {
         canvas.drawCircle(iconX,y-7f*scale,15f*scale,iconDisc);
         canvas.drawCircle(iconX,y-7f*scale,15f*scale,iconRing);
         drawGpsStampIcon(canvas,p,2,iconX,y-6f*scale,iconSize);
-        p.setTextSize(24f*scale); p.setColor(0xFFF4F6FA);
+        p.setTextSize(28f*scale); p.setColor(0xFFF4F6FA);
         canvas.drawText(date,textX,y,p);
         y+=line*0.42f;
         // Visually separate the national identity and optional network metadata from live location details.
@@ -785,7 +785,7 @@ public class GpsCameraActivity extends ComponentActivity {
         footerDivider.setColor(0xFFE7C270); footerDivider.setStrokeWidth(2.4f*scale);
         canvas.drawLine(x,y,qx-12f*scale,y,footerDivider);
         y+=line*0.78f;
-        p.setColor(0xFFFFD36A); p.setTypeface(Typeface.create("sans-serif",Typeface.BOLD)); p.setTextSize(25f*scale);
+        p.setColor(0xFFFFD36A); p.setTypeface(Typeface.create("sans-serif",Typeface.BOLD)); p.setTextSize(29f*scale);
         canvas.drawText("Made in India",textX,y,p);
         float flagX=textX+p.measureText("Made in India")+12f*scale, flagY=y-15f*scale;
         Paint flagPaint=new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -796,7 +796,7 @@ public class GpsCameraActivity extends ComponentActivity {
         if (showIp) {
             y+=line*0.88f;
             drawGpsStampIcon(canvas,p,3,iconX,y-6f*scale,iconSize);
-            p.setColor(0xFFF4F6FA); p.setTypeface(Typeface.create("sans-serif",Typeface.NORMAL)); p.setTextSize(23f*scale);
+            p.setColor(0xFFF4F6FA); p.setTypeface(Typeface.create("sans-serif",Typeface.NORMAL)); p.setTextSize(27f*scale);
             canvas.drawText("PUBLIC IP  " + (publicIp == null ? "Not Available" : publicIp),textX,y,p);
         }
         // Per-photo QR encodes a direct Google Maps query for this exact GPS fix.
