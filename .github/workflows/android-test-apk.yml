@@ -60,14 +60,15 @@ jobs:
           for density in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
             cp "$RES/mipmap-$density/ic_launcher.png" "$RES/mipmap-$density/ic_launcher_round.png"
           done
-          rsvg-convert -w 432 -h 432 "$ICON" > "$RES/drawable-nodpi/ic_launcher_foreground.png"
+          # Use a unique foreground resource name so Capacitor's default Android robot vector cannot override it.
+          rsvg-convert -w 432 -h 432 resources/keydhan-adaptive-foreground.svg > "$RES/drawable-nodpi/keydhan_launcher_foreground.png"
           cat > "$RES/values/ic_launcher_background.xml" <<'EOF'
           <resources><color name="ic_launcher_background">#0A2858</color></resources>
           EOF
           cat > "$RES/mipmap-anydpi-v26/ic_launcher.xml" <<'EOF'
           <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
               <background android:drawable="@color/ic_launcher_background" />
-              <foreground android:drawable="@drawable/ic_launcher_foreground" />
+              <foreground android:drawable="@drawable/keydhan_launcher_foreground" />
           </adaptive-icon>
           EOF
           cp "$RES/mipmap-anydpi-v26/ic_launcher.xml" "$RES/mipmap-anydpi-v26/ic_launcher_round.xml"
@@ -89,7 +90,8 @@ jobs:
           assert 'android:roundIcon="@mipmap/ic_launcher_round"' in tag
           PY
           test -s "$RES/mipmap-xxxhdpi/ic_launcher.png"
-          test -s "$RES/drawable-nodpi/ic_launcher_foreground.png"
+          test -s "$RES/drawable-nodpi/keydhan_launcher_foreground.png"
+          ! grep -q '@drawable/ic_launcher_foreground' "$RES/mipmap-anydpi-v26/ic_launcher.xml"
 
       - name: Set Android app version to 0.13
         run: |
