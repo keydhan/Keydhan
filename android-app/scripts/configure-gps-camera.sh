@@ -713,7 +713,7 @@ public class GpsCameraActivity extends ComponentActivity {
         Paint shadow = new Paint(Paint.ANTI_ALIAS_FLAG); shadow.setColor(0xF5071833);
         shadow.setShadowLayer(12f*scale, 0f, 5f*scale, 0x99000000);
         canvas.drawRoundRect(pad, top, marked.getWidth()-pad, marked.getHeight()-pad, 25f*scale, 25f*scale, shadow);
-        Paint bg = new Paint(Paint.ANTI_ALIAS_FLAG); bg.setColor(0xF9071833);
+        Paint bg = new Paint(Paint.ANTI_ALIAS_FLAG); bg.setColor(0x99071833); // 60% navy glass transparency; QR keeps its opaque white safe zone.
         canvas.drawRoundRect(pad+2f*scale, top+2f*scale, marked.getWidth()-pad-2f*scale, marked.getHeight()-pad-2f*scale, 23f*scale, 23f*scale, bg);
         Paint gold = new Paint(Paint.ANTI_ALIAS_FLAG); gold.setColor(0xFFE4BD68);
         gold.setStyle(Paint.Style.STROKE); gold.setStrokeWidth(5.5f*scale);
