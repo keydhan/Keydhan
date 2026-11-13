@@ -104,6 +104,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.GradientDrawable;
 import androidx.core.view.WindowCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -165,7 +167,7 @@ public class GpsCameraActivity extends ComponentActivity {
         super.onCreate(state);
         getWindow().setStatusBarColor(NAVY);
         getWindow().setNavigationBarColor(NAVY);
-        WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         locationClient = LocationServices.getFusedLocationProviderClient(this);
         buildCameraUi();
         if (hasPermissions()) startCameraAndLocation();
@@ -213,10 +215,10 @@ public class GpsCameraActivity extends ComponentActivity {
         header.setPadding(14, 8, 14, 8);
         header.setBackground(shape(0xE8071228, 0, 0));
 
-        TextView exit = iconControl("×", "Exit GPS Camera");
-        exit.setTextSize(30);
+        TextView exit = iconControl("EXIT", "Exit GPS Camera");
+        exit.setTextSize(11);
         exit.setOnClickListener(v -> finish());
-        header.addView(exit, new LinearLayout.LayoutParams(44, 44));
+        header.addView(exit, new LinearLayout.LayoutParams(58, 44));
 
         LinearLayout brand = new LinearLayout(this);
         brand.setOrientation(LinearLayout.VERTICAL);
@@ -234,7 +236,8 @@ public class GpsCameraActivity extends ComponentActivity {
         flashButton.setContentDescription("Toggle rear camera flash");
         flashButton.setOnClickListener(v -> toggleFlash());
         header.addView(flashButton, new LinearLayout.LayoutParams(-2, 44));
-        root.addView(header, new FrameLayout.LayoutParams(-1, -2, Gravity.TOP));
+        FrameLayout.LayoutParams headerParams = new FrameLayout.LayoutParams(-1, -2, Gravity.TOP);
+        root.addView(header, headerParams);
 
         // One integrated bottom control deck prevents GPS text and camera controls overlapping.
         LinearLayout bottom = new LinearLayout(this);
@@ -310,8 +313,18 @@ public class GpsCameraActivity extends ComponentActivity {
 
         captureButton.setOnClickListener(v -> capturePhoto());
         captureButton.setEnabled(false);
-        root.addView(bottom, new FrameLayout.LayoutParams(-1, -2, Gravity.BOTTOM));
+        FrameLayout.LayoutParams bottomParams = new FrameLayout.LayoutParams(-1, -2, Gravity.BOTTOM);
+        root.addView(bottom, bottomParams);
+        ViewCompat.setOnApplyWindowInsetsListener(root, (view, windowInsets) -> {
+            androidx.core.graphics.Insets bars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+            headerParams.topMargin = bars.top + (int)(6 * getResources().getDisplayMetrics().density);
+            bottomParams.bottomMargin = bars.bottom + (int)(8 * getResources().getDisplayMetrics().density);
+            header.setLayoutParams(headerParams);
+            bottom.setLayoutParams(bottomParams);
+            return windowInsets;
+        });
         setContentView(root);
+        ViewCompat.requestApplyInsets(root);
         updateCameraChoice();
     }
     private void updateCameraChoice() {
