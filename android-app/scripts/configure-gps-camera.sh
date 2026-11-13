@@ -558,9 +558,17 @@ public class GpsCameraActivity extends ComponentActivity {
     }
 
     private void showPrivacyDetails() {
+        boolean publicIpEnabled = getPreferences(MODE_PRIVATE).getBoolean(PREF_SHOW_IP, false);
+        StringBuilder privacyMessage = new StringBuilder();
+        privacyMessage.append("Your photos are processed and saved locally on your phone. Photos are not uploaded to KeyDhan servers. Your location is used to create the GPS stamp on the photo.");
+        if (publicIpEnabled) {
+            privacyMessage.append("\\n\\nPUBLIC IP IS ON\\nThe app contacts an external IP lookup service to retrieve your public IP address for the photo.");
+            privacyMessage.append("\\n\\nWant to turn it OFF?\\nOpen GPS Camera → Settings ⚙ → Show public IP on photo → OFF.");
+            privacyMessage.append("\\n\\nWhen OFF, the app will not make the public IP lookup request and no Public IP will be added to your photo.");
+        }
         new android.app.AlertDialog.Builder(this)
             .setTitle("KeyDhan Privacy & Data Security")
-            .setMessage("Your photos are processed and saved locally on your phone. Photos are not uploaded to KeyDhan servers. Your location is used to create the GPS stamp on the photo. If you enable Public IP, the app contacts an external IP lookup service to retrieve your public IP address.")
+            .setMessage(privacyMessage.toString())
             .setPositiveButton("Got it", (dialog, which) -> {
                 getPreferences(MODE_PRIVATE).edit().putBoolean(PREF_PRIVACY_NOTICE_SEEN, true).apply();
             })
