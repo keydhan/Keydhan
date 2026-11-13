@@ -263,14 +263,14 @@ public class GpsCameraActivity extends ComponentActivity {
         rail.setPadding(9, 12, 9, 12);
         rail.setBackground(shape(0xD9071228, GOLD, 28));
         TextView flip = iconControl("⟳", "Switch front and rear camera");
-        flip.setTextSize(38);
+        flip.setTextSize(28);
         flip.setOnClickListener(v -> selectCamera(!useFrontCamera));
-        rail.addView(flip, new LinearLayout.LayoutParams(76, 76));
+        rail.addView(flip, new LinearLayout.LayoutParams(60, 60));
         cameraModeLabel = text("REAR", 13, NAVY, true);
         cameraModeLabel.setGravity(Gravity.CENTER);
         cameraModeLabel.setBackground(shape(GOLD, 0, 14));
-        LinearLayout.LayoutParams modeLp = new LinearLayout.LayoutParams(-1, 22);
-        modeLp.topMargin = 2; modeLp.bottomMargin = 7;
+        LinearLayout.LayoutParams modeLp = new LinearLayout.LayoutParams(-1, 28);
+        modeLp.topMargin = 8; modeLp.bottomMargin = 9;
         rail.addView(cameraModeLabel, modeLp);
         Button zoomIn = button("+"); zoomIn.setTextSize(22);
         Button zoomOut = button("−"); zoomOut.setTextSize(22);
@@ -302,7 +302,7 @@ public class GpsCameraActivity extends ComponentActivity {
         gpsCard.addView(addressLine, addrLp);
         FrameLayout.LayoutParams gpsParams = new FrameLayout.LayoutParams(-1, -2, Gravity.BOTTOM);
         gpsParams.leftMargin = 14; gpsParams.rightMargin = 14;
-        gpsParams.bottomMargin = (int)(122 * getResources().getDisplayMetrics().density);
+        gpsParams.bottomMargin = (int)(100 * getResources().getDisplayMetrics().density);
         root.addView(gpsCard, gpsParams);
 
         // Bottom dock mirrors the approved reference: wide navy/gold tray with a raised central shutter.
@@ -313,25 +313,34 @@ public class GpsCameraActivity extends ComponentActivity {
         bottom.setPadding(18, 12, 18, 12);
         bottom.setBackground(shape(0xF5071228, GOLD, 30));
 
-        TextView gallery = text("▧\nGALLERY", 13, GOLD, true);
-        gallery.setGravity(Gravity.CENTER);
-        gallery.setOnClickListener(v -> openGallery());
-        LinearLayout.LayoutParams sideLp = new LinearLayout.LayoutParams(0, 94, 1);
-        bottom.addView(gallery, sideLp);
+        LinearLayout galleryGroup = new LinearLayout(this);
+        galleryGroup.setOrientation(LinearLayout.VERTICAL);
+        galleryGroup.setGravity(Gravity.CENTER);
+        TextView galleryIcon = text("▧", 27, GOLD, true);
+        TextView galleryLabel = text("GALLERY", 15, Color.WHITE, true);
+        galleryGroup.addView(galleryIcon);
+        galleryGroup.addView(galleryLabel);
+        galleryGroup.setOnClickListener(v -> openGallery());
+        bottom.addView(galleryGroup, new LinearLayout.LayoutParams(0, 94, 1));
 
-        // Reserve a central opening so the shutter overlaps the dock instead of sitting inside the row.
+        // Raised shutter opening in the middle of the dock.
         View centerGap = new View(this);
         bottom.addView(centerGap, new LinearLayout.LayoutParams(112, 94));
 
-        TextView gpsPhoto = text("⌖\nGPS PHOTO", 13, GOLD, true);
-        gpsPhoto.setGravity(Gravity.CENTER);
-        gpsPhoto.setOnClickListener(v -> openGallery());
-        bottom.addView(gpsPhoto, new LinearLayout.LayoutParams(0, 94, 1));
+        LinearLayout gpsPhotoGroup = new LinearLayout(this);
+        gpsPhotoGroup.setOrientation(LinearLayout.VERTICAL);
+        gpsPhotoGroup.setGravity(Gravity.CENTER);
+        TextView gpsPhotoIcon = text("⌖", 27, GOLD, true);
+        TextView gpsPhotoLabel = text("GPS PHOTO", 15, Color.WHITE, true);
+        gpsPhotoGroup.addView(gpsPhotoIcon);
+        gpsPhotoGroup.addView(gpsPhotoLabel);
+        gpsPhotoGroup.setOnClickListener(v -> openGallery());
+        bottom.addView(gpsPhotoGroup, new LinearLayout.LayoutParams(0, 94, 1));
         dock.addView(bottom, new FrameLayout.LayoutParams(-1, -1));
 
         captureButton = new Button(this);
-        captureButton.setText("●");
-        captureButton.setTextSize(34);
+        captureButton.setText("");
+        captureButton.setTextSize(1);
         captureButton.setTextColor(NAVY);
         captureButton.setBackgroundTintList(null);
         captureButton.setStateListAnimator(null);
@@ -350,6 +359,25 @@ public class GpsCameraActivity extends ComponentActivity {
         FrameLayout.LayoutParams shutterLp = new FrameLayout.LayoutParams(112, 112, Gravity.TOP | Gravity.CENTER_HORIZONTAL);
         shutterLp.topMargin = -12;
         dock.addView(captureButton, shutterLp);
+        // Draw a crisp monochrome camera glyph over the gold shutter (avoid platform emoji rendering).
+        View cameraGlyph = new View(this) {
+            private final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
+            @Override protected void onDraw(Canvas canvas) {
+                super.onDraw(canvas);
+                float d = getResources().getDisplayMetrics().density;
+                float cx = getWidth() / 2f, cy = getHeight() / 2f;
+                p.setColor(NAVY); p.setStyle(Paint.Style.FILL);
+                canvas.drawRoundRect(cx - 22*d, cy - 13*d, cx + 22*d, cy + 14*d, 5*d, 5*d, p);
+                canvas.drawRect(cx - 11*d, cy - 19*d, cx + 5*d, cy - 13*d, p);
+                p.setColor(0xFFFFD76A); p.setStyle(Paint.Style.STROKE); p.setStrokeWidth(3*d);
+                canvas.drawCircle(cx, cy, 8*d, p);
+                p.setStyle(Paint.Style.FILL);
+            }
+        };
+        cameraGlyph.setClickable(false);
+        FrameLayout.LayoutParams glyphLp = new FrameLayout.LayoutParams(64, 64, Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+        glyphLp.topMargin = 12;
+        dock.addView(cameraGlyph, glyphLp);
         captureButton.setOnClickListener(v -> capturePhoto());
         captureButton.setEnabled(false);
 
@@ -364,7 +392,7 @@ public class GpsCameraActivity extends ComponentActivity {
             bottomParams.bottomMargin = bars.bottom + (int)(8 * getResources().getDisplayMetrics().density);
             header.setLayoutParams(headerParams);
             dock.setLayoutParams(bottomParams);
-            gpsParams.bottomMargin = bars.bottom + (int)(150 * getResources().getDisplayMetrics().density);
+            gpsParams.bottomMargin = bars.bottom + (int)(100 * getResources().getDisplayMetrics().density);
             gpsCard.setLayoutParams(gpsParams);
             return windowInsets;
         });
