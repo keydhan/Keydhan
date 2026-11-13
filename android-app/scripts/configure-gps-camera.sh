@@ -675,12 +675,17 @@ public class GpsCameraActivity extends ComponentActivity {
         String date = new SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault()).format(new Date());
         Canvas canvas = new Canvas(marked);
         float scale = Math.max(1f, marked.getWidth() / 1080f), pad = 24f * scale, line = 34f * scale;
-        int qrSize = Math.round(184f * scale);
-        float boxHeight = pad * 2.45f + line * (showIp ? 6.15f : 5.15f), top = marked.getHeight() - boxHeight - pad;
+        int qrSize = Math.round(250f * scale);
+        float boxHeight = Math.max(pad * 2.45f + line * (showIp ? 6.15f : 5.15f), qrSize + pad * 2.1f);
+        float top = marked.getHeight() - boxHeight - pad;
         Paint bg = new Paint(Paint.ANTI_ALIAS_FLAG); bg.setColor(0xE6101D33);
         canvas.drawRoundRect(pad, top, marked.getWidth()-pad, marked.getHeight()-pad, 22f*scale, 22f*scale, bg);
+        // Single continuous gold outline around the complete GPS stamp.
         Paint gold = new Paint(Paint.ANTI_ALIAS_FLAG); gold.setColor(GOLD);
-        canvas.drawRoundRect(pad, top, pad+7f*scale, marked.getHeight()-pad, 4f*scale, 4f*scale, gold);
+        gold.setStyle(Paint.Style.STROKE); gold.setStrokeWidth(3.5f*scale);
+        canvas.drawRoundRect(pad+2f*scale, top+2f*scale, marked.getWidth()-pad-2f*scale,
+            marked.getHeight()-pad-2f*scale, 22f*scale, 22f*scale, gold);
+        gold.setStyle(Paint.Style.FILL);
         Paint p = new Paint(Paint.ANTI_ALIAS_FLAG); p.setColor(Color.WHITE); p.setTextSize(25f*scale); p.setFakeBoldText(true);
         float x=pad*1.8f, y=top+pad*1.25f+line*0.55f;
         // KeyDhan brand: Key in white, Dhan in royal gold, with a small raised trademark.
@@ -731,8 +736,10 @@ public class GpsCameraActivity extends ComponentActivity {
             logoP.setColor(0xFFE7C270); qrCanvas.drawText("Dhan",logoCx+20f*scale,logoTextY,logoP);
             logoP.setTextSize(7f*scale); qrCanvas.drawText("™",logoCx+43f*scale,logoTextY-10f*scale,logoP);
             float qx=marked.getWidth()-pad-qrSize-24f*scale, qy=top+(boxHeight-qrSize)/2f;
+            Paint qrFrame = new Paint(Paint.ANTI_ALIAS_FLAG); qrFrame.setColor(GOLD);
+            canvas.drawRoundRect(qx-7f*scale,qy-7f*scale,qx+qrSize+7f*scale,qy+qrSize+7f*scale,10f*scale,10f*scale,qrFrame);
             Paint qrBg = new Paint(Paint.ANTI_ALIAS_FLAG); qrBg.setColor(Color.WHITE);
-            canvas.drawRoundRect(qx-4f*scale,qy-4f*scale,qx+qrSize+4f*scale,qy+qrSize+4f*scale,6f*scale,6f*scale,qrBg);
+            canvas.drawRoundRect(qx-3f*scale,qy-3f*scale,qx+qrSize+3f*scale,qy+qrSize+3f*scale,7f*scale,7f*scale,qrBg);
             canvas.drawBitmap(qr,qx,qy,null); qr.recycle();
         } catch (Exception qrError) {
             android.util.Log.e("KeyDhanGPS","Could not generate location QR",qrError);
