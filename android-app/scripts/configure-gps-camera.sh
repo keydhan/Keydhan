@@ -334,24 +334,37 @@ public class GpsCameraActivity extends ComponentActivity {
         float pad = 24f * scale;
         float line = 34f * scale;
         Paint bg = new Paint(Paint.ANTI_ALIAS_FLAG);
-        bg.setColor(0xCC071228);
-        float boxHeight = pad * 2 + line * 4;
-        canvas.drawRoundRect(pad, mutable.getHeight() - boxHeight - pad,
-            mutable.getWidth() - pad, mutable.getHeight() - pad, 16f * scale, 16f * scale, bg);
+        bg.setColor(0xE6101D33);
+        float boxHeight = pad * 2.25f + line * 4.25f;
+        float top = mutable.getHeight() - boxHeight - pad;
+        canvas.drawRoundRect(pad, top, mutable.getWidth() - pad,
+            mutable.getHeight() - pad, 22f * scale, 22f * scale, bg);
+        Paint accent = new Paint(Paint.ANTI_ALIAS_FLAG);
+        accent.setColor(Color.rgb(210, 169, 82));
+        canvas.drawRoundRect(pad, top, pad + 7f * scale,
+            mutable.getHeight() - pad, 4f * scale, 4f * scale, accent);
         Paint text = new Paint(Paint.ANTI_ALIAS_FLAG);
         text.setColor(Color.WHITE);
-        text.setTextSize(23f * scale);
+        text.setTextSize(25f * scale);
         text.setFakeBoldText(true);
-        float y = mutable.getHeight() - boxHeight + line * 0.35f;
-        canvas.drawText("KeyDhan™ GPS Camera", pad * 1.6f, y, text);
+        float x = pad * 1.8f;
+        float y = top + pad * 1.25f + line * 0.55f;
+        canvas.drawText("KEYDHAN™  GPS PHOTO", x, y, text);
+        text.setColor(Color.rgb(231, 194, 112));
+        text.setTextSize(16f * scale);
+        text.setFakeBoldText(true);
+        y += line * 0.72f;
+        canvas.drawText("LIVE LOCATION  •  VERIFIED COORDINATES", x, y, text);
+        text.setColor(Color.WHITE);
         text.setFakeBoldText(false);
         text.setTextSize(19f * scale);
+        y += line * 1.05f;
+        canvas.drawText(String.format(Locale.US, "LAT  %.6f     LONG  %.6f", loc.getLatitude(), loc.getLongitude()), x, y, text);
         y += line;
-        canvas.drawText(String.format(Locale.US, "Lat %.6f   Long %.6f", loc.getLatitude(), loc.getLongitude()), pad * 1.6f, y, text);
+        canvas.drawText(trim(addressText, 72), x, y, text);
         y += line;
-        canvas.drawText(trim(addressText, 64), pad * 1.6f, y, text);
-        y += line;
-        canvas.drawText(date, pad * 1.6f, y, text);
+        text.setColor(0xFFE1E7F0);
+        canvas.drawText(date, x, y, text);
 
         String filename = "KeyDhan_GPS_" + new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date()) + ".jpg";
         ContentValues values = new ContentValues();
