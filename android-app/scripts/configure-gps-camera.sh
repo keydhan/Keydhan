@@ -182,6 +182,8 @@ public class GpsCameraActivity extends ComponentActivity {
     private Preview cameraPreview;
     private boolean useFrontCamera = false, flashOn = false;
     private TextView flashSettingsStatus;
+    private TextView photoQualityStatus;
+    private static final String PREF_PHOTO_QUALITY = "photo_quality";
     private File pendingPhoto;
     private Uri lastSavedUri;
     private boolean photoPreviewVisible = false;
@@ -593,8 +595,9 @@ public class GpsCameraActivity extends ComponentActivity {
                 toggleFlash();
             }, d);
         addSettingsDivider(cameraCard, d);
-        addSettingsRow(cameraCard, "▧", "Photo Quality", "Choose your image quality", "HIGH", () ->
-            Toast.makeText(this, "High photo quality is enabled.", Toast.LENGTH_SHORT).show(), d);
+        photoQualityStatus = addSettingsRow(cameraCard, "▧", "Photo Quality", "Choose your image quality",
+            getPhotoQualityLabel(), () -> showPhotoQualityOptions(), d);
+        updatePhotoQualityStatus();
         page.addView(cameraCard);
 
         addSettingsSection(page, "02  GPS & PHOTO STAMPING", d);
@@ -869,6 +872,56 @@ public class GpsCameraActivity extends ComponentActivity {
             else { Toast.makeText(this, "Camera and precise location permissions are required.", Toast.LENGTH_LONG).show(); finish(); }
         }
     }
+    private int getPhotoQualityValue() {
+        String quality = getPreferences(MODE_PRIVATE).getString(PREF_PHOTO_QUALITY, "HIGH");
+        if ("STANDARD".equals(quality)) return 80;
+        if ("DATA_SAVER".equals(quality)) return 65;
+        return 95;
+    }
+    private String getPhotoQualityLabel() {
+        String quality = getPreferences(MODE_PRIVATE).getString(PREF_PHOTO_QUALITY, "HIGH");
+        if ("STANDARD".equals(quality)) return "STANDARD";
+        if ("DATA_SAVER".equals(quality)) return "DATA SAVER";
+        return "HIGH";
+    }
+    private ImageCapture buildImageCapture() {
+        return new ImageCapture.Builder()
+            .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+            .setJpegQuality(getPhotoQualityValue())
+            .build();
+    }
+    private void updatePhotoQualityStatus() {
+        if (photoQualityStatus == null) return;
+        photoQualityStatus.setText(getPhotoQualityLabel());
+        photoQualityStatus.setTextColor("HIGH".equals(getPhotoQualityLabel()) ? 0xFF63D99A : GOLD);
+    }
+    private void showPhotoQualityOptions() {
+        String[] labels = {"High — Best detail", "Standard — Balanced size", "Data Saver — Smaller files"};
+        String[] values = {"HIGH", "STANDARD", "DATA_SAVER"};
+        String current = getPreferences(MODE_PRIVATE).getString(PREF_PHOTO_QUALITY, "HIGH");
+        int selected = 0;
+        for (int i=0;i<values.length;i++) if(values[i].equals(current)) selected=i;
+        new android.app.AlertDialog.Builder(this)
+            .setTitle("Photo Quality")
+            .setSingleChoiceItems(labels, selected, (dialog, which) -> {
+                String choice = values[which];
+                getPreferences(MODE_PRIVATE).edit().putString(PREF_PHOTO_QUALITY, choice).apply();
+                updatePhotoQualityStatus();
+                if (cameraProvider != null && cameraPreview != null) {
+                    try {
+                        imageCapture = buildImageCapture();
+                        bindSelectedCamera();
+                    } catch (Exception e) {
+                        Toast.makeText(this, "Could not apply photo quality: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                }
+                Toast.makeText(this, "Photo quality: " + getPhotoQualityLabel(), Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            })
+            .setNegativeButton("CANCEL", null)
+            .show();
+    }
+
     private void startCameraAndLocation() {
         ListenableFuture<ProcessCameraProvider> future = ProcessCameraProvider.getInstance(this);
         future.addListener(() -> {
@@ -876,7 +929,7 @@ public class GpsCameraActivity extends ComponentActivity {
                 cameraProvider = future.get();
                 cameraPreview = new Preview.Builder().build();
                 cameraPreview.setSurfaceProvider(previewView.getSurfaceProvider());
-                imageCapture = new ImageCapture.Builder().setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY).build();
+                imageCapture = buildImageCapture();
                 bindSelectedCamera();
             } catch (Exception e) { Toast.makeText(this, "Unable to start camera: " + e.getMessage(), Toast.LENGTH_LONG).show(); }
         }, ContextCompat.getMainExecutor(this));
@@ -1163,7 +1216,7 @@ public class GpsCameraActivity extends ComponentActivity {
         }
         pendingPhoto = new File(getCacheDir(),"keydhan-preview-"+System.currentTimeMillis()+".jpg");
         try (OutputStream out = new java.io.FileOutputStream(pendingPhoto)) {
-            marked.compress(Bitmap.CompressFormat.JPEG,94,out);
+            marked.compress(Bitmap.CompressFormat.JPEG,getPhotoQualityValue(),out);
         } catch (Exception e) { pendingPhoto = null; }
         marked.recycle(); raw.delete();
         runOnUiThread(() -> {
