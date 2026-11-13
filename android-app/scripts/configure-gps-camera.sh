@@ -280,19 +280,7 @@ public class GpsCameraActivity extends ComponentActivity {
         header.addView(flashButton, new LinearLayout.LayoutParams(62, 62));
         TextView settings = iconControl("⚙", "Camera settings");
         settings.setTextSize(20);
-        settings.setOnClickListener(v -> new android.app.AlertDialog.Builder(this)
-            .setTitle("GPS Camera Settings")
-            .setItems(new String[]{"Flash: " + (flashOn ? "On" : "Off"), "Photo quality: High", "GPS watermark: On", "Show public IP on photo: " + (getPreferences(MODE_PRIVATE).getBoolean(PREF_SHOW_IP, false) ? "On" : "Off")},
-                (dialog, which) -> {
-                    if (which == 0) toggleFlash();
-                    else if (which == 1) Toast.makeText(this, "High photo quality is enabled.", Toast.LENGTH_SHORT).show();
-                    else if (which == 2) Toast.makeText(this, "GPS watermark is enabled.", Toast.LENGTH_SHORT).show();
-                    else {
-                        boolean enabled = !getPreferences(MODE_PRIVATE).getBoolean(PREF_SHOW_IP, false);
-                        getPreferences(MODE_PRIVATE).edit().putBoolean(PREF_SHOW_IP, enabled).apply();
-                        Toast.makeText(this, "Public IP on photo: " + (enabled ? "On" : "Off"), Toast.LENGTH_SHORT).show();
-                    }
-                }).show());
+        settings.setOnClickListener(v -> showCameraSettings());
         LinearLayout.LayoutParams settingsLp = new LinearLayout.LayoutParams(62, 62);
         settingsLp.leftMargin = 7;
         header.addView(settings, settingsLp);
@@ -569,6 +557,160 @@ public class GpsCameraActivity extends ComponentActivity {
         setContentView(root);
         ViewCompat.requestApplyInsets(root);
         if (cameraPreview != null) cameraPreview.setSurfaceProvider(previewView.getSurfaceProvider());
+    }
+
+    private void showCameraSettings() {
+        final float d = getResources().getDisplayMetrics().density;
+        int pad = (int)(18 * d);
+        LinearLayout page = new LinearLayout(this);
+        page.setOrientation(LinearLayout.VERTICAL);
+        page.setPadding(pad, pad, pad, (int)(12*d));
+        page.setBackground(shape(0xFF07152D, GOLD, 24));
+
+        LinearLayout top = new LinearLayout(this);
+        top.setGravity(Gravity.CENTER_VERTICAL);
+        TextView backMark = text("⚙", 24, GOLD, true);
+        backMark.setGravity(Gravity.CENTER);
+        top.addView(backMark, new LinearLayout.LayoutParams((int)(42*d), (int)(42*d)));
+        LinearLayout topTitles = new LinearLayout(this);
+        topTitles.setOrientation(LinearLayout.VERTICAL);
+        topTitles.setPadding((int)(8*d), 0, 0, 0);
+        topTitles.addView(text("KeyDhan™", 21, Color.WHITE, true));
+        topTitles.addView(text("CAMERA SETTINGS", 11, GOLD, true));
+        top.addView(topTitles, new LinearLayout.LayoutParams(0, -2, 1));
+        page.addView(top);
+
+        TextView heroTitle = text("Camera Control Center", 20, Color.WHITE, true);
+        heroTitle.setPadding(0, (int)(18*d), 0, (int)(3*d));
+        page.addView(heroTitle);
+        TextView heroSub = text("Manage your camera, GPS stamping and privacy preferences.", 12, 0xFFB9C6D8, false);
+        page.addView(heroSub);
+        addSettingsSection(page, "01  CAMERA PREFERENCES", d);
+        LinearLayout cameraCard = settingsCard(d);
+        addSettingsRow(cameraCard, "⚡", "Flash", "Control camera flash", flashOn ? "ON" : "OFF", () -> {
+            toggleFlash();
+            Toast.makeText(this, "Flash setting updated.", Toast.LENGTH_SHORT).show();
+        }, d);
+        addSettingsDivider(cameraCard, d);
+        addSettingsRow(cameraCard, "▧", "Photo Quality", "Choose your image quality", "HIGH", () ->
+            Toast.makeText(this, "High photo quality is enabled.", Toast.LENGTH_SHORT).show(), d);
+        page.addView(cameraCard);
+
+        addSettingsSection(page, "02  GPS & PHOTO STAMPING", d);
+        LinearLayout gpsCard = settingsCard(d);
+        addSettingsRow(gpsCard, "⌖", "GPS Watermark", "Add GPS details to captured photos", "ON", () ->
+            Toast.makeText(this, "GPS watermark is enabled.", Toast.LENGTH_SHORT).show(), d);
+        page.addView(gpsCard);
+
+        addSettingsSection(page, "03  PRIVACY & SECURITY", d);
+        LinearLayout privacyCard = settingsCard(d);
+        boolean publicIp = getPreferences(MODE_PRIVATE).getBoolean(PREF_SHOW_IP, false);
+        LinearLayout ipRow = new LinearLayout(this);
+        ipRow.setGravity(Gravity.CENTER_VERTICAL);
+        ipRow.setPadding((int)(12*d), (int)(12*d), (int)(10*d), (int)(12*d));
+        TextView ipIcon = text("◎", 24, GOLD, true);
+        ipIcon.setGravity(Gravity.CENTER);
+        ipRow.addView(ipIcon, new LinearLayout.LayoutParams((int)(42*d), (int)(42*d)));
+        LinearLayout ipCopy = new LinearLayout(this);
+        ipCopy.setOrientation(LinearLayout.VERTICAL);
+        ipCopy.setPadding((int)(8*d), 0, (int)(6*d), 0);
+        ipCopy.addView(text("Public IP on Photo", 14, Color.WHITE, true));
+        ipCopy.addView(text("Optionally show your public IP in the photo stamp", 11, 0xFFB9C6D8, false));
+        TextView defaultNote = text("OFF BY DEFAULT", 9, GOLD, true);
+        defaultNote.setPadding(0, (int)(4*d), 0, 0);
+        ipCopy.addView(defaultNote);
+        ipRow.addView(ipCopy, new LinearLayout.LayoutParams(0, -2, 1));
+        android.widget.Switch ipSwitch = new android.widget.Switch(this);
+        ipSwitch.setShowText(false);
+        ipSwitch.setChecked(publicIp);
+        if (android.os.Build.VERSION.SDK_INT >= 21) {
+            ipSwitch.getThumbDrawable().setTint(publicIp ? 0xFFFFD36B : 0xFFE8EDF5);
+            ipSwitch.getTrackDrawable().setTint(publicIp ? 0xFF9C7935 : 0xFF45546A);
+        }
+        ipSwitch.setOnCheckedChangeListener((button, checked) -> {
+            getPreferences(MODE_PRIVATE).edit().putBoolean(PREF_SHOW_IP, checked).apply();
+            Toast.makeText(this, "Public IP on photo: " + (checked ? "On" : "Off"), Toast.LENGTH_SHORT).show();
+        });
+        ipRow.addView(ipSwitch);
+        privacyCard.addView(ipRow);
+        addSettingsDivider(privacyCard, d);
+        addSettingsRow(privacyCard, "◇", "Privacy & Data Security", "Learn how your data is processed", "›", () ->
+            showPrivacyDetails(), d);
+        page.addView(privacyCard);
+
+        TextView footer = text("Your photos stay on your device.", 11, 0xFFD9B45C, true);
+        footer.setGravity(Gravity.CENTER);
+        footer.setPadding(0, (int)(17*d), 0, (int)(10*d));
+        page.addView(footer);
+        Button done = new Button(this);
+        done.setText("DONE");
+        done.setAllCaps(false);
+        done.setTextSize(13);
+        done.setTypeface(null, android.graphics.Typeface.BOLD);
+        done.setTextColor(0xFF07152D);
+        done.setBackground(shape(0xFFC9A34D, 0, 18));
+        page.addView(done, new LinearLayout.LayoutParams(-1, (int)(48*d)));
+
+        android.widget.ScrollView scroll = new android.widget.ScrollView(this);
+        scroll.setFillViewport(true);
+        scroll.setClipToPadding(false);
+        scroll.addView(page);
+        android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(this).create();
+        dialog.setView(scroll);
+        done.setOnClickListener(v -> dialog.dismiss());
+        dialog.show();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
+            dialog.getWindow().setDimAmount(0.72f);
+            dialog.getWindow().setLayout((int)(getResources().getDisplayMetrics().widthPixels * 0.92f),
+                (int)(getResources().getDisplayMetrics().heightPixels * 0.82f));
+        }
+    }
+
+    private void addSettingsSection(LinearLayout parent, String label, float d) {
+        TextView heading = text(label, 10, GOLD, true);
+        heading.setPadding((int)(3*d), (int)(17*d), 0, (int)(7*d));
+        parent.addView(heading);
+    }
+
+    private LinearLayout settingsCard(float d) {
+        LinearLayout card = new LinearLayout(this);
+        card.setOrientation(LinearLayout.VERTICAL);
+        card.setBackground(shape(0xFF10233D, 0x665C718D, 18));
+        return card;
+    }
+
+    private void addSettingsDivider(LinearLayout parent, float d) {
+        View line = new View(this);
+        line.setBackgroundColor(0x553E526D);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, Math.max(1, (int)d));
+        lp.leftMargin = (int)(60*d);
+        lp.rightMargin = (int)(12*d);
+        parent.addView(line, lp);
+    }
+
+    private void addSettingsRow(LinearLayout parent, String icon, String title, String description, String value, Runnable action, float d) {
+        LinearLayout row = new LinearLayout(this);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setPadding((int)(12*d), (int)(12*d), (int)(12*d), (int)(12*d));
+        TextView glyph = text(icon, 23, GOLD, true);
+        glyph.setGravity(Gravity.CENTER);
+        row.addView(glyph, new LinearLayout.LayoutParams((int)(42*d), (int)(42*d)));
+        LinearLayout copy = new LinearLayout(this);
+        copy.setOrientation(LinearLayout.VERTICAL);
+        copy.setPadding((int)(8*d), 0, (int)(5*d), 0);
+        copy.addView(text(title, 14, Color.WHITE, true));
+        copy.addView(text(description, 11, 0xFFB9C6D8, false));
+        row.addView(copy, new LinearLayout.LayoutParams(0, -2, 1));
+        TextView status = text(value, 10, GOLD, true);
+        status.setGravity(Gravity.CENTER);
+        status.setPadding((int)(9*d), (int)(6*d), (int)(9*d), (int)(6*d));
+        status.setBackground(shape(0x332C405A, 0x667E8EA5, 20));
+        row.addView(status);
+        row.setClickable(true);
+        row.setBackgroundResource(android.R.drawable.list_selector_background);
+        row.setOnClickListener(v -> action.run());
+        parent.addView(row);
     }
 
     private void showPrivacyDetails() {
