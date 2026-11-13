@@ -616,22 +616,41 @@ public class GpsCameraActivity extends ComponentActivity {
         ipCopy.setPadding((int)(8*d), 0, (int)(6*d), 0);
         ipCopy.addView(text("Public IP on Photo", 14, Color.WHITE, true));
         ipCopy.addView(text("Optionally show your public IP in the photo stamp", 11, 0xFFB9C6D8, false));
-        TextView defaultNote = text("OFF BY DEFAULT", 9, GOLD, true);
-        defaultNote.setPadding(0, (int)(4*d), 0, 0);
-        ipCopy.addView(defaultNote);
+        TextView ipState = text(publicIp ? "● ON  ·  ENABLED" : "○ OFF  ·  DISABLED", 10,
+            publicIp ? 0xFF63D99A : 0xFF9AA8BA, true);
+        ipState.setPadding(0, (int)(6*d), 0, 0);
+        ipCopy.addView(ipState);
         ipRow.addView(ipCopy, new LinearLayout.LayoutParams(0, -2, 1));
-        android.widget.Switch ipSwitch = new android.widget.Switch(this);
-        ipSwitch.setShowText(false);
-        ipSwitch.setChecked(publicIp);
-        if (android.os.Build.VERSION.SDK_INT >= 21) {
-            ipSwitch.getThumbDrawable().setTint(publicIp ? 0xFFFFD36B : 0xFFE8EDF5);
-            ipSwitch.getTrackDrawable().setTint(publicIp ? 0xFF9C7935 : 0xFF45546A);
-        }
-        ipSwitch.setOnCheckedChangeListener((button, checked) -> {
-            getPreferences(MODE_PRIVATE).edit().putBoolean(PREF_SHOW_IP, checked).apply();
-            Toast.makeText(this, "Public IP on photo: " + (checked ? "On" : "Off"), Toast.LENGTH_SHORT).show();
+
+        // High-contrast custom switch: gold track + knob on the right when ON;
+        // muted navy track + knob on the left when OFF.
+        FrameLayout ipSwitch = new FrameLayout(this);
+        int switchW = (int)(66*d), switchH = (int)(38*d), knobSize = (int)(28*d);
+        ipSwitch.setFocusable(true);
+        ipSwitch.setClickable(true);
+        ipSwitch.setContentDescription(publicIp ? "Public IP enabled" : "Public IP disabled");
+        ipSwitch.setBackground(shape(publicIp ? 0xFFC9A34D : 0xFF34465E, 0, 30));
+        View knob = new View(this);
+        knob.setBackground(shape(Color.WHITE, publicIp ? 0xFFE7C270 : 0xFFCBD5E1, 50));
+        FrameLayout.LayoutParams knobParams = new FrameLayout.LayoutParams(knobSize, knobSize,
+            publicIp ? Gravity.END | Gravity.CENTER_VERTICAL : Gravity.START | Gravity.CENTER_VERTICAL);
+        int knobMargin = (int)(5*d);
+        knobParams.leftMargin = knobMargin;
+        knobParams.rightMargin = knobMargin;
+        ipSwitch.addView(knob, knobParams);
+        ipRow.addView(ipSwitch, new LinearLayout.LayoutParams(switchW, switchH));
+        ipSwitch.setOnClickListener(v -> {
+            boolean enabled = !getPreferences(MODE_PRIVATE).getBoolean(PREF_SHOW_IP, false);
+            getPreferences(MODE_PRIVATE).edit().putBoolean(PREF_SHOW_IP, enabled).apply();
+            ipSwitch.setBackground(shape(enabled ? 0xFFC9A34D : 0xFF34465E, 0, 30));
+            FrameLayout.LayoutParams updated = (FrameLayout.LayoutParams) knob.getLayoutParams();
+            updated.gravity = enabled ? Gravity.END | Gravity.CENTER_VERTICAL : Gravity.START | Gravity.CENTER_VERTICAL;
+            knob.setLayoutParams(updated);
+            ipState.setText(enabled ? "● ON  ·  ENABLED" : "○ OFF  ·  DISABLED");
+            ipState.setTextColor(enabled ? 0xFF63D99A : 0xFF9AA8BA);
+            ipSwitch.setContentDescription(enabled ? "Public IP enabled" : "Public IP disabled");
+            Toast.makeText(this, "Public IP on photo: " + (enabled ? "On" : "Off"), Toast.LENGTH_SHORT).show();
         });
-        ipRow.addView(ipSwitch);
         privacyCard.addView(ipRow);
         addSettingsDivider(privacyCard, d);
         addSettingsRow(privacyCard, "◇", "Privacy & Data Security", "Learn how your data is processed", "›", () ->
