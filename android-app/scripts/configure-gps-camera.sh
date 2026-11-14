@@ -1749,6 +1749,20 @@ public class DocumentScannerActivity extends ComponentActivity {
     }
     @Override protected void onActivityResult(int req,int result,Intent data) {
         super.onActivityResult(req,result,data);
+        if(req==REQ_OPEN_SAVED_SCAN) {
+            if(result==RESULT_OK && data!=null && data.getData()!=null) {
+                Uri selected=data.getData();
+                try {
+                    Intent view=new Intent(Intent.ACTION_VIEW);
+                    view.setDataAndType(selected,"application/pdf");
+                    view.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    startActivity(view);
+                } catch(Exception e) {
+                    Toast.makeText(this,"No PDF viewer is available.",Toast.LENGTH_LONG).show();
+                }
+            }
+            return;
+        }
         if(req!=REQ_IMPORT||result!=RESULT_OK||data==null)return;
         try{
             if(data.getClipData()!=null)for(int n=0;n<data.getClipData().getItemCount();n++)copyImage(data.getClipData().getItemAt(n).getUri());
@@ -1874,96 +1888,26 @@ public class DocumentScannerActivity extends ComponentActivity {
         return t;
     }
 
+    private static final int REQ_OPEN_SAVED_SCAN = 413;
+
     private void showSavedScans() {
-        final ArrayList<Uri> files=new ArrayList<>();
-        final ArrayList<String> names=new ArrayList<>();
-        final ArrayList<String> dates=new ArrayList<>();
-        String[] projection={MediaStore.Files.FileColumns._ID,MediaStore.Files.FileColumns.DISPLAY_NAME,MediaStore.Files.FileColumns.DATE_ADDED};
-        // My Scans lists all PDFs indexed in shared device storage, newest first.
-        // New Doc Scanner exports continue to be saved only in Documents/KeyDhan Scanner.
-        try(Cursor c=getContentResolver().query(MediaStore.Files.getContentUri("external"),projection,
-                MediaStore.Files.FileColumns.MIME_TYPE+"=?",
-                new String[]{"application/pdf"},MediaStore.Files.FileColumns.DATE_ADDED+" DESC")) {
-            if(c!=null) while(c.moveToNext()) {
-                long id=c.getLong(0); String name=c.getString(1);
-                files.add(ContentUris.withAppendedId(MediaStore.Files.getContentUri("external"),id));
-                names.add(name==null?"Scanned document":name);
-                long stamp=c.getLong(2)*1000L;
-                dates.add(new SimpleDateFormat("dd MMM yyyy  •  hh:mm a",Locale.getDefault()).format(new Date(stamp)));
+        // Let Android's document provider browse only the KeyDhan Scanner folder.
+        // Avoid querying/rendering every PDF inside the app, keeping memory and CPU use low.
+        try {
+            Intent browse = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            browse.setType("application/pdf");
+            browse.addCategory(Intent.CATEGORY_OPENABLE);
+            if (android.os.Build.VERSION.SDK_INT >= 26) {
+                Uri folder = android.provider.DocumentsContract.buildDocumentUri(
+                    "com.android.externalstorage.documents",
+                    "primary:Documents/KeyDhan Scanner");
+                browse.putExtra(android.provider.DocumentsContract.EXTRA_INITIAL_URI, folder);
             }
-        } catch(Exception e) {
-            Toast.makeText(this,"Could not load saved scans: "+e.getMessage(),Toast.LENGTH_LONG).show();
-            return;
+            startActivityForResult(browse, REQ_OPEN_SAVED_SCAN);
+        } catch (Exception e) {
+            Toast.makeText(this, "Could not open Documents/KeyDhan Scanner: " + e.getMessage(),
+                Toast.LENGTH_LONG).show();
         }
-
-        LinearLayout panel=new LinearLayout(this);
-        panel.setOrientation(LinearLayout.VERTICAL);
-        panel.setPadding(dp(18),dp(18),dp(18),dp(16));
-        panel.setBackground(premiumBg(NAVY,GOLD,24));
-
-        LinearLayout top=new LinearLayout(this);
-        top.setGravity(Gravity.CENTER_VERTICAL);
-        LinearLayout titles=new LinearLayout(this); titles.setOrientation(LinearLayout.VERTICAL);
-        TextView heading=text("My Scans",23,Color.WHITE,true);
-        TextView sub=text(files.size()+" PDF"+(files.size()==1?"":"s")+"  •  All device folders  •  Latest first",12,0xFFE0C889,false);
-        sub.setPadding(0,dp(4),0,0);
-        titles.addView(heading); titles.addView(sub);
-        top.addView(titles,new LinearLayout.LayoutParams(0,-2,1));
-        TextView count=text(String.valueOf(files.size()),14,NAVY,true);
-        count.setGravity(Gravity.CENTER);
-        count.setBackground(premiumBg(GOLD,0,40));
-        top.addView(count,new LinearLayout.LayoutParams(dp(38),dp(38)));
-        panel.addView(top);
-        View line=new View(this); line.setBackgroundColor(0x66D2A952);
-        LinearLayout.LayoutParams lineLp=new LinearLayout.LayoutParams(-1,dp(1)); lineLp.topMargin=dp(14); lineLp.bottomMargin=dp(12);
-        panel.addView(line,lineLp);
-
-        if(files.isEmpty()) {
-            TextView empty=text("▤",42,GOLD,true); empty.setGravity(Gravity.CENTER);
-            panel.addView(empty,new LinearLayout.LayoutParams(-1,dp(70)));
-            TextView message=text("No scans yet",17,Color.WHITE,true); message.setGravity(Gravity.CENTER);
-            panel.addView(message);
-            TextView hint=text("PDFs from all device folders will appear here, newest first.",13,0xFFD5DCE8,false); hint.setGravity(Gravity.CENTER);
-            hint.setPadding(0,dp(6),0,dp(14)); panel.addView(hint);
-        } else {
-            ScrollView scroll=new ScrollView(this); scroll.setFillViewport(false);
-            LinearLayout list=new LinearLayout(this); list.setOrientation(LinearLayout.VERTICAL);
-            for(int i=0;i<files.size();i++) {
-                final int index=i;
-                LinearLayout item=new LinearLayout(this);
-                item.setGravity(Gravity.CENTER_VERTICAL);
-                item.setPadding(dp(12),dp(12),dp(10),dp(12));
-                item.setBackground(premiumBg(0xFF13233D,0x66D2A952,17));
-                TextView pdfIcon=text("PDF",11,NAVY,true);
-                pdfIcon.setGravity(Gravity.CENTER);
-                pdfIcon.setBackground(premiumBg(GOLD,0,10));
-                item.addView(pdfIcon,new LinearLayout.LayoutParams(dp(46),dp(54)));
-                LinearLayout detail=new LinearLayout(this); detail.setOrientation(LinearLayout.VERTICAL);
-                detail.setPadding(dp(12),0,dp(6),0);
-                TextView fileName=text(names.get(i),14,Color.WHITE,true);
-                fileName.setMaxLines(2); fileName.setEllipsize(android.text.TextUtils.TruncateAt.END);
-                TextView date=text(dates.get(i),11,0xFFE0C889,false);
-                date.setPadding(0,dp(5),0,0);
-                detail.addView(fileName); detail.addView(date);
-                item.addView(detail,new LinearLayout.LayoutParams(0,-2,1));
-                TextView more=text("›",28,GOLD,true); more.setGravity(Gravity.CENTER);
-                item.addView(more,new LinearLayout.LayoutParams(dp(24),dp(42)));
-                item.setOnClickListener(v->showScanActions(files.get(index),names.get(index)));
-                list.addView(item,new LinearLayout.LayoutParams(-1,-2));
-                if(i<files.size()-1) { View gap=new View(this); list.addView(gap,new LinearLayout.LayoutParams(1,dp(9))); }
-            }
-            scroll.addView(list);
-            LinearLayout.LayoutParams scrollLp=new LinearLayout.LayoutParams(-1,0,1);
-            scrollLp.height=Math.min(dp(360),dp(104)*Math.min(files.size(),3));
-            panel.addView(scroll,scrollLp);
-        }
-        TextView close=text("CLOSE",13,GOLD,true);
-        close.setGravity(Gravity.CENTER);
-        close.setBackground(premiumBg(0xFF172640,0x66D2A952,14));
-        LinearLayout.LayoutParams closeLp=new LinearLayout.LayoutParams(-1,dp(46));
-        closeLp.topMargin=dp(14); panel.addView(close,closeLp);
-        android.app.Dialog dialog=premiumDialog(panel,420);
-        close.setOnClickListener(v->dialog.dismiss());
     }
 
     private void showScanActions(Uri uri,String currentName) {
