@@ -2018,7 +2018,10 @@ public class DocumentScannerActivity extends ComponentActivity {
                 field.requestFocus();
                 return;
             }
-            if(!value.toLowerCase(Locale.ROOT).endsWith(".pdf")) value+=".pdf";
+            // Append a unique KeyDhan brand stamp and timestamp to every user-entered name.
+            value=value.replaceAll("(?i)\\.pdf$","");
+            String stamp=new SimpleDateFormat("ddMMyy_HHmmss",Locale.ROOT).format(new Date());
+            value=value+"_KeyDhan_"+stamp+".pdf";
             dialog.dismiss();
             callback.onName(value);
         }));
