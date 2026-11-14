@@ -1838,6 +1838,53 @@ public class DocumentScannerActivity extends ComponentActivity {
             thumbnails.addView(v,new LinearLayout.LayoutParams(72,76));
         }
     }
+
+    private void openPageEditor(int position) {
+        if(position<0||position>=pages.size()) return;
+        File file=pages.get(position);
+        LinearLayout panel=new LinearLayout(this); panel.setOrientation(LinearLayout.VERTICAL); panel.setPadding(12,8,12,8);
+        ImageView preview=new ImageView(this); preview.setAdjustViewBounds(true); preview.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        Bitmap initial=BitmapFactory.decodeFile(file.getAbsolutePath()); if(initial!=null){preview.setImageBitmap(initial);initial.recycle();}
+        panel.addView(preview,new LinearLayout.LayoutParams(-1,220));
+        TextView hint=text("Page "+(position+1)+" of "+pages.size()+" • Edits are applied when exporting",12,0xFFD5DCE8,false); panel.addView(hint);
+        LinearLayout row1=new LinearLayout(this); row1.setGravity(Gravity.CENTER);
+        Button rotate=button("↻ Rotate"), filter=button("Filter: "+filterName(file)), ocr=button("OCR Text");
+        row1.addView(rotate,new LinearLayout.LayoutParams(0,48,1)); row1.addView(filter,new LinearLayout.LayoutParams(0,48,1)); row1.addView(ocr,new LinearLayout.LayoutParams(0,48,1)); panel.addView(row1);
+        LinearLayout row2=new LinearLayout(this); row2.setGravity(Gravity.CENTER);
+        Button left=button("← Move"), right=button("Move →"), del=button("Delete");
+        row2.addView(left,new LinearLayout.LayoutParams(0,48,1)); row2.addView(right,new LinearLayout.LayoutParams(0,48,1)); row2.addView(del,new LinearLayout.LayoutParams(0,48,1)); panel.addView(row2);
+        android.app.AlertDialog dialog=new android.app.AlertDialog.Builder(this).setTitle("Edit scanned page").setView(panel).setPositiveButton("Done",(d,w)->refresh()).create();
+        rotate.setOnClickListener(v->{pageRotations.put(file.getAbsolutePath(),(pageRotations.getOrDefault(file.getAbsolutePath(),0)+90)%360); Bitmap bm=renderPage(file); if(bm!=null) preview.setImageBitmap(bm);});
+        filter.setOnClickListener(v->{pageFilters.put(file.getAbsolutePath(),(pageFilters.getOrDefault(file.getAbsolutePath(),0)+1)%3); filter.setText("Filter: "+filterName(file)); Bitmap bm=renderPage(file); if(bm!=null) preview.setImageBitmap(bm);});
+        left.setOnClickListener(v->{if(position>0){java.util.Collections.swap(pages,position,position-1);dialog.dismiss();refresh();openPageEditor(position-1);}});
+        right.setOnClickListener(v->{if(position<pages.size()-1){java.util.Collections.swap(pages,position,position+1);dialog.dismiss();refresh();openPageEditor(position+1);}});
+        del.setOnClickListener(v->{pages.remove(file);pageRotations.remove(file.getAbsolutePath());pageFilters.remove(file.getAbsolutePath());file.delete();dialog.dismiss();refresh();});
+        ocr.setOnClickListener(v->runOcr(file));
+        dialog.show();
+    }
+    private String filterName(File f){int x=pageFilters.getOrDefault(f.getAbsolutePath(),0);return x==0?"Original":x==1?"Grayscale":"B&W";}
+    private Bitmap renderPage(File f){
+        try {
+            Bitmap src=BitmapFactory.decodeFile(f.getAbsolutePath()); if(src==null)return null;
+            android.graphics.Matrix matrix=new android.graphics.Matrix(); matrix.postRotate(pageRotations.getOrDefault(f.getAbsolutePath(),0));
+            Bitmap rotated=Bitmap.createBitmap(src,0,0,src.getWidth(),src.getHeight(),matrix,true); if(rotated!=src)src.recycle();
+            int mode=pageFilters.getOrDefault(f.getAbsolutePath(),0); if(mode==0)return rotated;
+            Bitmap out=Bitmap.createBitmap(rotated.getWidth(),rotated.getHeight(),Bitmap.Config.ARGB_8888);
+            if(mode==1){Paint p=new Paint(Paint.ANTI_ALIAS_FLAG);android.graphics.ColorMatrix cm=new android.graphics.ColorMatrix();cm.setSaturation(0);p.setColorFilter(new android.graphics.ColorMatrixColorFilter(cm));new android.graphics.Canvas(out).drawBitmap(rotated,0,0,p);}
+            else {int w=rotated.getWidth(),h=rotated.getHeight();int[] px=new int[w*h];rotated.getPixels(px,0,w,0,0,w,h);for(int k=0;k<px.length;k++){int c=px[k],gray=(Color.red(c)*30+Color.green(c)*59+Color.blue(c)*11)/100;px[k]=gray>165?Color.WHITE:Color.BLACK;}out.setPixels(px,0,w,0,0,w,h);}
+            rotated.recycle();return out;
+        } catch(Exception e){return null;}
+    }
+    private void runOcr(File file){
+        try {
+            InputImage image=InputImage.fromFilePath(this,Uri.fromFile(file));
+            TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS).process(image).addOnSuccessListener(result->{
+                String value=result.getText(); if(value.trim().isEmpty())value="No readable text found."; final String extracted=value;
+                android.widget.EditText box=new android.widget.EditText(this);box.setText(extracted);box.setTextIsSelectable(true);box.setMinHeight(180);
+                new android.app.AlertDialog.Builder(this).setTitle("Extracted text").setView(box).setPositiveButton("Copy",(d,w)->{((android.content.ClipboardManager)getSystemService(CLIPBOARD_SERVICE)).setPrimaryClip(android.content.ClipData.newPlainText("Scanned text",extracted));Toast.makeText(this,"Text copied",Toast.LENGTH_SHORT).show();}).setNegativeButton("Close",null).show();
+            }).addOnFailureListener(e->Toast.makeText(this,"OCR failed: "+e.getMessage(),Toast.LENGTH_LONG).show());
+        } catch(Exception e){Toast.makeText(this,"OCR could not start: "+e.getMessage(),Toast.LENGTH_LONG).show();}
+    }
     private Bitmap prepare(File f)throws Exception {
         BitmapFactory.Options bounds=new BitmapFactory.Options();bounds.inJustDecodeBounds=true;
         BitmapFactory.decodeFile(f.getAbsolutePath(),bounds);
