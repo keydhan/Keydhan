@@ -1583,6 +1583,7 @@ public class DocumentScannerActivity extends ComponentActivity {
     private final HashMap<String,Integer> pageRotations=new HashMap<>();
     private final HashMap<String,Integer> pageFilters=new HashMap<>();
     private ActivityResultLauncher<IntentSenderRequest> autoScanLauncher;
+    private ActivityResultLauncher<String[]> galleryPicker;
     private boolean cameraMode=false;
 
     @Override public void onCreate(Bundle b) {
@@ -1595,6 +1596,22 @@ public class DocumentScannerActivity extends ComponentActivity {
             if(scan==null || scan.getPdf()==null) { Toast.makeText(this,"No scanned PDF returned",Toast.LENGTH_LONG).show(); return; }
             Uri source=scan.getPdf().getUri();
             promptFileName("KeyDhan_AutoScan", name -> saveAutoScanWithWatermark(source,name));
+        });
+        galleryPicker=registerForActivityResult(new ActivityResultContracts.OpenMultipleDocuments(), uris -> {
+            if(uris==null || uris.isEmpty()) return;
+            int imported=0;
+            for(Uri uri:uris) {
+                try { copyImage(uri); imported++; }
+                catch(Exception e) {
+                    Toast.makeText(this,"Could not import one image: "+e.getMessage(),Toast.LENGTH_LONG).show();
+                }
+            }
+            if(imported>0) {
+                refresh();
+                Toast.makeText(this,imported+" image(s) imported",Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this,"No images could be imported. Please try another image.",Toast.LENGTH_LONG).show();
+            }
         });
         buildUi();
     }
@@ -1904,9 +1921,11 @@ public class DocumentScannerActivity extends ComponentActivity {
             });
     }
     private void pickImages() {
-        Intent i=new Intent(Intent.ACTION_OPEN_DOCUMENT); i.setType("image/*");
-        i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true); i.addCategory(Intent.CATEGORY_OPENABLE);
-        startActivityForResult(i,REQ_IMPORT);
+        try {
+            galleryPicker.launch(new String[]{"image/*"});
+        } catch(Exception e) {
+            Toast.makeText(this,"Gallery could not be opened: "+e.getMessage(),Toast.LENGTH_LONG).show();
+        }
     }
     @Override protected void onActivityResult(int req,int result,Intent data) {
         super.onActivityResult(req,result,data);
@@ -1932,10 +1951,24 @@ public class DocumentScannerActivity extends ComponentActivity {
         }catch(Exception e){Toast.makeText(this,"Import failed: "+e.getMessage(),Toast.LENGTH_LONG).show();}
     }
     private void copyImage(Uri uri)throws Exception {
+        if(uri==null) throw new Exception("Selected image location is empty");
+        String mime=getContentResolver().getType(uri);
+        if(mime!=null && !mime.startsWith("image/")) throw new Exception("Please select an image file");
         File f=new File(getCacheDir(),"import_"+System.currentTimeMillis()+".jpg");
-        try(InputStream in=getContentResolver().openInputStream(uri);FileOutputStream out=new FileOutputStream(f)){
-            byte[] b=new byte[8192];int n;while((n=in.read(b))>0)out.write(b,0,n);
-        } pages.add(f);
+        try(InputStream in=getContentResolver().openInputStream(uri)) {
+            if(in==null) throw new Exception("Android could not read this image. Choose a different image.");
+            try(FileOutputStream out=new FileOutputStream(f)) {
+                byte[] b=new byte[16384]; int n; while((n=in.read(b))!=-1) out.write(b,0,n);
+                out.flush();
+            }
+        } catch(Exception e) {
+            if(f.exists()) f.delete();
+            throw e;
+        }
+        Bitmap check=BitmapFactory.decodeFile(f.getAbsolutePath());
+        if(check==null) { f.delete(); throw new Exception("Unsupported or damaged image"); }
+        check.recycle();
+        pages.add(f);
     }
     private void refresh() {
         count.setText(pages.size()+" pages"); thumbnails.removeAllViews();
