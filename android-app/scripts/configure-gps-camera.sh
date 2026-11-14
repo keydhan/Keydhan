@@ -1974,26 +1974,55 @@ public class DocumentScannerActivity extends ComponentActivity {
 
     private interface FileNameCallback { void onName(String name); }
     private void promptFileName(String prefix, FileNameCallback callback) {
-        String stamp=new SimpleDateFormat("yyyyMMdd_HHmm",Locale.US).format(new Date());
+        // Prefix/postfix are intentionally not shown. The user must enter the complete PDF name.
         EditText field=new EditText(this);
         field.setSingleLine(true);
-        field.setText(prefix+"_"+stamp);
-        field.setSelection(field.getText().length());
-        LinearLayout box=new LinearLayout(this); box.setOrientation(LinearLayout.VERTICAL);
+        field.setText("");
+        field.setHint("Enter file name");
+        field.setHintTextColor(0xFF9AA8BC);
+        field.setTextColor(Color.WHITE);
+        field.setSelectAllOnFocus(false);
+        field.setBackground(premiumBg(0xFF172640,GOLD,12));
+        field.setPadding(dp(12),dp(10),dp(12),dp(10));
+
+        LinearLayout box=new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
         box.setPadding(dp(18),dp(12),dp(18),dp(4));
-        box.addView(text("Enter PDF file name",17,Color.WHITE,true));
-        box.addView(field,new LinearLayout.LayoutParams(-1,dp(52)));
-        new android.app.AlertDialog.Builder(this).setTitle("Save PDF")
+        box.addView(text("Enter PDF file name *",17,Color.WHITE,true));
+        LinearLayout.LayoutParams fieldLp=new LinearLayout.LayoutParams(-1,dp(52));
+        fieldLp.topMargin=dp(10);
+        box.addView(field,fieldLp);
+        TextView hint=text("File name is required to save your PDF.",11,0xFFB9C6D8,false);
+        LinearLayout.LayoutParams hintLp=new LinearLayout.LayoutParams(-1,-2);
+        hintLp.topMargin=dp(7);
+        box.addView(hint,hintLp);
+
+        android.app.AlertDialog dialog=new android.app.AlertDialog.Builder(this)
+            .setTitle("Save PDF")
             .setView(box)
             .setNegativeButton("CANCEL",null)
-            .setPositiveButton("SAVE",(d,w)->{
-                String value=field.getText().toString().trim();
-                for(char ch:new char[]{'/','\\',':','*','?','"','<','>','|'}) value=value.replace(ch,'_');
-                value=value.replaceAll("\\\\s+","_").replaceAll("_+","_");
-                if(value.isEmpty()) value=prefix+"_"+stamp;
-                if(!value.toLowerCase(Locale.ROOT).endsWith(".pdf")) value+=".pdf";
-                callback.onName(value);
-            }).show();
+            .setPositiveButton("SAVE",null)
+            .create();
+        dialog.setOnShowListener(ignored -> dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            String value=field.getText().toString().trim();
+            if(value.isEmpty()) {
+                field.setError("Please enter file name to save PDF.");
+                field.requestFocus();
+                Toast.makeText(this,"Please enter a file name",Toast.LENGTH_SHORT).show();
+                return;
+            }
+            for(char ch:new char[]{'/','\\\\',':','*','?','"','<','>','|'}) value=value.replace(ch,'_');
+            value=value.replaceAll("\\\\s+","_").replaceAll("_+","_");
+            if(value.isEmpty()) {
+                field.setError("Please enter a valid file name.");
+                field.requestFocus();
+                return;
+            }
+            if(!value.toLowerCase(Locale.ROOT).endsWith(".pdf")) value+=".pdf";
+            dialog.dismiss();
+            callback.onName(value);
+        }));
+        dialog.show();
     }
 
     private void addKeyDhanWatermark(android.graphics.Canvas canvas,int width,int height) {
