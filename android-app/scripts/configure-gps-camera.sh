@@ -38,6 +38,8 @@ perms='''    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
 '''
 if "android.permission.CAMERA" not in s:
     s=s.replace(marker,perms+marker,1)
@@ -245,6 +247,17 @@ public class GpsCameraActivity extends ComponentActivity {
         else ActivityCompat.requestPermissions(this,
             new String[]{Manifest.permission.CAMERA, Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_PERMISSIONS);
+    }
+
+    @Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 411) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openGpsPhotos();
+            } else {
+                Toast.makeText(this, "Allow photo access to view saved KeyDhan GPS photos.", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     private TextView text(String value, int size, int color, boolean bold) {
@@ -949,6 +962,13 @@ public class GpsCameraActivity extends ComponentActivity {
 
     // Show only photos captured and saved by KeyDhan GPS Camera.
     private void openGpsPhotos() {
+        String imagePermission = android.os.Build.VERSION.SDK_INT >= 33
+            ? "android.permission.READ_MEDIA_IMAGES"
+            : Manifest.permission.READ_EXTERNAL_STORAGE;
+        if (ContextCompat.checkSelfPermission(this, imagePermission) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{imagePermission}, 411);
+            return;
+        }
         if (gpsPhotosBackCallback == null) {
             gpsPhotosBackCallback = new OnBackPressedCallback(false) {
                 @Override public void handleOnBackPressed() {
@@ -1063,7 +1083,7 @@ public class GpsCameraActivity extends ComponentActivity {
             android.util.Log.e("KeyDhanGPS", "Could not load KeyDhan GPS photos", e);
         }
         if (count == 0) {
-            TextView empty = text("No KeyDhan GPS photos yet.\\nCapture and save a GPS photo to see it here.", 15, 0xFFE8D8B2, false);
+            TextView empty = text("No KeyDhan GPS photos yet.\nCapture and save a GPS photo to see it here.", 15, 0xFFE8D8B2, false);
             empty.setGravity(Gravity.CENTER);
             empty.setPadding(24, 48, 24, 48);
             page.addView(empty, new LinearLayout.LayoutParams(-1, -2));
