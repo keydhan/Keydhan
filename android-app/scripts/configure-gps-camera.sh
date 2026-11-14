@@ -22,6 +22,7 @@ deps='''dependencies {
     implementation "com.google.zxing:core:3.5.3"
     implementation "com.google.android.gms:play-services-mlkit-document-scanner:16.0.0"
     implementation "com.google.mlkit:text-recognition:16.0.1"
+    implementation "com.tom-roush:pdfbox-android:2.0.27.0"
 '''
 s=s.replace(needle,deps,1)
 p.write_text(s)
@@ -2070,11 +2071,13 @@ public class DocumentScannerActivity extends ComponentActivity {
 
     private void saveAutoScanWithWatermark(Uri source,String fileName) {
         File temp=new File(getCacheDir(),"keydhan_source_"+System.currentTimeMillis()+".pdf");
-        PdfDocument output=new PdfDocument();
+        org.apache.pdfbox.pdmodel.PDDocument output=null;
         try {
             try(InputStream in=getContentResolver().openInputStream(source);OutputStream out=new FileOutputStream(temp)){
                 byte[] buf=new byte[16384];int len;while((len=in.read(buf))>0)out.write(buf,0,len);
             }
+            org.apache.pdfbox.android.PDFBoxResourceLoader.init(getApplicationContext());
+            output=new org.apache.pdfbox.pdmodel.PDDocument();
             try(android.os.ParcelFileDescriptor pfd=android.os.ParcelFileDescriptor.open(temp,android.os.ParcelFileDescriptor.MODE_READ_ONLY);
                 android.graphics.pdf.PdfRenderer renderer=new android.graphics.pdf.PdfRenderer(pfd)) {
                 for(int i=0;i<renderer.getPageCount();i++) {
@@ -2084,33 +2087,41 @@ public class DocumentScannerActivity extends ComponentActivity {
                     float scale=Math.min(1f,(float)max/Math.max(sourceWidth,sourceHeight));
                     int width=Math.max(1,Math.round(sourceWidth*scale));
                     int height=Math.max(1,Math.round(sourceHeight*scale));
-                    Bitmap.Config config=quality.equals("High Compression")?Bitmap.Config.ARGB_8888:Bitmap.Config.ARGB_8888;
-                    Bitmap bitmap=Bitmap.createBitmap(width,height,config);
+                    Bitmap bitmap=Bitmap.createBitmap(width,height,Bitmap.Config.ARGB_8888);
                     src.render(bitmap,null,null,android.graphics.pdf.PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
                     src.close();
-                    if(quality.equals("High Compression")){
-                        // Preserve the source page's color appearance; only reduce JPEG quality.
-                        java.io.ByteArrayOutputStream compressed=new java.io.ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG,52,compressed);
-                        byte[] bytes=compressed.toByteArray();
-                        Bitmap compact=BitmapFactory.decodeByteArray(bytes,0,bytes.length);
-                        if(compact!=null){bitmap.recycle();bitmap=compact;}
+
+                    // Burn the gold KeyDhan watermark into the page before JPEG encoding.
+                    android.graphics.Canvas watermarkCanvas=new android.graphics.Canvas(bitmap);
+                    addKeyDhanWatermark(watermarkCanvas,width,height);
+                    int jpegQuality=quality.equals("High")?90:quality.equals("Balanced")?78:45;
+                    java.io.ByteArrayOutputStream jpeg=new java.io.ByteArrayOutputStream();
+                    if(!bitmap.compress(Bitmap.CompressFormat.JPEG,jpegQuality,jpeg))
+                        throw new Exception("JPEG compression failed on page "+(i+1));
+                    bitmap.recycle();
+
+                    // Embed the JPEG stream directly (DCTDecode) instead of re-embedding a PNG bitmap.
+                    org.apache.pdfbox.pdmodel.PDPage page=new org.apache.pdfbox.pdmodel.PDPage(
+                        new org.apache.pdfbox.pdmodel.common.PDRectangle(width,height));
+                    output.addPage(page);
+                    org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject image=
+                        org.apache.pdfbox.pdmodel.graphics.image.JPEGFactory.createFromByteArray(output,jpeg.toByteArray());
+                    try(org.apache.pdfbox.pdmodel.PDPageContentStream stream=
+                        new org.apache.pdfbox.pdmodel.PDPageContentStream(output,page)) {
+                        stream.drawImage(image,0,0,width,height);
                     }
-                    PdfDocument.Page page=output.startPage(new PdfDocument.PageInfo.Builder(width,height,i+1).create());
-                    page.getCanvas().drawBitmap(bitmap,0,0,new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG));
-                    addKeyDhanWatermark(page.getCanvas(),width,height);
-                    output.finishPage(page);bitmap.recycle();
                 }
             }
             Uri dest=createPdfDestination(fileName);
-            try(OutputStream out=getContentResolver().openOutputStream(dest)){output.writeTo(out);}
-            Toast.makeText(this,"Saved in Documents/KeyDhan Scanner",Toast.LENGTH_LONG).show();
+            try(OutputStream out=getContentResolver().openOutputStream(dest)){output.save(out);}
+            Toast.makeText(this,"Saved compressed PDF in Documents/KeyDhan Scanner",Toast.LENGTH_LONG).show();
             Intent share=new Intent(Intent.ACTION_SEND);share.setType("application/pdf");share.putExtra(Intent.EXTRA_STREAM,dest);
             share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);startActivity(Intent.createChooser(share,"Share scanned PDF"));
         } catch(Exception e) {
             Toast.makeText(this,"Auto scan export failed: "+e.getMessage(),Toast.LENGTH_LONG).show();
         } finally {
-            output.close();temp.delete();
+            if(output!=null)try{output.close();}catch(Exception ignored){}
+            temp.delete();
         }
     }
     @Override public void onRequestPermissionsResult(int r,String[] p,int[] g){
