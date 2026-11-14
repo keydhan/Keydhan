@@ -1,1 +1,32 @@
-{"name":"KeyDhan","short_name":"KeyDhan","display":"standalone","start_url":"/","theme_color":"#05070D"}
+{
+  "name": "KeyDhan™ – Real Estate & Finance",
+  "short_name": "KeyDhan",
+  "description": "The Key to Your Home. The Power of Finance.",
+  "id": "/",
+  "start_url": "/?source=android-app",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#020814",
+  "theme_color": "#020814",
+  "categories": [
+    "finance",
+    "business",
+    "productivity"
+  ],
+  "lang": "en-IN",
+  "icons": [
+    {
+      "src": "/assets/keydhan-app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/keydhan-app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

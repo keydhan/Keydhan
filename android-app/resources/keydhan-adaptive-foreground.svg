@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="432" height="432" viewBox="0 0 432 432">
+  <!-- Keep the complete wordmark inside Android's central adaptive-icon safe zone. -->
+  <text x="216" y="238" text-anchor="middle"
+        font-family="DejaVu Sans, Arial, sans-serif"
+        font-size="42" font-weight="700" letter-spacing="-1.5">
+    <tspan fill="#FFFFFF">Key</tspan><tspan fill="#D9A441">Dhan</tspan>
+  </text>
+  <!-- Superscript TM sits just above the end of Dhan, still within the safe zone. -->
+  <text x="326" y="194" text-anchor="middle"
+        font-family="DejaVu Sans, Arial, sans-serif"
+        font-size="12" font-weight="700" fill="#F6D27A">TM</text>
+</svg>

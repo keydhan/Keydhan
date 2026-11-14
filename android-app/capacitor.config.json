@@ -1,0 +1,30 @@
+{
+  "appId": "com.keydhan.app",
+  "appName": "KeyDhan",
+  "webDir": "www",
+  "server": {
+    "url": "https://keydhan.com",
+    "cleartext": false,
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1800,
+      "launchAutoHide": true,
+      "backgroundColor": "#0B1530",
+      "androidSplashResourceName": "splash",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false,
+      "splashFullScreen": false,
+      "splashImmersive": false
+    },
+    "StatusBar": {
+      "overlaysWebView": false,
+      "backgroundColor": "#0B1530",
+      "style": "LIGHT"
+    }
+  }
+}
