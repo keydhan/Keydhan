@@ -1966,8 +1966,8 @@ public class DocumentScannerActivity extends ComponentActivity {
         final ArrayList<String> dates=new ArrayList<>();
         String[] projection={MediaStore.Files.FileColumns._ID,MediaStore.Files.FileColumns.DISPLAY_NAME,MediaStore.Files.FileColumns.DATE_ADDED};
         try(Cursor c=getContentResolver().query(MediaStore.Files.getContentUri("external"),projection,
-                MediaStore.Files.FileColumns.RELATIVE_PATH+" LIKE ? AND "+MediaStore.Files.FileColumns.MIME_TYPE+"=?",
-                new String[]{"%KeyDhan Scanner/%","application/pdf"},MediaStore.Files.FileColumns.DATE_ADDED+" DESC")) {
+                MediaStore.Files.FileColumns.RELATIVE_PATH+"=? AND "+MediaStore.Files.FileColumns.MIME_TYPE+"=?",
+                new String[]{Environment.DIRECTORY_DOCUMENTS+"/KeyDhan Scanner/","application/pdf"},MediaStore.Files.FileColumns.DATE_ADDED+" DESC")) {
             if(c!=null) while(c.moveToNext()) {
                 long id=c.getLong(0); String name=c.getString(1);
                 files.add(ContentUris.withAppendedId(MediaStore.Files.getContentUri("external"),id));
