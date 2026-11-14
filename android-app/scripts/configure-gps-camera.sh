@@ -22,7 +22,6 @@ deps='''dependencies {
     implementation "com.google.zxing:core:3.5.3"
     implementation "com.google.android.gms:play-services-mlkit-document-scanner:16.0.0"
     implementation "com.google.mlkit:text-recognition:16.0.1"
-    implementation "com.tom-roush:pdfbox-android:2.0.27.0"
 '''
 s=s.replace(needle,deps,1)
 p.write_text(s)
@@ -2069,15 +2068,51 @@ public class DocumentScannerActivity extends ComponentActivity {
         finally{pdf.close();}
     }
 
+    private void writeJpegPdf(java.util.ArrayList<byte[]> images,java.util.ArrayList<Integer> widths,java.util.ArrayList<Integer> heights,OutputStream destination)throws Exception {
+        java.io.ByteArrayOutputStream pdf=new java.io.ByteArrayOutputStream();
+        java.util.ArrayList<Integer> offsets=new java.util.ArrayList<>();
+        int pageCount=images.size();
+        writeAscii(pdf,"%PDF-1.4\n%KeyDhan\n");
+        int objectCount=2+pageCount*3;
+        offsets.add(0);
+        offsets.add(pdf.size());writeAscii(pdf,"1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n");
+        offsets.add(pdf.size());
+        StringBuilder kids=new StringBuilder();
+        for(int i=0;i<pageCount;i++)kids.append(3+i*3).append(" 0 R ");
+        writeAscii(pdf,"2 0 obj\n<< /Type /Pages /Kids [ "+kids+"] /Count "+pageCount+" >>\nendobj\n");
+        for(int i=0;i<pageCount;i++) {
+            int pageObj=3+i*3,imageObj=pageObj+1,contentObj=pageObj+2;
+            int w=widths.get(i),h=heights.get(i);
+            offsets.add(pdf.size());
+            writeAscii(pdf,pageObj+" 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 "+w+" "+h+"] /Resources << /XObject << /Im0 "+imageObj+" 0 R >> >> /Contents "+contentObj+" 0 R >>\nendobj\n");
+            offsets.add(pdf.size());
+            byte[] jpg=images.get(i);
+            writeAscii(pdf,imageObj+" 0 obj\n<< /Type /XObject /Subtype /Image /Width "+w+" /Height "+h+" /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length "+jpg.length+" >>\nstream\n");
+            pdf.write(jpg);writeAscii(pdf,"\nendstream\nendobj\n");
+            offsets.add(pdf.size());
+            String content="q\n"+w+" 0 0 "+h+" 0 0 cm\n/Im0 Do\nQ\n";
+            byte[] bytes=content.getBytes(java.nio.charset.StandardCharsets.US_ASCII);
+            writeAscii(pdf,contentObj+" 0 obj\n<< /Length "+bytes.length+" >>\nstream\n");
+            pdf.write(bytes);writeAscii(pdf,"endstream\nendobj\n");
+        }
+        int xref=pdf.size();
+        writeAscii(pdf,"xref\n0 "+(objectCount+1)+"\n0000000000 65535 f \n");
+        for(int i=1;i<offsets.size();i++)writeAscii(pdf,String.format(java.util.Locale.US,"%010d 00000 n \n",offsets.get(i)));
+        writeAscii(pdf,"trailer\n<< /Size "+(objectCount+1)+" /Root 1 0 R >>\nstartxref\n"+xref+"\n%%EOF\n");
+        pdf.writeTo(destination);
+    }
+    private void writeAscii(OutputStream out,String value)throws Exception {
+        out.write(value.getBytes(java.nio.charset.StandardCharsets.US_ASCII));
+    }
+
     private void saveAutoScanWithWatermark(Uri source,String fileName) {
         File temp=new File(getCacheDir(),"keydhan_source_"+System.currentTimeMillis()+".pdf");
-        org.apache.pdfbox.pdmodel.PDDocument output=null;
+        java.util.ArrayList<byte[]> jpegPages=new java.util.ArrayList<>();
+        java.util.ArrayList<Integer> pageWidths=new java.util.ArrayList<>(),pageHeights=new java.util.ArrayList<>();
         try {
             try(InputStream in=getContentResolver().openInputStream(source);OutputStream out=new FileOutputStream(temp)){
                 byte[] buf=new byte[16384];int len;while((len=in.read(buf))>0)out.write(buf,0,len);
             }
-            org.apache.pdfbox.android.PDFBoxResourceLoader.init(getApplicationContext());
-            output=new org.apache.pdfbox.pdmodel.PDDocument();
             try(android.os.ParcelFileDescriptor pfd=android.os.ParcelFileDescriptor.open(temp,android.os.ParcelFileDescriptor.MODE_READ_ONLY);
                 android.graphics.pdf.PdfRenderer renderer=new android.graphics.pdf.PdfRenderer(pfd)) {
                 for(int i=0;i<renderer.getPageCount();i++) {
@@ -2090,8 +2125,6 @@ public class DocumentScannerActivity extends ComponentActivity {
                     Bitmap bitmap=Bitmap.createBitmap(width,height,Bitmap.Config.ARGB_8888);
                     src.render(bitmap,null,null,android.graphics.pdf.PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
                     src.close();
-
-                    // Burn the gold KeyDhan watermark into the page before JPEG encoding.
                     android.graphics.Canvas watermarkCanvas=new android.graphics.Canvas(bitmap);
                     addKeyDhanWatermark(watermarkCanvas,width,height);
                     int jpegQuality=quality.equals("High")?90:quality.equals("Balanced")?78:45;
@@ -2099,28 +2132,20 @@ public class DocumentScannerActivity extends ComponentActivity {
                     if(!bitmap.compress(Bitmap.CompressFormat.JPEG,jpegQuality,jpeg))
                         throw new Exception("JPEG compression failed on page "+(i+1));
                     bitmap.recycle();
-
-                    // Embed the JPEG stream directly (DCTDecode) instead of re-embedding a PNG bitmap.
-                    org.apache.pdfbox.pdmodel.PDPage page=new org.apache.pdfbox.pdmodel.PDPage(
-                        new org.apache.pdfbox.pdmodel.common.PDRectangle(width,height));
-                    output.addPage(page);
-                    org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject image=
-                        org.apache.pdfbox.pdmodel.graphics.image.JPEGFactory.createFromByteArray(output,jpeg.toByteArray());
-                    try(org.apache.pdfbox.pdmodel.PDPageContentStream stream=
-                        new org.apache.pdfbox.pdmodel.PDPageContentStream(output,page)) {
-                        stream.drawImage(image,0,0,width,height);
-                    }
+                    jpegPages.add(jpeg.toByteArray());pageWidths.add(width);pageHeights.add(height);
                 }
             }
             Uri dest=createPdfDestination(fileName);
-            try(OutputStream out=getContentResolver().openOutputStream(dest)){output.save(out);}
+            try(OutputStream out=getContentResolver().openOutputStream(dest)){
+                if(out==null)throw new Exception("Cannot open destination PDF");
+                writeJpegPdf(jpegPages,pageWidths,pageHeights,out);
+            }
             Toast.makeText(this,"Saved compressed PDF in Documents/KeyDhan Scanner",Toast.LENGTH_LONG).show();
             Intent share=new Intent(Intent.ACTION_SEND);share.setType("application/pdf");share.putExtra(Intent.EXTRA_STREAM,dest);
             share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);startActivity(Intent.createChooser(share,"Share scanned PDF"));
         } catch(Exception e) {
             Toast.makeText(this,"Auto scan export failed: "+e.getMessage(),Toast.LENGTH_LONG).show();
         } finally {
-            if(output!=null)try{output.close();}catch(Exception ignored){}
             temp.delete();
         }
     }
