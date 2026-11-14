@@ -1563,6 +1563,14 @@ EOF
 cat > "$PKG/DocumentScannerActivity.java" <<'EOF'
 package com.keydhan.app;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.IntentSenderRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
+import com.google.mlkit.vision.documentscanner.GmsDocumentScanner;
+import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions;
+import com.google.mlkit.vision.documentscanner.GmsDocumentScanning;
+import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult;
+
 import android.Manifest;
 import android.content.ContentValues;
 import android.content.Intent;
