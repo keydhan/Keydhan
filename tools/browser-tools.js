@@ -6,9 +6,10 @@ if(tool==='unit-converter'){const sets={length:[['m','Meters'],['km','Kilometers
 const btn=$('run');if(btn)btn.addEventListener('click',async()=>{
 try{
 if(tool==='currency-converter'){
-const amountInput=$('amount').value.trim(),a=Number(amountInput),f=$('from').value,t=$('to').value;
+const amountInput=$('amount').value.trim(),a=Number(amountInput),f=$('from').value,t=$('to').value,originalButtonLabel=btn.textContent;
+btn.disabled=true;btn.textContent='Converting…';say('Fetching exchange rate…');
 if(!amountInput||!Number.isFinite(a)||a<0)throw Error('Enter a valid amount.');
-if(f===t){say(a.toLocaleString(undefined,{maximumFractionDigits:4})+' '+f+' = '+a.toLocaleString(undefined,{maximumFractionDigits:4})+' '+t+' · Rate: 1');return;}
+if(f===t){say(a.toLocaleString(undefined,{maximumFractionDigits:4})+' '+f+' = '+a.toLocaleString(undefined,{maximumFractionDigits:4})+' '+t+' · Rate: 1');btn.disabled=false;btn.textContent=originalButtonLabel;return;}
 const cacheKey='keydhan-currency-rate-v1:'+f+':'+t;
 let rateData=null,usedCache=false;
 try{
@@ -27,6 +28,7 @@ if(!rateData)throw Error(networkError.name==='AbortError'?'Exchange-rate request
 }
 const converted=a*rateData.rate;
 say(a.toLocaleString(undefined,{maximumFractionDigits:4})+' '+f+' = '+converted.toLocaleString(undefined,{maximumFractionDigits:4})+' '+t+' · Rate: '+rateData.rate.toLocaleString(undefined,{maximumSignificantDigits:8})+' · Rate date: '+rateData.date+(usedCache?' · Saved rate (offline)':''));
+btn.disabled=false;btn.textContent=originalButtonLabel;
 }
 if(tool==='text-to-speech'){const s=$('text').value.trim();if(!s)throw Error('Enter text first.');if(!window.speechSynthesis)throw Error('Speech is not supported in this browser.');speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(s);u.rate=Number($('rate').value)||1;const v=speechSynthesis.getVoices().find(x=>x.name===$('voice').value);if(v)u.voice=v;speechSynthesis.speak(u);say('Speaking using your browser.');}
 if(tool==='scientific-calculator'){const s=$('expr').value.trim();if(!s)throw Error('Enter an expression.');if(!window.math)throw Error('Calculator engine is loading; refresh and try again.');say('Result: '+math.evaluate(s,{pi:Math.PI,e:Math.E}).toString());}
@@ -43,7 +45,7 @@ if(tool==='bmi-calculator'){const h=Number($('height').value)/100,w=Number($('we
 if(tool==='fancy-text-generator'){const s=$('text').value,st=$('style').value,ranges={bold:[0x1d400,0x1d41a],italic:[0x1d434,0x1d44e],mono:[0x1d670,0x1d68a],script:[0x1d49c,0x1d4b6],double:[0x1d538,0x1d552]},[u,l]=ranges[st];$('result').value=[...s].map(c=>{const n=c.codePointAt(0);return n>=65&&n<=90?String.fromCodePoint(u+n-65):n>=97&&n<=122?String.fromCodePoint(l+n-97):c}).join('');say('Styled text created. Font support varies by device.');}
 if(tool==='qr-code-scanner'){const f=$('file').files[0];if(!f)throw Error('Choose a QR image.');if(!window.jsQR)throw Error('Scanner library is loading; try again.');const b=await createImageBitmap(f),c=$('canvas');c.width=b.width;c.height=b.height;const x=c.getContext('2d');x.drawImage(b,0,0);b.close();const d=x.getImageData(0,0,c.width,c.height),q=jsQR(d.data,d.width,d.height);if(!q)throw Error('No QR code found.');$('result').value=q.data;say('QR code decoded.');}
 if(tool==='online-timer'){say('Use Start timer or stopwatch controls.');}
-}catch(e){say(e.message||'Unable to complete.');}
+}catch(e){if(tool==='currency-converter'&&btn){btn.disabled=false;btn.textContent='Convert';}say(e.message||'Unable to complete.');}
 });
 if(tool==='home-loan-eligibility'||tool==='home-loan-affordability'||tool==='balance-transfer-calculator'||tool==='stamp-duty-calculator'||tool==='home-loan-prepayment'||tool==='business-loan-emi'){const reset=$('reset');if(reset)reset.addEventListener('click',()=>{root.querySelectorAll('input').forEach(x=>x.value=x.defaultValue);if(out)out.textContent='';say('Enter details to calculate an estimate.');});}
 if(tool==='text-to-speech'){const fill=()=>{const v=$('voice');if(!v)return;v.innerHTML='';speechSynthesis.getVoices().forEach(x=>{const o=document.createElement('option');o.value=x.name;o.textContent=x.name;v.append(o);});};fill();speechSynthesis.onvoiceschanged=fill;}
