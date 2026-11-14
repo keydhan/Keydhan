@@ -1550,23 +1550,8 @@ public class DocumentScannerActivity extends ComponentActivity {
             if(result.getResultCode()!=RESULT_OK || result.getData()==null) return;
             GmsDocumentScanningResult scan=GmsDocumentScanningResult.fromActivityResultIntent(result.getData());
             if(scan==null || scan.getPdf()==null) { Toast.makeText(this,"No scanned PDF returned",Toast.LENGTH_LONG).show(); return; }
-            try {
-                Uri source=scan.getPdf().getUri();
-                String name="KeyDhan_AutoScan_"+new SimpleDateFormat("yyyyMMdd_HHmmss",Locale.US).format(new Date())+".pdf";
-                ContentValues values=new ContentValues();
-                values.put(MediaStore.MediaColumns.DISPLAY_NAME,name);
-                values.put(MediaStore.MediaColumns.MIME_TYPE,"application/pdf");
-                values.put(MediaStore.MediaColumns.RELATIVE_PATH,Environment.DIRECTORY_DOCUMENTS+"/KeyDhan Scanner");
-                Uri dest=getContentResolver().insert(MediaStore.Files.getContentUri("external"),values);
-                if(dest==null) throw new Exception("Cannot create PDF");
-                try(InputStream in=getContentResolver().openInputStream(source); OutputStream out=getContentResolver().openOutputStream(dest)) {
-                    byte[] buf=new byte[8192]; int len; while((len=in.read(buf))>0) out.write(buf,0,len);
-                }
-                Toast.makeText(this,"Auto-scanned PDF saved in Documents/KeyDhan Scanner",Toast.LENGTH_LONG).show();
-                Intent share=new Intent(Intent.ACTION_SEND); share.setType("application/pdf");
-                share.putExtra(Intent.EXTRA_STREAM,dest); share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                startActivity(Intent.createChooser(share,"Share scanned PDF"));
-            } catch(Exception e) { Toast.makeText(this,"Auto scan export failed: "+e.getMessage(),Toast.LENGTH_LONG).show(); }
+            Uri source=scan.getPdf().getUri();
+            promptFileName("KeyDhan_AutoScan", name -> saveAutoScanWithWatermark(source,name));
         });
         buildUi();
     }
@@ -1984,20 +1969,103 @@ public class DocumentScannerActivity extends ComponentActivity {
 
     private void makePdf() {
         if(pages.isEmpty()){Toast.makeText(this,"Scan or import at least one page",Toast.LENGTH_SHORT).show();return;}
+        promptFileName("KeyDhan_Scan", name -> saveManualPdf(name));
+    }
+
+    private interface FileNameCallback { void onName(String name); }
+    private void promptFileName(String prefix, FileNameCallback callback) {
+        String stamp=new SimpleDateFormat("yyyyMMdd_HHmm",Locale.US).format(new Date());
+        EditText field=new EditText(this);
+        field.setSingleLine(true);
+        field.setText(prefix+"_"+stamp);
+        field.setSelection(field.getText().length());
+        LinearLayout box=new LinearLayout(this); box.setOrientation(LinearLayout.VERTICAL);
+        box.setPadding(dp(18),dp(12),dp(18),dp(4));
+        box.addView(text("Enter PDF file name",17,Color.WHITE,true));
+        box.addView(field,new LinearLayout.LayoutParams(-1,dp(52)));
+        new android.app.AlertDialog.Builder(this).setTitle("Save PDF")
+            .setView(box)
+            .setNegativeButton("CANCEL",null)
+            .setPositiveButton("SAVE",(d,w)->{
+                String value=field.getText().toString().trim();
+                for(char ch:new char[]{'/','\\',':','*','?','"','<','>','|'}) value=value.replace(ch,'_');
+                value=value.replaceAll("\\\\s+","_").replaceAll("_+","_");
+                if(value.isEmpty()) value=prefix+"_"+stamp;
+                if(!value.toLowerCase(Locale.ROOT).endsWith(".pdf")) value+=".pdf";
+                callback.onName(value);
+            }).show();
+    }
+
+    private void addKeyDhanWatermark(android.graphics.Canvas canvas,int width,int height) {
+        Paint p=new Paint(Paint.ANTI_ALIAS_FLAG);
+        p.setTextAlign(Paint.Align.CENTER);
+        p.setTypeface(android.graphics.Typeface.create("sans-serif-medium",android.graphics.Typeface.BOLD));
+        p.setTextSize(Math.max(12f,width*0.018f));
+        p.setColor(0xBFD2A952);
+        canvas.drawText("KeyDhan™",width/2f,height-Math.max(18f,height*0.025f),p);
+    }
+
+    private Uri createPdfDestination(String fileName) throws Exception {
+        ContentValues v=new ContentValues();
+        v.put(MediaStore.MediaColumns.DISPLAY_NAME,fileName);
+        v.put(MediaStore.MediaColumns.MIME_TYPE,"application/pdf");
+        v.put(MediaStore.MediaColumns.RELATIVE_PATH,Environment.DIRECTORY_DOCUMENTS+"/KeyDhan Scanner");
+        Uri uri=getContentResolver().insert(MediaStore.Files.getContentUri("external"),v);
+        if(uri==null) throw new Exception("Cannot create PDF in Documents/KeyDhan Scanner");
+        return uri;
+    }
+
+    private void saveManualPdf(String fileName) {
         PdfDocument pdf=new PdfDocument();
         try{
-            int n=1;for(File f:pages){Bitmap b=prepare(f);PdfDocument.Page page=pdf.startPage(new PdfDocument.PageInfo.Builder(b.getWidth(),b.getHeight(),n++).create());
-                page.getCanvas().drawBitmap(b,0,0,new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG));pdf.finishPage(page);b.recycle();}
-            String name="KeyDhan_Scan_"+new SimpleDateFormat("yyyyMMdd_HHmmss",Locale.US).format(new Date())+".pdf";
-            ContentValues v=new ContentValues();v.put(MediaStore.MediaColumns.DISPLAY_NAME,name);v.put(MediaStore.MediaColumns.MIME_TYPE,"application/pdf");
-            v.put(MediaStore.MediaColumns.RELATIVE_PATH,Environment.DIRECTORY_DOCUMENTS+"/KeyDhan Scanner");
-            Uri uri=getContentResolver().insert(MediaStore.Files.getContentUri("external"),v);if(uri==null)throw new Exception("Cannot create PDF");
+            int n=1;
+            for(File f:pages){
+                Bitmap b=prepare(f);
+                PdfDocument.Page page=pdf.startPage(new PdfDocument.PageInfo.Builder(b.getWidth(),b.getHeight(),n++).create());
+                page.getCanvas().drawBitmap(b,0,0,new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG));
+                addKeyDhanWatermark(page.getCanvas(),b.getWidth(),b.getHeight());
+                pdf.finishPage(page);b.recycle();
+            }
+            Uri uri=createPdfDestination(fileName);
             try(OutputStream out=getContentResolver().openOutputStream(uri)){pdf.writeTo(out);}
             Toast.makeText(this,"Saved in Documents/KeyDhan Scanner",Toast.LENGTH_LONG).show();
             Intent share=new Intent(Intent.ACTION_SEND);share.setType("application/pdf");share.putExtra(Intent.EXTRA_STREAM,uri);
             share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);startActivity(Intent.createChooser(share,"Share scanned PDF"));
         }catch(Exception e){Toast.makeText(this,"PDF export failed: "+e.getMessage(),Toast.LENGTH_LONG).show();}
         finally{pdf.close();}
+    }
+
+    private void saveAutoScanWithWatermark(Uri source,String fileName) {
+        File temp=new File(getCacheDir(),"keydhan_source_"+System.currentTimeMillis()+".pdf");
+        PdfDocument output=new PdfDocument();
+        try {
+            try(InputStream in=getContentResolver().openInputStream(source);OutputStream out=new FileOutputStream(temp)){
+                byte[] buf=new byte[16384];int len;while((len=in.read(buf))>0)out.write(buf,0,len);
+            }
+            try(android.os.ParcelFileDescriptor pfd=android.os.ParcelFileDescriptor.open(temp,android.os.ParcelFileDescriptor.MODE_READ_ONLY);
+                android.graphics.pdf.PdfRenderer renderer=new android.graphics.pdf.PdfRenderer(pfd)) {
+                for(int i=0;i<renderer.getPageCount();i++) {
+                    android.graphics.pdf.PdfRenderer.Page src=renderer.openPage(i);
+                    int width=src.getWidth(),height=src.getHeight();
+                    Bitmap bitmap=Bitmap.createBitmap(width,height,Bitmap.Config.ARGB_8888);
+                    src.render(bitmap,null,null,android.graphics.pdf.PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
+                    src.close();
+                    PdfDocument.Page page=output.startPage(new PdfDocument.PageInfo.Builder(width,height,i+1).create());
+                    page.getCanvas().drawBitmap(bitmap,0,0,new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG));
+                    addKeyDhanWatermark(page.getCanvas(),width,height);
+                    output.finishPage(page);bitmap.recycle();
+                }
+            }
+            Uri dest=createPdfDestination(fileName);
+            try(OutputStream out=getContentResolver().openOutputStream(dest)){output.writeTo(out);}
+            Toast.makeText(this,"Saved in Documents/KeyDhan Scanner",Toast.LENGTH_LONG).show();
+            Intent share=new Intent(Intent.ACTION_SEND);share.setType("application/pdf");share.putExtra(Intent.EXTRA_STREAM,dest);
+            share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);startActivity(Intent.createChooser(share,"Share scanned PDF"));
+        } catch(Exception e) {
+            Toast.makeText(this,"Auto scan export failed: "+e.getMessage(),Toast.LENGTH_LONG).show();
+        } finally {
+            output.close();temp.delete();
+        }
     }
     @Override public void onRequestPermissionsResult(int r,String[] p,int[] g){
         super.onRequestPermissionsResult(r,p,g);
