@@ -90,6 +90,17 @@ public class MainActivity extends BridgeActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Keep Android system status icons readable over the KeyDhan dark header.
+        // Reserve the status-bar inset so webpage content does not draw beneath the clock/icons.
+        getWindow().setStatusBarColor(Color.rgb(7, 18, 40));
+        getWindow().setNavigationBarColor(Color.rgb(7, 18, 40));
+        androidx.core.view.WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+        androidx.core.view.WindowInsetsControllerCompat systemBars =
+            new androidx.core.view.WindowInsetsControllerCompat(getWindow(), getWindow().getDecorView());
+        systemBars.setAppearanceLightStatusBars(false);
+        systemBars.setAppearanceLightNavigationBars(false);
+
         TextView gpsButton = new TextView(this);
         gpsButton.setText("⌖  GPS Camera");
         gpsButton.setTextColor(Color.WHITE);
