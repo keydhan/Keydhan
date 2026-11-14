@@ -1965,9 +1965,11 @@ public class DocumentScannerActivity extends ComponentActivity {
         final ArrayList<String> names=new ArrayList<>();
         final ArrayList<String> dates=new ArrayList<>();
         String[] projection={MediaStore.Files.FileColumns._ID,MediaStore.Files.FileColumns.DISPLAY_NAME,MediaStore.Files.FileColumns.DATE_ADDED};
+        // My Scans lists all PDFs indexed in shared device storage, newest first.
+        // New Doc Scanner exports continue to be saved only in Documents/KeyDhan Scanner.
         try(Cursor c=getContentResolver().query(MediaStore.Files.getContentUri("external"),projection,
-                MediaStore.Files.FileColumns.RELATIVE_PATH+"=? AND "+MediaStore.Files.FileColumns.MIME_TYPE+"=?",
-                new String[]{Environment.DIRECTORY_DOCUMENTS+"/KeyDhan Scanner/","application/pdf"},MediaStore.Files.FileColumns.DATE_ADDED+" DESC")) {
+                MediaStore.Files.FileColumns.MIME_TYPE+"=?",
+                new String[]{"application/pdf"},MediaStore.Files.FileColumns.DATE_ADDED+" DESC")) {
             if(c!=null) while(c.moveToNext()) {
                 long id=c.getLong(0); String name=c.getString(1);
                 files.add(ContentUris.withAppendedId(MediaStore.Files.getContentUri("external"),id));
@@ -1989,7 +1991,7 @@ public class DocumentScannerActivity extends ComponentActivity {
         top.setGravity(Gravity.CENTER_VERTICAL);
         LinearLayout titles=new LinearLayout(this); titles.setOrientation(LinearLayout.VERTICAL);
         TextView heading=text("My Scans",23,Color.WHITE,true);
-        TextView sub=text(files.size()+" saved PDF"+(files.size()==1?"":"s")+"  •  On this device",12,0xFFE0C889,false);
+        TextView sub=text(files.size()+" PDF"+(files.size()==1?"":"s")+"  •  All device folders  •  Latest first",12,0xFFE0C889,false);
         sub.setPadding(0,dp(4),0,0);
         titles.addView(heading); titles.addView(sub);
         top.addView(titles,new LinearLayout.LayoutParams(0,-2,1));
@@ -2007,7 +2009,7 @@ public class DocumentScannerActivity extends ComponentActivity {
             panel.addView(empty,new LinearLayout.LayoutParams(-1,dp(70)));
             TextView message=text("No scans yet",17,Color.WHITE,true); message.setGravity(Gravity.CENTER);
             panel.addView(message);
-            TextView hint=text("Your exported PDFs will appear here.",13,0xFFD5DCE8,false); hint.setGravity(Gravity.CENTER);
+            TextView hint=text("PDFs from all device folders will appear here, newest first.",13,0xFFD5DCE8,false); hint.setGravity(Gravity.CENTER);
             hint.setPadding(0,dp(6),0,dp(14)); panel.addView(hint);
         } else {
             ScrollView scroll=new ScrollView(this); scroll.setFillViewport(false);
@@ -2116,7 +2118,7 @@ public class DocumentScannerActivity extends ComponentActivity {
             char[] invalid={'/',(char)92,':','*','?','"','<','>','|'};
             for(char ch:invalid)value=value.replace(ch,'_');
             if(value.isEmpty()){Toast.makeText(this,"Enter a file name",Toast.LENGTH_SHORT).show();return;}
-            ContentValues update=new ContentValues();update.put(MediaStore.Downloads.DISPLAY_NAME,value+".pdf");
+            ContentValues update=new ContentValues();update.put(MediaStore.MediaColumns.DISPLAY_NAME,value+".pdf");
             try{int changed=getContentResolver().update(uri,update,null,null);dialog.dismiss();Toast.makeText(this,changed>0?"PDF renamed":"Rename failed",Toast.LENGTH_SHORT).show();showSavedScans();}
             catch(Exception e){Toast.makeText(this,"Rename failed: "+e.getMessage(),Toast.LENGTH_LONG).show();}
         });
