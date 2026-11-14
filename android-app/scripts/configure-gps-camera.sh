@@ -1825,12 +1825,33 @@ public class DocumentScannerActivity extends ComponentActivity {
         LinearLayout header=new LinearLayout(this); header.setOrientation(LinearLayout.HORIZONTAL);
         header.setGravity(Gravity.CENTER_VERTICAL);
         header.setPadding(dp(12),dp(12),dp(16),dp(12)); header.setBackground(bg(0xEE071228,GOLD,22));
-        TextView back=text("‹",36,GOLD,true);
-        back.setGravity(Gravity.CENTER);
+        View back=new View(this) {
+            private final android.graphics.Paint arrowPaint=new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
+            @Override protected void onDraw(android.graphics.Canvas canvas) {
+                super.onDraw(canvas);
+                float cx=getWidth()/2f, cy=getHeight()/2f, d=getResources().getDisplayMetrics().density;
+                arrowPaint.setColor(GOLD);
+                arrowPaint.setStyle(android.graphics.Paint.Style.STROKE);
+                arrowPaint.setStrokeWidth(3.2f*d);
+                arrowPaint.setStrokeCap(android.graphics.Paint.Cap.ROUND);
+                arrowPaint.setStrokeJoin(android.graphics.Paint.Join.ROUND);
+                android.graphics.Path arrow=new android.graphics.Path();
+                arrow.moveTo(cx+10*d,cy);
+                arrow.lineTo(cx-10*d,cy);
+                arrow.moveTo(cx-10*d,cy);
+                arrow.lineTo(cx-2*d,cy-7*d);
+                arrow.moveTo(cx-10*d,cy);
+                arrow.lineTo(cx-2*d,cy+7*d);
+                canvas.drawPath(arrow,arrowPaint);
+            }
+        };
         back.setContentDescription("Back to Document Scanner");
-        back.setBackground(bg(0xFF172640,GOLD,24));
+        back.setBackground(bg(0xFF172640,GOLD,22));
+        back.setClickable(true);
+        back.setFocusable(true);
         LinearLayout.LayoutParams backLp=new LinearLayout.LayoutParams(dp(44),dp(44));
-        backLp.rightMargin=dp(12);
+        backLp.gravity=Gravity.CENTER_VERTICAL;
+        backLp.rightMargin=dp(14);
         header.addView(back,backLp);
         back.setOnClickListener(v->returnToScannerHome());
         LinearLayout headerCopy=new LinearLayout(this);
