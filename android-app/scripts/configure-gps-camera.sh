@@ -249,17 +249,6 @@ public class GpsCameraActivity extends ComponentActivity {
                 Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_PERMISSIONS);
     }
 
-    @Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 411) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                openGpsPhotos();
-            } else {
-                Toast.makeText(this, "Allow photo access to view saved KeyDhan GPS photos.", Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
     private TextView text(String value, int size, int color, boolean bold) {
         TextView t = new TextView(this);
         t.setText(value); t.setTextSize(size); t.setTextColor(color);
@@ -1129,7 +1118,10 @@ public class GpsCameraActivity extends ComponentActivity {
     }
     @Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] results) {
         super.onRequestPermissionsResult(requestCode, permissions, results);
-        if (requestCode == REQUEST_PERMISSIONS) {
+        if (requestCode == 411) {
+            if (results.length > 0 && results[0] == PackageManager.PERMISSION_GRANTED) openGpsPhotos();
+            else Toast.makeText(this, "Allow photo access to view saved KeyDhan GPS photos.", Toast.LENGTH_LONG).show();
+        } else if (requestCode == REQUEST_PERMISSIONS) {
             if (hasPermissions()) startCameraAndLocation();
             else { Toast.makeText(this, "Camera and precise location permissions are required.", Toast.LENGTH_LONG).show(); finish(); }
         }
