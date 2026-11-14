@@ -1666,6 +1666,7 @@ public class DocumentScannerActivity extends ComponentActivity {
         });
         buildUi();
     }
+    private int dp(float value){return (int)(value*getResources().getDisplayMetrics().density+0.5f);}
     private android.graphics.drawable.GradientDrawable bg(int color,int stroke,int radius) {
         android.graphics.drawable.GradientDrawable d=new android.graphics.drawable.GradientDrawable();
         d.setColor(color); d.setCornerRadius(radius*getResources().getDisplayMetrics().density);
@@ -1689,43 +1690,54 @@ public class DocumentScannerActivity extends ComponentActivity {
     }
     private void buildUi() {
         FrameLayout root=new FrameLayout(this);
-        root.setBackground(bg(NAVY,0,0));
+        root.setBackgroundColor(NAVY);
         LinearLayout page=new LinearLayout(this);
         page.setOrientation(LinearLayout.VERTICAL);
-        page.setPadding(18,18,18,18);
+        page.setPadding(dp(16),dp(12),dp(16),dp(10));
         LinearLayout header=new LinearLayout(this);
         header.setOrientation(LinearLayout.VERTICAL);
-        header.setPadding(18,18,18,16);
+        header.setPadding(dp(18),dp(16),dp(18),dp(14));
         header.setBackground(bg(0xFF071228,GOLD,22));
-        header.addView(text("KeyDhan™  DOC SCANNER",21,Color.WHITE,true));
-        header.addView(text("Private • On-device processing",13,GOLD,true));
+        header.addView(text("KeyDhan™",23,Color.WHITE,true));
+        header.addView(text("DOCUMENT SCANNER  •  PRIVATE & SECURE",11,GOLD,true));
         page.addView(header,new LinearLayout.LayoutParams(-1,-2));
+        ScrollView middle=new ScrollView(this);
+        middle.setFillViewport(true);
+        middle.setClipToPadding(false);
         LinearLayout center=new LinearLayout(this);
         center.setOrientation(LinearLayout.VERTICAL);
         center.setGravity(Gravity.CENTER);
-        center.setPadding(18,18,18,18);
-        TextView symbol=text("▤",64,GOLD,true);
+        center.setPadding(dp(14),dp(20),dp(14),dp(20));
+        TextView symbol=text("▤",58,GOLD,true);
         symbol.setGravity(Gravity.CENTER);
         center.addView(symbol,new LinearLayout.LayoutParams(-1,-2));
-        TextView title=text("Your documents, perfectly scanned",21,Color.WHITE,true);
+        TextView title=text("Turn paper into perfect PDFs",22,Color.WHITE,true);
         title.setGravity(Gravity.CENTER);
+        title.setPadding(0,dp(10),0,0);
         center.addView(title);
-        TextView desc=text("Scan pages, auto-detect edges, straighten and export a clean PDF. Your files stay on your device.",14,0xFFD5DCE8,false);
+        TextView desc=text("Scan documents, receipts, notes and IDs. Auto-detect edges, straighten pages and create a clean PDF — right on your device.",14,0xFFD5DCE8,false);
         desc.setGravity(Gravity.CENTER);
-        desc.setPadding(8,12,8,18);
+        desc.setLineSpacing(dp(3),1f);
+        desc.setPadding(dp(6),dp(12),dp(6),dp(12));
         center.addView(desc);
-        page.addView(center,new LinearLayout.LayoutParams(-1,0,1));
+        TextView privacy=text("Your scans stay on this device",12,GOLD,true);
+        privacy.setGravity(Gravity.CENTER);
+        privacy.setPadding(0,dp(8),0,0);
+        center.addView(privacy);
+        middle.addView(center,new ScrollView.LayoutParams(-1,-1));
+        page.addView(middle,new LinearLayout.LayoutParams(-1,0,1f));
         LinearLayout actions=new LinearLayout(this);
         actions.setOrientation(LinearLayout.VERTICAL);
-        actions.setPadding(4,12,4,12);
-        Button auto=button("✦  Auto Scan Document");
-        auto.setTextColor(NAVY); auto.setTextSize(16); auto.setBackground(bg(GOLD,0xFFFFE7A8,24));
-        Button manual=button("▣  Manual Camera");
-        Button imp=button("＋  Import from Gallery");
-        actions.addView(auto,new LinearLayout.LayoutParams(-1,62));
-        LinearLayout.LayoutParams mp=new LinearLayout.LayoutParams(-1,58); mp.topMargin=10;
+        actions.setPadding(dp(2),dp(8),dp(2),dp(4));
+        Button auto=button("✦   Auto Scan Document");
+        auto.setTextColor(NAVY); auto.setTextSize(16);
+        auto.setBackground(bg(GOLD,0xFFFFE7A8,24));
+        Button manual=button("▣   Scan with Camera");
+        Button imp=button("＋   Import from Gallery");
+        actions.addView(auto,new LinearLayout.LayoutParams(-1,dp(54)));
+        LinearLayout.LayoutParams mp=new LinearLayout.LayoutParams(-1,dp(50)); mp.topMargin=dp(9);
         actions.addView(manual,mp);
-        LinearLayout.LayoutParams ip=new LinearLayout.LayoutParams(-1,58); ip.topMargin=8;
+        LinearLayout.LayoutParams ip=new LinearLayout.LayoutParams(-1,dp(50)); ip.topMargin=dp(8);
         actions.addView(imp,ip);
         page.addView(actions,new LinearLayout.LayoutParams(-1,-2));
         root.addView(page,new FrameLayout.LayoutParams(-1,-1));
@@ -1744,29 +1756,29 @@ public class DocumentScannerActivity extends ComponentActivity {
         previewView=new PreviewView(this); previewView.setScaleType(PreviewView.ScaleType.FILL_CENTER);
         root.addView(previewView,new FrameLayout.LayoutParams(-1,-1));
         LinearLayout header=new LinearLayout(this); header.setOrientation(LinearLayout.VERTICAL);
-        header.setPadding(18,16,18,14); header.setBackground(bg(0xEE071228,GOLD,22));
+        header.setPadding(dp(16),dp(14),dp(16),dp(12)); header.setBackground(bg(0xEE071228,GOLD,22));
         header.addView(text("KeyDhan™  DOC SCANNER",21,Color.WHITE,true));
         header.addView(text("Private • On-device processing",12,GOLD,true));
         FrameLayout.LayoutParams hp=new FrameLayout.LayoutParams(-1,-2,Gravity.TOP);
-        hp.setMargins(14,18,14,0); root.addView(header,hp);
+        hp.setMargins(dp(12),dp(12),dp(12),0); root.addView(header,hp);
 
         LinearLayout bottom=new LinearLayout(this); bottom.setOrientation(LinearLayout.VERTICAL);
-        bottom.setPadding(14,10,14,28); bottom.setBackground(bg(0xF2071228,GOLD,24));
+        bottom.setPadding(dp(12),dp(8),dp(12),dp(12)); bottom.setBackground(bg(0xF2071228,GOLD,24));
         LinearLayout top=new LinearLayout(this); top.setGravity(Gravity.CENTER_VERTICAL);
         Button imp=button("＋ Import"), q=button("Quality: "+quality), auto=button("Auto Scan");
         count=text("0 pages",13,Color.WHITE,true);
-        top.addView(imp,new LinearLayout.LayoutParams(0,46,1));
+        top.addView(imp,new LinearLayout.LayoutParams(0,dp(44),1));
         top.addView(q,new LinearLayout.LayoutParams(0,46,1));
         top.addView(auto,new LinearLayout.LayoutParams(0,46,1)); top.addView(count);
         bottom.addView(top);
         thumbnails=new LinearLayout(this); thumbnails.setOrientation(LinearLayout.HORIZONTAL);
         ScrollView sc=new ScrollView(this); sc.setHorizontalScrollBarEnabled(false); sc.addView(thumbnails);
-        bottom.addView(sc,new LinearLayout.LayoutParams(-1,70));
+        bottom.addView(sc,new LinearLayout.LayoutParams(-1,dp(66)));
         LinearLayout actions=new LinearLayout(this); actions.setGravity(Gravity.CENTER);
         Button snap=button("●  Scan Page"), pdf=button("Export PDF");
         snap.setTextSize(17); snap.setTextColor(NAVY); snap.setBackground(bg(GOLD,0xFFFFE7A8,32));
-        actions.addView(snap,new LinearLayout.LayoutParams(0,58,1.2f));
-        actions.addView(pdf,new LinearLayout.LayoutParams(0,58,1));
+        actions.addView(snap,new LinearLayout.LayoutParams(0,dp(54),1.2f));
+        actions.addView(pdf,new LinearLayout.LayoutParams(0,dp(54),1));
         bottom.addView(actions);
         root.addView(bottom,new FrameLayout.LayoutParams(-1,-2,Gravity.BOTTOM));
         applySafeInsets(root);
@@ -1832,24 +1844,24 @@ public class DocumentScannerActivity extends ComponentActivity {
         count.setText(pages.size()+" pages"); thumbnails.removeAllViews();
         for(int i=0;i<pages.size();i++){final int at=i;ImageView v=new ImageView(this);
             Bitmap b=BitmapFactory.decodeFile(pages.get(i).getAbsolutePath());
-            if(b!=null){v.setImageBitmap(Bitmap.createScaledBitmap(b,64,70,true));b.recycle();}
-            v.setScaleType(ImageView.ScaleType.CENTER_CROP);v.setPadding(3,3,3,3);
+            if(b!=null){v.setImageBitmap(Bitmap.createScaledBitmap(b,dp(64),dp(70),true));b.recycle();}
+            v.setScaleType(ImageView.ScaleType.CENTER_CROP);v.setPadding(dp(3),dp(3),dp(3),dp(3));
             v.setOnClickListener(x->openPageEditor(at));
-            thumbnails.addView(v,new LinearLayout.LayoutParams(72,76));
+            thumbnails.addView(v,new LinearLayout.LayoutParams(dp(72),dp(76)));
         }
     }
 
     private void openPageEditor(int position) {
         if(position<0||position>=pages.size()) return;
         File file=pages.get(position);
-        LinearLayout panel=new LinearLayout(this); panel.setOrientation(LinearLayout.VERTICAL); panel.setPadding(12,8,12,8);
+        LinearLayout panel=new LinearLayout(this); panel.setOrientation(LinearLayout.VERTICAL); panel.setPadding(dp(12),dp(8),dp(12),dp(8));
         ImageView preview=new ImageView(this); preview.setAdjustViewBounds(true); preview.setScaleType(ImageView.ScaleType.FIT_CENTER);
         Bitmap initial=BitmapFactory.decodeFile(file.getAbsolutePath()); if(initial!=null){preview.setImageBitmap(initial);initial.recycle();}
-        panel.addView(preview,new LinearLayout.LayoutParams(-1,220));
+        panel.addView(preview,new LinearLayout.LayoutParams(-1,dp(220)));
         TextView hint=text("Page "+(position+1)+" of "+pages.size()+" • Edits are applied when exporting",12,0xFFD5DCE8,false); panel.addView(hint);
         LinearLayout row1=new LinearLayout(this); row1.setGravity(Gravity.CENTER);
         Button rotate=button("↻ Rotate"), filter=button("Filter: "+filterName(file)), ocr=button("OCR Text");
-        row1.addView(rotate,new LinearLayout.LayoutParams(0,48,1)); row1.addView(filter,new LinearLayout.LayoutParams(0,48,1)); row1.addView(ocr,new LinearLayout.LayoutParams(0,48,1)); panel.addView(row1);
+        row1.addView(rotate,new LinearLayout.LayoutParams(0,dp(48),1)); row1.addView(filter,new LinearLayout.LayoutParams(0,48,1)); row1.addView(ocr,new LinearLayout.LayoutParams(0,48,1)); panel.addView(row1);
         LinearLayout row2=new LinearLayout(this); row2.setGravity(Gravity.CENTER);
         Button left=button("← Move"), right=button("Move →"), del=button("Delete");
         row2.addView(left,new LinearLayout.LayoutParams(0,48,1)); row2.addView(right,new LinearLayout.LayoutParams(0,48,1)); row2.addView(del,new LinearLayout.LayoutParams(0,48,1)); panel.addView(row2);
@@ -1886,17 +1898,23 @@ public class DocumentScannerActivity extends ComponentActivity {
         } catch(Exception e){Toast.makeText(this,"OCR could not start: "+e.getMessage(),Toast.LENGTH_LONG).show();}
     }
     private Bitmap prepare(File f)throws Exception {
-        BitmapFactory.Options bounds=new BitmapFactory.Options();bounds.inJustDecodeBounds=true;
-        BitmapFactory.decodeFile(f.getAbsolutePath(),bounds);
+        Bitmap edited=renderPage(f);
+        if(edited==null)throw new Exception("Unable to read edited page");
         int max=quality.equals("High")?2800:quality.equals("Balanced")?2200:1500;
-        int sample=1;while(Math.max(bounds.outWidth/sample,bounds.outHeight/sample)>max*1.4)sample*=2;
-        BitmapFactory.Options opts=new BitmapFactory.Options();opts.inSampleSize=sample;
-        Bitmap src=BitmapFactory.decodeFile(f.getAbsolutePath(),opts);
-        if(src==null)throw new Exception("Unable to read scan");
-        Bitmap out=Bitmap.createBitmap(src.getWidth(),src.getHeight(),Bitmap.Config.ARGB_8888);
-        android.graphics.Canvas canvas=new android.graphics.Canvas(out);Paint paint=new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
-        if(quality.equals("Small Size")){android.graphics.ColorMatrix m=new android.graphics.ColorMatrix();m.setSaturation(0);paint.setColorFilter(new android.graphics.ColorMatrixColorFilter(m));}
-        canvas.drawBitmap(src,0,0,paint);src.recycle();return out;
+        int longest=Math.max(edited.getWidth(),edited.getHeight());
+        if(longest>max){
+            float scale=(float)max/longest;
+            Bitmap smaller=Bitmap.createScaledBitmap(edited,Math.max(1,(int)(edited.getWidth()*scale)),Math.max(1,(int)(edited.getHeight()*scale)),true);
+            edited.recycle();edited=smaller;
+        }
+        if(quality.equals("Small Size")){
+            Bitmap gray=Bitmap.createBitmap(edited.getWidth(),edited.getHeight(),Bitmap.Config.ARGB_8888);
+            Paint p=new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
+            android.graphics.ColorMatrix cm=new android.graphics.ColorMatrix();cm.setSaturation(0);
+            p.setColorFilter(new android.graphics.ColorMatrixColorFilter(cm));
+            new android.graphics.Canvas(gray).drawBitmap(edited,0,0,p);edited.recycle();edited=gray;
+        }
+        return edited;
     }
     private void makePdf() {
         if(pages.isEmpty()){Toast.makeText(this,"Scan or import at least one page",Toast.LENGTH_SHORT).show();return;}
