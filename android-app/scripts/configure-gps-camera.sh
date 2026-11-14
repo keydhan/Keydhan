@@ -1283,14 +1283,45 @@ public class GpsCameraActivity extends ComponentActivity {
         canvas.drawCircle(iconX,y-7f*scale,15f*scale,iconRing);
         drawGpsStampIcon(canvas,p,1,iconX,y-6f*scale,iconSize);
         p.setTextSize(28f*scale);
-        String addressText=address == null ? "" : address;
-        int addressStart=0;
-        while(addressStart<addressText.length()) {
-            int count=p.breakText(addressText,addressStart,addressText.length(),true,textMax-(textX-x),null);
-            if(count<=0) break;
-            canvas.drawText(addressText,addressStart,addressStart+count,textX,y,p);
-            addressStart+=count;
-            if(addressStart<addressText.length()) y+=line*0.72f;
+        String addressText=address == null ? "" : address.trim();
+        // Smart word wrapping: measure whole words and move a word to the next line
+        // instead of splitting names such as "Faridabad" across two lines.
+        float addressMaxWidth=Math.max(80f*scale,qx-18f*scale-textX);
+        String[] addressWords=addressText.isEmpty()?new String[0]:addressText.split("\\s+");
+        StringBuilder addressLine=new StringBuilder();
+        boolean addressHasDrawnLine=false;
+        for(String word:addressWords) {
+            String candidate=addressLine.length()==0?word:addressLine+" "+word;
+            if(p.measureText(candidate)<=addressMaxWidth) {
+                addressLine.setLength(0);
+                addressLine.append(candidate);
+            } else {
+                if(addressLine.length()>0) {
+                    canvas.drawText(addressLine.toString(),textX,y,p);
+                    y+=line*0.72f;
+                    addressHasDrawnLine=true;
+                    addressLine.setLength(0);
+                    addressLine.append(word);
+                } else {
+                    // Only split a single unusually long token if it cannot fit by itself.
+                    int start=0;
+                    while(start<word.length()) {
+                        int count=p.breakText(word,start,word.length(),true,addressMaxWidth,null);
+                        if(count<=0)break;
+                        String part=word.substring(start,start+count);
+                        if(start+count<word.length()) {
+                            canvas.drawText(part,textX,y,p);
+                            y+=line*0.72f;
+                            addressHasDrawnLine=true;
+                        } else addressLine.append(part);
+                        start+=count;
+                    }
+                }
+            }
+        }
+        if(addressLine.length()>0) {
+            canvas.drawText(addressLine.toString(),textX,y,p);
+            addressHasDrawnLine=true;
         }
         y+=line*0.88f;
         canvas.drawCircle(iconX,y-7f*scale,15f*scale,iconDisc);
