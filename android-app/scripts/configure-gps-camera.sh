@@ -1990,7 +1990,7 @@ public class DocumentScannerActivity extends ComponentActivity {
             .setNegativeButton("Cancel",null)
             .setPositiveButton("Save",(d,w)->{
                 String value=field.getText().toString().trim();
-                char[] invalid={'/','\\\\',':','*','?','"','<','>','|'};
+                char[] invalid={'/',(char)92,':','*','?','"','<','>','|'};
                 for(char ch:invalid) value=value.replace(ch,'_');
                 if(value.isEmpty()) { Toast.makeText(this,"Enter a file name",Toast.LENGTH_SHORT).show(); return; }
                 ContentValues update=new ContentValues(); update.put(MediaStore.Downloads.DISPLAY_NAME,value+".pdf");
