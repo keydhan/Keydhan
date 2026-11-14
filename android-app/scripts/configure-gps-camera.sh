@@ -1675,7 +1675,7 @@ public class DocumentScannerActivity extends ComponentActivity {
     }
     private void applySafeInsets(View root) {
         ViewCompat.setOnApplyWindowInsetsListener(root,(view,insets)->{
-            android.graphics.Insets bars=insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            androidx.core.graphics.Insets bars=insets.getInsets(WindowInsetsCompat.Type.systemBars());
             view.setPadding(0,bars.top,0,bars.bottom);
             return insets;
         });
