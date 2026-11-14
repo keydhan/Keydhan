@@ -1924,11 +1924,47 @@ public class DocumentScannerActivity extends ComponentActivity {
         return edited;
     }
 
+    private android.graphics.drawable.GradientDrawable premiumBg(int color,int stroke,int radius) {
+        android.graphics.drawable.GradientDrawable d=new android.graphics.drawable.GradientDrawable();
+        d.setColor(color); d.setCornerRadius(dp(radius));
+        if(stroke!=0)d.setStroke(dp(1),stroke);
+        return d;
+    }
+
+    private android.app.Dialog premiumDialog(View content,int widthDp) {
+        android.app.Dialog dialog=new android.app.Dialog(this);
+        dialog.setContentView(content);
+        android.view.Window window=dialog.getWindow();
+        if(window!=null) {
+            window.setBackgroundDrawableResource(android.R.color.transparent);
+            window.addFlags(android.view.WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+            android.view.WindowManager.LayoutParams lp=new android.view.WindowManager.LayoutParams();
+            lp.copyFrom(window.getAttributes());
+            lp.width=Math.min(dp(widthDp),getResources().getDisplayMetrics().widthPixels-dp(28));
+            lp.height=android.view.WindowManager.LayoutParams.WRAP_CONTENT;
+            lp.gravity=Gravity.CENTER;
+            lp.dimAmount=0.72f;
+            window.setAttributes(lp);
+        }
+        dialog.show();
+        if(window!=null) window.setLayout(Math.min(dp(widthDp),getResources().getDisplayMetrics().widthPixels-dp(28)),android.view.WindowManager.LayoutParams.WRAP_CONTENT);
+        return dialog;
+    }
+
+    private TextView premiumAction(String icon,String label,int color) {
+        TextView t=text(icon+"   "+label,15,color,true);
+        t.setGravity(Gravity.CENTER_VERTICAL);
+        t.setPadding(dp(16),0,dp(12),0);
+        t.setBackground(premiumBg(0xFF172640,0x66D2A952,16));
+        return t;
+    }
+
     private void showSavedScans() {
         final ArrayList<Uri> files=new ArrayList<>();
         final ArrayList<String> names=new ArrayList<>();
+        final ArrayList<String> dates=new ArrayList<>();
         String folder=Environment.DIRECTORY_DOWNLOADS+"/KeyDhan Scanner";
-        String[] projection={MediaStore.Downloads._ID,MediaStore.Downloads.DISPLAY_NAME};
+        String[] projection={MediaStore.Downloads._ID,MediaStore.Downloads.DISPLAY_NAME,MediaStore.Downloads.DATE_ADDED};
         try(Cursor c=getContentResolver().query(MediaStore.Downloads.EXTERNAL_CONTENT_URI,projection,
                 MediaStore.Downloads.RELATIVE_PATH+"=? AND "+MediaStore.Downloads.MIME_TYPE+"=?",
                 new String[]{folder+"/","application/pdf"},MediaStore.Downloads.DATE_ADDED+" DESC")) {
@@ -1936,70 +1972,154 @@ public class DocumentScannerActivity extends ComponentActivity {
                 long id=c.getLong(0); String name=c.getString(1);
                 files.add(ContentUris.withAppendedId(MediaStore.Downloads.EXTERNAL_CONTENT_URI,id));
                 names.add(name==null?"Scanned document":name);
+                long stamp=c.getLong(2)*1000L;
+                dates.add(new SimpleDateFormat("dd MMM yyyy  •  hh:mm a",Locale.getDefault()).format(new Date(stamp)));
             }
         } catch(Exception e) {
             Toast.makeText(this,"Could not load saved scans: "+e.getMessage(),Toast.LENGTH_LONG).show();
             return;
         }
+
+        LinearLayout panel=new LinearLayout(this);
+        panel.setOrientation(LinearLayout.VERTICAL);
+        panel.setPadding(dp(18),dp(18),dp(18),dp(16));
+        panel.setBackground(premiumBg(NAVY,GOLD,24));
+
+        LinearLayout top=new LinearLayout(this);
+        top.setGravity(Gravity.CENTER_VERTICAL);
+        LinearLayout titles=new LinearLayout(this); titles.setOrientation(LinearLayout.VERTICAL);
+        TextView heading=text("My Scans",23,Color.WHITE,true);
+        TextView sub=text(files.size()+" saved PDF"+(files.size()==1?"":"s")+"  •  On this device",12,0xFFE0C889,false);
+        sub.setPadding(0,dp(4),0,0);
+        titles.addView(heading); titles.addView(sub);
+        top.addView(titles,new LinearLayout.LayoutParams(0,-2,1));
+        TextView count=text(String.valueOf(files.size()),14,NAVY,true);
+        count.setGravity(Gravity.CENTER);
+        count.setBackground(premiumBg(GOLD,0,40));
+        top.addView(count,new LinearLayout.LayoutParams(dp(38),dp(38)));
+        panel.addView(top);
+        View line=new View(this); line.setBackgroundColor(0x66D2A952);
+        LinearLayout.LayoutParams lineLp=new LinearLayout.LayoutParams(-1,dp(1)); lineLp.topMargin=dp(14); lineLp.bottomMargin=dp(12);
+        panel.addView(line,lineLp);
+
         if(files.isEmpty()) {
-            new android.app.AlertDialog.Builder(this).setTitle("My Scans")
-                .setMessage("No saved PDFs yet. Export a scan to see it here.")
-                .setPositiveButton("OK",null).show();
-            return;
+            TextView empty=text("▤",42,GOLD,true); empty.setGravity(Gravity.CENTER);
+            panel.addView(empty,new LinearLayout.LayoutParams(-1,dp(70)));
+            TextView message=text("No scans yet",17,Color.WHITE,true); message.setGravity(Gravity.CENTER);
+            panel.addView(message);
+            TextView hint=text("Your exported PDFs will appear here.",13,0xFFD5DCE8,false); hint.setGravity(Gravity.CENTER);
+            hint.setPadding(0,dp(6),0,dp(14)); panel.addView(hint);
+        } else {
+            ScrollView scroll=new ScrollView(this); scroll.setFillViewport(false);
+            LinearLayout list=new LinearLayout(this); list.setOrientation(LinearLayout.VERTICAL);
+            for(int i=0;i<files.size();i++) {
+                final int index=i;
+                LinearLayout item=new LinearLayout(this);
+                item.setGravity(Gravity.CENTER_VERTICAL);
+                item.setPadding(dp(12),dp(12),dp(10),dp(12));
+                item.setBackground(premiumBg(0xFF13233D,0x66D2A952,17));
+                TextView pdfIcon=text("PDF",11,NAVY,true);
+                pdfIcon.setGravity(Gravity.CENTER);
+                pdfIcon.setBackground(premiumBg(GOLD,0,10));
+                item.addView(pdfIcon,new LinearLayout.LayoutParams(dp(46),dp(54)));
+                LinearLayout detail=new LinearLayout(this); detail.setOrientation(LinearLayout.VERTICAL);
+                detail.setPadding(dp(12),0,dp(6),0);
+                TextView fileName=text(names.get(i),14,Color.WHITE,true);
+                fileName.setMaxLines(2); fileName.setEllipsize(android.text.TextUtils.TruncateAt.END);
+                TextView date=text(dates.get(i),11,0xFFE0C889,false);
+                date.setPadding(0,dp(5),0,0);
+                detail.addView(fileName); detail.addView(date);
+                item.addView(detail,new LinearLayout.LayoutParams(0,-2,1));
+                TextView more=text("›",28,GOLD,true); more.setGravity(Gravity.CENTER);
+                item.addView(more,new LinearLayout.LayoutParams(dp(24),dp(42)));
+                item.setOnClickListener(v->showScanActions(files.get(index),names.get(index)));
+                list.addView(item,new LinearLayout.LayoutParams(-1,-2));
+                if(i<files.size()-1) { View gap=new View(this); list.addView(gap,new LinearLayout.LayoutParams(1,dp(9))); }
+            }
+            scroll.addView(list);
+            LinearLayout.LayoutParams scrollLp=new LinearLayout.LayoutParams(-1,0,1);
+            scrollLp.height=Math.min(dp(360),dp(104)*Math.min(files.size(),3));
+            panel.addView(scroll,scrollLp);
         }
-        String[] labels=new String[names.size()];
-        for(int i=0;i<names.size();i++) labels[i]="PDF  ·  "+names.get(i);
-        new android.app.AlertDialog.Builder(this).setTitle("My Scans  ("+files.size()+")")
-            .setItems(labels,(dialog,which)->showScanActions(files.get(which),names.get(which)))
-            .setNegativeButton("Close",null).show();
+        TextView close=text("CLOSE",13,GOLD,true);
+        close.setGravity(Gravity.CENTER);
+        close.setBackground(premiumBg(0xFF172640,0x66D2A952,14));
+        LinearLayout.LayoutParams closeLp=new LinearLayout.LayoutParams(-1,dp(46));
+        closeLp.topMargin=dp(14); panel.addView(close,closeLp);
+        android.app.Dialog dialog=premiumDialog(panel,420);
+        close.setOnClickListener(v->dialog.dismiss());
     }
 
     private void showScanActions(Uri uri,String currentName) {
-        String[] actions={"Open PDF","Share PDF","Rename","Delete"};
-        new android.app.AlertDialog.Builder(this).setTitle(currentName)
-            .setItems(actions,(d,which)->{
-                if(which==0) {
-                    Intent view=new Intent(Intent.ACTION_VIEW); view.setDataAndType(uri,"application/pdf");
-                    view.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    try { startActivity(view); }
-                    catch(Exception e) { Toast.makeText(this,"No PDF viewer found",Toast.LENGTH_LONG).show(); }
-                } else if(which==1) {
-                    Intent share=new Intent(Intent.ACTION_SEND); share.setType("application/pdf");
-                    share.putExtra(Intent.EXTRA_STREAM,uri); share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    startActivity(Intent.createChooser(share,"Share PDF"));
-                } else if(which==2) renameSavedScan(uri,currentName);
-                else if(which==3) new android.app.AlertDialog.Builder(this)
-                    .setTitle("Delete PDF?")
-                    .setMessage("This will permanently delete "+currentName)
-                    .setNegativeButton("Cancel",null)
-                    .setPositiveButton("Delete",(confirm,w)->{
-                        try {
-                            int deleted=getContentResolver().delete(uri,null,null);
-                            Toast.makeText(this,deleted>0?"PDF deleted":"Could not delete PDF",Toast.LENGTH_SHORT).show();
-                            showSavedScans();
-                        } catch(Exception e) { Toast.makeText(this,"Delete failed: "+e.getMessage(),Toast.LENGTH_LONG).show(); }
-                    }).show();
-            }).setNegativeButton("Close",null).show();
+        LinearLayout panel=new LinearLayout(this); panel.setOrientation(LinearLayout.VERTICAL);
+        panel.setPadding(dp(18),dp(18),dp(18),dp(18));
+        panel.setBackground(premiumBg(NAVY,GOLD,24));
+        TextView heading=text("Document options",21,Color.WHITE,true); panel.addView(heading);
+        TextView file=text(currentName,12,0xFFE0C889,false); file.setMaxLines(2);
+        file.setPadding(0,dp(5),0,dp(14)); panel.addView(file);
+        TextView open=premiumAction("↗","Open PDF",Color.WHITE);
+        TextView share=premiumAction("⇧","Share PDF",Color.WHITE);
+        TextView rename=premiumAction("✎","Rename",Color.WHITE);
+        TextView delete=premiumAction("⌫","Delete",0xFFFF8D83);
+        TextView[] controls={open,share,rename,delete};
+        android.app.Dialog dialog=premiumDialog(panel,380);
+        for(int i=0;i<controls.length;i++) {
+            TextView control=controls[i];
+            LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-1,dp(50));
+            lp.topMargin=dp(i==0?0:8); panel.addView(control,lp);
+        }
+        TextView close=text("CLOSE",12,GOLD,true); close.setGravity(Gravity.CENTER);
+        LinearLayout.LayoutParams clp=new LinearLayout.LayoutParams(-1,dp(42)); clp.topMargin=dp(12); panel.addView(close,clp);
+        close.setOnClickListener(v->dialog.dismiss());
+        open.setOnClickListener(v->{dialog.dismiss();Intent view=new Intent(Intent.ACTION_VIEW);view.setDataAndType(uri,"application/pdf");view.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);try{startActivity(view);}catch(Exception e){Toast.makeText(this,"No PDF viewer found",Toast.LENGTH_LONG).show();}});
+        share.setOnClickListener(v->{dialog.dismiss();Intent intent=new Intent(Intent.ACTION_SEND);intent.setType("application/pdf");intent.putExtra(Intent.EXTRA_STREAM,uri);intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);startActivity(Intent.createChooser(intent,"Share PDF"));});
+        rename.setOnClickListener(v->{dialog.dismiss();renameSavedScan(uri,currentName);});
+        delete.setOnClickListener(v->{dialog.dismiss();confirmDeleteScan(uri,currentName);});
+    }
+
+    private void confirmDeleteScan(Uri uri,String name) {
+        LinearLayout panel=new LinearLayout(this); panel.setOrientation(LinearLayout.VERTICAL);
+        panel.setPadding(dp(18),dp(18),dp(18),dp(18)); panel.setBackground(premiumBg(NAVY,GOLD,22));
+        TextView title=text("Delete this PDF?",20,Color.WHITE,true); panel.addView(title);
+        TextView info=text(name+"\\nThis action cannot be undone.",13,0xFFD5DCE8,false);
+        info.setPadding(0,dp(10),0,dp(18)); panel.addView(info);
+        LinearLayout row=new LinearLayout(this); row.setGravity(Gravity.CENTER);
+        TextView cancel=premiumAction("×","Cancel",Color.WHITE);
+        TextView yes=premiumAction("⌫","Delete",0xFFFF8D83);
+        row.addView(cancel,new LinearLayout.LayoutParams(0,dp(48),1));
+        LinearLayout.LayoutParams yesLp=new LinearLayout.LayoutParams(0,dp(48),1); yesLp.leftMargin=dp(8); row.addView(yes,yesLp);
+        panel.addView(row); android.app.Dialog dialog=premiumDialog(panel,380);
+        cancel.setOnClickListener(v->dialog.dismiss());
+        yes.setOnClickListener(v->{dialog.dismiss();try{int n=getContentResolver().delete(uri,null,null);Toast.makeText(this,n>0?"PDF deleted":"Could not delete PDF",Toast.LENGTH_SHORT).show();showSavedScans();}catch(Exception e){Toast.makeText(this,"Delete failed: "+e.getMessage(),Toast.LENGTH_LONG).show();}});
     }
 
     private void renameSavedScan(Uri uri,String oldName) {
+        LinearLayout panel=new LinearLayout(this); panel.setOrientation(LinearLayout.VERTICAL);
+        panel.setPadding(dp(18),dp(18),dp(18),dp(18)); panel.setBackground(premiumBg(NAVY,GOLD,22));
+        TextView title=text("Rename PDF",20,Color.WHITE,true); panel.addView(title);
         EditText field=new EditText(this); field.setSingleLine(true);
+        field.setTextColor(Color.WHITE); field.setHintTextColor(0xFF9AA8BC);
+        field.setBackground(premiumBg(0xFF172640,GOLD,12)); field.setPadding(dp(12),dp(10),dp(12),dp(10));
         field.setText(oldName.endsWith(".pdf")?oldName.substring(0,oldName.length()-4):oldName);
         field.setSelection(field.getText().length());
-        new android.app.AlertDialog.Builder(this).setTitle("Rename PDF").setView(field)
-            .setNegativeButton("Cancel",null)
-            .setPositiveButton("Save",(d,w)->{
-                String value=field.getText().toString().trim();
-                char[] invalid={'/',(char)92,':','*','?','"','<','>','|'};
-                for(char ch:invalid) value=value.replace(ch,'_');
-                if(value.isEmpty()) { Toast.makeText(this,"Enter a file name",Toast.LENGTH_SHORT).show(); return; }
-                ContentValues update=new ContentValues(); update.put(MediaStore.Downloads.DISPLAY_NAME,value+".pdf");
-                try {
-                    int changed=getContentResolver().update(uri,update,null,null);
-                    Toast.makeText(this,changed>0?"PDF renamed":"Rename failed",Toast.LENGTH_SHORT).show();
-                    showSavedScans();
-                } catch(Exception e) { Toast.makeText(this,"Rename failed: "+e.getMessage(),Toast.LENGTH_LONG).show(); }
-            }).show();
+        LinearLayout.LayoutParams fieldLp=new LinearLayout.LayoutParams(-1,dp(52)); fieldLp.topMargin=dp(14); panel.addView(field,fieldLp);
+        LinearLayout row=new LinearLayout(this); row.setGravity(Gravity.CENTER);
+        TextView cancel=premiumAction("×","Cancel",Color.WHITE);
+        TextView save=premiumAction("✓","Save",GOLD);
+        row.addView(cancel,new LinearLayout.LayoutParams(0,dp(48),1));
+        LinearLayout.LayoutParams saveLp=new LinearLayout.LayoutParams(0,dp(48),1); saveLp.leftMargin=dp(8); row.addView(save,saveLp);
+        LinearLayout.LayoutParams rowLp=new LinearLayout.LayoutParams(-1,-2); rowLp.topMargin=dp(14); panel.addView(row,rowLp);
+        android.app.Dialog dialog=premiumDialog(panel,380);
+        cancel.setOnClickListener(v->dialog.dismiss());
+        save.setOnClickListener(v->{
+            String value=field.getText().toString().trim();
+            char[] invalid={'/',(char)92,':','*','?','"','<','>','|'};
+            for(char ch:invalid)value=value.replace(ch,'_');
+            if(value.isEmpty()){Toast.makeText(this,"Enter a file name",Toast.LENGTH_SHORT).show();return;}
+            ContentValues update=new ContentValues();update.put(MediaStore.Downloads.DISPLAY_NAME,value+".pdf");
+            try{int changed=getContentResolver().update(uri,update,null,null);dialog.dismiss();Toast.makeText(this,changed>0?"PDF renamed":"Rename failed",Toast.LENGTH_SHORT).show();showSavedScans();}
+            catch(Exception e){Toast.makeText(this,"Rename failed: "+e.getMessage(),Toast.LENGTH_LONG).show();}
+        });
     }
 
     private void makePdf() {
