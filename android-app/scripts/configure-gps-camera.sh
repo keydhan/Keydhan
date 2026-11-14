@@ -2011,7 +2011,7 @@ public class DocumentScannerActivity extends ComponentActivity {
                 Toast.makeText(this,"Please enter a file name",Toast.LENGTH_SHORT).show();
                 return;
             }
-            for(char ch:new char[]{'/','\\\\',':','*','?','"','<','>','|'}) value=value.replace(ch,'_');
+            for(char ch:new char[]{'/','\\',':','*','?','"','<','>','|'}) value=value.replace(ch,'_');
             value=value.replaceAll("\\\\s+","_").replaceAll("_+","_");
             if(value.isEmpty()) {
                 field.setError("Please enter a valid file name.");
