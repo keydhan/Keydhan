@@ -20,6 +20,7 @@ deps='''dependencies {
     implementation "androidx.camera:camera-view:1.4.2"
     implementation "com.google.android.gms:play-services-location:21.3.0"
     implementation "com.google.zxing:core:3.5.3"
+    implementation "com.google.android.gms:play-services-mlkit-document-scanner:16.0.0"
 '''
 s=s.replace(needle,deps,1)
 p.write_text(s)
@@ -126,6 +127,13 @@ package com.keydhan.app;
 
 import android.Manifest;
 import androidx.activity.ComponentActivity;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.IntentSenderRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
+import com.google.mlkit.vision.documentscanner.GmsDocumentScanner;
+import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions;
+import com.google.mlkit.vision.documentscanner.GmsDocumentScanning;
+import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult;
 import androidx.activity.OnBackPressedCallback;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -1604,11 +1612,34 @@ public class DocumentScannerActivity extends ComponentActivity {
     private TextView count;
     private LinearLayout thumbnails;
     private String quality="Balanced";
+    private ActivityResultLauncher<IntentSenderRequest> autoScanLauncher;
 
     @Override public void onCreate(Bundle b) {
         super.onCreate(b);
         getWindow().setStatusBarColor(NAVY);
         getWindow().setNavigationBarColor(NAVY);
+        autoScanLauncher=registerForActivityResult(new ActivityResultContracts.StartIntentSenderForResult(), result -> {
+            if(result.getResultCode()!=RESULT_OK || result.getData()==null) return;
+            GmsDocumentScanningResult scan=GmsDocumentScanningResult.fromActivityResultIntent(result.getData());
+            if(scan==null || scan.getPdf()==null) { Toast.makeText(this,"No scanned PDF returned",Toast.LENGTH_LONG).show(); return; }
+            try {
+                Uri source=scan.getPdf().getUri();
+                String name="KeyDhan_AutoScan_"+new SimpleDateFormat("yyyyMMdd_HHmmss",Locale.US).format(new Date())+".pdf";
+                ContentValues values=new ContentValues();
+                values.put(MediaStore.Downloads.DISPLAY_NAME,name);
+                values.put(MediaStore.Downloads.MIME_TYPE,"application/pdf");
+                values.put(MediaStore.Downloads.RELATIVE_PATH,Environment.DIRECTORY_DOCUMENTS+"/KeyDhan Scanner");
+                Uri dest=getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI,values);
+                if(dest==null) throw new Exception("Cannot create PDF");
+                try(InputStream in=getContentResolver().openInputStream(source); OutputStream out=getContentResolver().openOutputStream(dest)) {
+                    byte[] buf=new byte[8192]; int len; while((len=in.read(buf))>0) out.write(buf,0,len);
+                }
+                Toast.makeText(this,"Auto-scanned PDF saved in Documents/KeyDhan Scanner",Toast.LENGTH_LONG).show();
+                Intent share=new Intent(Intent.ACTION_SEND); share.setType("application/pdf");
+                share.putExtra(Intent.EXTRA_STREAM,dest); share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                startActivity(Intent.createChooser(share,"Share scanned PDF"));
+            } catch(Exception e) { Toast.makeText(this,"Auto scan export failed: "+e.getMessage(),Toast.LENGTH_LONG).show(); }
+        });
         if(ContextCompat.checkSelfPermission(this,Manifest.permission.CAMERA)!=PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CAMERA},REQ_CAMERA);
         else buildUi();
@@ -1632,23 +1663,24 @@ public class DocumentScannerActivity extends ComponentActivity {
         previewView=new PreviewView(this); previewView.setScaleType(PreviewView.ScaleType.FILL_CENTER);
         root.addView(previewView,new FrameLayout.LayoutParams(-1,-1));
         LinearLayout header=new LinearLayout(this); header.setOrientation(LinearLayout.VERTICAL);
-        header.setPadding(20,22,20,14); header.setBackground(bg(0xEE071228,GOLD,22));
+        header.setPadding(18,16,18,14); header.setBackground(bg(0xEE071228,GOLD,22));
         header.addView(text("KeyDhan™  DOC SCANNER",21,Color.WHITE,true));
         header.addView(text("Private • On-device processing",12,GOLD,true));
         FrameLayout.LayoutParams hp=new FrameLayout.LayoutParams(-1,-2,Gravity.TOP);
         hp.setMargins(14,18,14,0); root.addView(header,hp);
 
         LinearLayout bottom=new LinearLayout(this); bottom.setOrientation(LinearLayout.VERTICAL);
-        bottom.setPadding(14,12,14,18); bottom.setBackground(bg(0xF2071228,GOLD,24));
+        bottom.setPadding(14,10,14,28); bottom.setBackground(bg(0xF2071228,GOLD,24));
         LinearLayout top=new LinearLayout(this); top.setGravity(Gravity.CENTER_VERTICAL);
-        Button imp=button("＋ Import"), q=button("Quality: "+quality);
+        Button imp=button("＋ Import"), q=button("Quality: "+quality), auto=button("Auto Scan");
         count=text("0 pages",13,Color.WHITE,true);
-        top.addView(imp,new LinearLayout.LayoutParams(0,48,1));
-        top.addView(q,new LinearLayout.LayoutParams(0,48,1)); top.addView(count);
+        top.addView(imp,new LinearLayout.LayoutParams(0,46,1));
+        top.addView(q,new LinearLayout.LayoutParams(0,46,1));
+        top.addView(auto,new LinearLayout.LayoutParams(0,46,1)); top.addView(count);
         bottom.addView(top);
         thumbnails=new LinearLayout(this); thumbnails.setOrientation(LinearLayout.HORIZONTAL);
         ScrollView sc=new ScrollView(this); sc.setHorizontalScrollBarEnabled(false); sc.addView(thumbnails);
-        bottom.addView(sc,new LinearLayout.LayoutParams(-1,82));
+        bottom.addView(sc,new LinearLayout.LayoutParams(-1,70));
         LinearLayout actions=new LinearLayout(this); actions.setGravity(Gravity.CENTER);
         Button snap=button("●  Scan Page"), pdf=button("Export PDF");
         snap.setTextSize(17); snap.setTextColor(NAVY); snap.setBackground(bg(GOLD,0xFFFFE7A8,32));
@@ -1657,11 +1689,24 @@ public class DocumentScannerActivity extends ComponentActivity {
         bottom.addView(actions);
         root.addView(bottom,new FrameLayout.LayoutParams(-1,-2,Gravity.BOTTOM));
         setContentView(root);
+        auto.setOnClickListener(v->launchAutoScan());
         snap.setOnClickListener(v->takePage());
         imp.setOnClickListener(v->pickImages());
         q.setOnClickListener(v->{quality=quality.equals("Balanced")?"High":quality.equals("High")?"Small Size":"Balanced";q.setText("Quality: "+quality);});
         pdf.setOnClickListener(v->makePdf());
         startCamera();
+    }
+    private void launchAutoScan() {
+        GmsDocumentScannerOptions options=new GmsDocumentScannerOptions.Builder()
+            .setGalleryImportAllowed(true)
+            .setPageLimit(100)
+            .setResultFormats(GmsDocumentScannerOptions.RESULT_FORMAT_PDF)
+            .setScannerMode(GmsDocumentScannerOptions.SCANNER_MODE_FULL)
+            .build();
+        GmsDocumentScanner scanner=GmsDocumentScanning.getClient(options);
+        scanner.getStartScanIntent(this).addOnSuccessListener(sender ->
+            autoScanLauncher.launch(new IntentSenderRequest.Builder(sender).build()))
+            .addOnFailureListener(e -> Toast.makeText(this,"Auto Scan unavailable: "+e.getMessage(),Toast.LENGTH_LONG).show());
     }
     private void startCamera() {
         ListenableFuture<ProcessCameraProvider> f=ProcessCameraProvider.getInstance(this);
