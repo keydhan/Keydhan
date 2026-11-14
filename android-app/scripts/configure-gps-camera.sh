@@ -1619,6 +1619,69 @@ public class DocumentScannerActivity extends ComponentActivity {
             return insets;
         });
     }
+    private void showScannerPrivacyDetails() {
+        LinearLayout panel=new LinearLayout(this);
+        panel.setOrientation(LinearLayout.VERTICAL);
+        panel.setPadding(dp(20),dp(20),dp(20),dp(16));
+        panel.setBackground(bg(NAVY,GOLD,24));
+
+        TextView heading=text("KeyDhan Privacy Promise",20,Color.WHITE,true);
+        panel.addView(heading);
+        TextView intro=text("Your documents are personal. KeyDhan Document Scanner is designed to process scans on your mobile device.",13,0xFFD5DCE8,false);
+        intro.setPadding(0,dp(8),0,dp(14));
+        panel.addView(intro);
+
+        addScannerPrivacyItem(panel,"▣","Processed on your device",
+            "Camera captures, gallery imports, page adjustments and PDF creation are handled locally on your phone.");
+        addScannerPrivacyItem(panel,"☁","No document uploads to KeyDhan",
+            "KeyDhan does not upload your scanned images or PDF documents to KeyDhan servers.");
+        addScannerPrivacyItem(panel,"▤","Saved on your phone",
+            "Your exported PDFs are saved in Documents/KeyDhan Scanner on your device.");
+        addScannerPrivacyItem(panel,"↗","You control sharing",
+            "A document is shared only when you choose a share action.");
+
+        TextView note=text("Auto Scan uses the document-scanning component provided by Google Play services. This privacy notice describes document handling by the KeyDhan app.",11,0xFFB9C6D8,false);
+        note.setPadding(0,dp(12),0,dp(8));
+        panel.addView(note);
+
+        TextView promise=text("Your Documents. Your Device. Your Privacy.",12,GOLD,true);
+        promise.setGravity(Gravity.CENTER);
+        promise.setPadding(0,dp(8),0,dp(12));
+        panel.addView(promise);
+
+        android.app.AlertDialog dialog=new android.app.AlertDialog.Builder(this).create();
+        TextView close=text("GOT IT",13,NAVY,true);
+        close.setGravity(Gravity.CENTER);
+        close.setBackground(bg(GOLD,0xFFFFE7A8,18));
+        panel.addView(close,new LinearLayout.LayoutParams(-1,dp(46)));
+        close.setOnClickListener(v->dialog.dismiss());
+        dialog.setView(panel);
+        dialog.show();
+        if(dialog.getWindow()!=null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.getWindow().setLayout((int)(getResources().getDisplayMetrics().widthPixels*0.90f),-2);
+        }
+    }
+
+    private void addScannerPrivacyItem(LinearLayout panel,String symbol,String title,String detail) {
+        LinearLayout row=new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.TOP);
+        row.setPadding(0,dp(7),0,dp(7));
+        TextView icon=text(symbol,19,GOLD,true);
+        icon.setGravity(Gravity.CENTER);
+        row.addView(icon,new LinearLayout.LayoutParams(dp(32),dp(34)));
+        LinearLayout copy=new LinearLayout(this);
+        copy.setOrientation(LinearLayout.VERTICAL);
+        copy.setPadding(dp(8),0,0,0);
+        copy.addView(text(title,13,Color.WHITE,true));
+        TextView body=text(detail,11,0xFFD5DCE8,false);
+        body.setPadding(0,dp(3),0,0);
+        copy.addView(body);
+        row.addView(copy,new LinearLayout.LayoutParams(0,-2,1));
+        panel.addView(row);
+    }
+
     private void buildUi() {
         FrameLayout root=new FrameLayout(this);
         root.setBackgroundColor(NAVY);
@@ -1688,10 +1751,22 @@ public class DocumentScannerActivity extends ComponentActivity {
         desc.setLineSpacing(dp(3),1f);
         desc.setPadding(dp(6),dp(12),dp(6),dp(12));
         center.addView(desc);
+        LinearLayout privacyRow=new LinearLayout(this);
+        privacyRow.setOrientation(LinearLayout.HORIZONTAL);
+        privacyRow.setGravity(Gravity.CENTER);
+        privacyRow.setPadding(0,dp(8),0,0);
         TextView privacy=text("Your scans stay on this device",12,GOLD,true);
         privacy.setGravity(Gravity.CENTER);
-        privacy.setPadding(0,dp(8),0,0);
-        center.addView(privacy);
+        privacyRow.addView(privacy);
+        TextView privacyInfo=text("ⓘ",18,GOLD,true);
+        privacyInfo.setGravity(Gravity.CENTER);
+        privacyInfo.setContentDescription("Document scanner privacy information");
+        privacyInfo.setBackground(bg(0xFF172640,GOLD,24));
+        LinearLayout.LayoutParams privacyInfoLp=new LinearLayout.LayoutParams(dp(30),dp(30));
+        privacyInfoLp.leftMargin=dp(8);
+        privacyRow.addView(privacyInfo,privacyInfoLp);
+        privacyInfo.setOnClickListener(v->showScannerPrivacyDetails());
+        center.addView(privacyRow);
         middle.addView(center,new ScrollView.LayoutParams(-1,-1));
         page.addView(middle,new LinearLayout.LayoutParams(-1,0,1f));
         LinearLayout actions=new LinearLayout(this);
