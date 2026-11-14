@@ -18,12 +18,12 @@ try{
 const response=await fetch('https://api.frankfurter.dev/v2/rate/'+encodeURIComponent(f.toLowerCase())+'/'+encodeURIComponent(t.toLowerCase()),{signal:controller.signal,headers:{Accept:'application/json'}});
 if(!response.ok)throw Error('Exchange-rate service returned '+response.status+'.');
 const data=await response.json(),rate=Number(data.rate),date=String(data.date||'');
-if(!Number.isFinite(rate)||rate<=0||!/^\\d{4}-\\d{2}-\\d{2}$/.test(date))throw Error('The exchange-rate service returned invalid data.');
+if(!Number.isFinite(rate)||rate<=0||!/^\d{4}-\d{2}-\d{2}$/.test(date))throw Error('The exchange-rate service returned invalid data.');
 rateData={rate,date,savedAt:Date.now()};
 try{localStorage.setItem(cacheKey,JSON.stringify(rateData));}catch(_){}
 }finally{clearTimeout(timeout);}
 }catch(networkError){
-try{const cached=JSON.parse(localStorage.getItem(cacheKey)||'null');if(cached&&Number.isFinite(cached.rate)&&cached.rate>0&&/^\\d{4}-\\d{2}-\\d{2}$/.test(cached.date)&&Date.now()-cached.savedAt<=7*24*60*60*1000){rateData=cached;usedCache=true;}}catch(_){}
+try{const cached=JSON.parse(localStorage.getItem(cacheKey)||'null');if(cached&&Number.isFinite(cached.rate)&&cached.rate>0&&/^\d{4}-\d{2}-\d{2}$/.test(cached.date)&&Date.now()-cached.savedAt<=7*24*60*60*1000){rateData=cached;usedCache=true;}}catch(_){}
 if(!rateData)throw Error(networkError.name==='AbortError'?'Exchange-rate request timed out. Please check your internet connection and try again.':'Unable to fetch exchange rates. Please check your internet connection and try again.');
 }
 const converted=a*rateData.rate;
