@@ -1551,3 +1551,201 @@ public class GpsCameraActivity extends ComponentActivity {
 EOF
 
 # Premium KeyDhan black-and-royal-gold camera layout with safe status-bar spacing and circular shutter.
+
+cat > "$PKG/DocumentScannerActivity.java" <<'EOF'
+package com.keydhan.app;
+
+import android.Manifest;
+import android.content.ContentValues;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.pdf.PdfDocument;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.view.Gravity;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
+import androidx.activity.ComponentActivity;
+import androidx.camera.core.CameraSelector;
+import androidx.camera.core.ImageCapture;
+import androidx.camera.core.ImageCaptureException;
+import androidx.camera.core.Preview;
+import androidx.camera.lifecycle.ProcessCameraProvider;
+import androidx.camera.view.PreviewView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import com.google.common.util.concurrent.ListenableFuture;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+
+public class DocumentScannerActivity extends ComponentActivity {
+    private static final int REQ_CAMERA=7301, REQ_IMPORT=7302;
+    private static final int NAVY=0xFF071228, GOLD=0xFFD2A952;
+    private final ArrayList<File> pages=new ArrayList<>();
+    private PreviewView previewView;
+    private ImageCapture capture;
+    private TextView count;
+    private LinearLayout thumbnails;
+    private String quality="Balanced";
+
+    @Override public void onCreate(Bundle b) {
+        super.onCreate(b);
+        getWindow().setStatusBarColor(NAVY);
+        getWindow().setNavigationBarColor(NAVY);
+        if(ContextCompat.checkSelfPermission(this,Manifest.permission.CAMERA)!=PackageManager.PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CAMERA},REQ_CAMERA);
+        else buildUi();
+    }
+    private android.graphics.drawable.GradientDrawable bg(int color,int stroke,int radius) {
+        android.graphics.drawable.GradientDrawable d=new android.graphics.drawable.GradientDrawable();
+        d.setColor(color); d.setCornerRadius(radius*getResources().getDisplayMetrics().density);
+        if(stroke!=0)d.setStroke((int)getResources().getDisplayMetrics().density,stroke);
+        return d;
+    }
+    private TextView text(String s,int size,int color,boolean bold) {
+        TextView t=new TextView(this); t.setText(s); t.setTextSize(size); t.setTextColor(color);
+        if(bold)t.setTypeface(null,android.graphics.Typeface.BOLD); return t;
+    }
+    private Button button(String s) {
+        Button b=new Button(this); b.setText(s); b.setTextColor(Color.WHITE); b.setTextSize(13);
+        b.setAllCaps(false); b.setBackground(bg(0xFF172640,GOLD,18)); return b;
+    }
+    private void buildUi() {
+        FrameLayout root=new FrameLayout(this); root.setBackgroundColor(Color.BLACK);
+        previewView=new PreviewView(this); previewView.setScaleType(PreviewView.ScaleType.FILL_CENTER);
+        root.addView(previewView,new FrameLayout.LayoutParams(-1,-1));
+        LinearLayout header=new LinearLayout(this); header.setOrientation(LinearLayout.VERTICAL);
+        header.setPadding(20,22,20,14); header.setBackground(bg(0xEE071228,GOLD,22));
+        header.addView(text("KeyDhan™  DOC SCANNER",21,Color.WHITE,true));
+        header.addView(text("Private • On-device processing",12,GOLD,true));
+        FrameLayout.LayoutParams hp=new FrameLayout.LayoutParams(-1,-2,Gravity.TOP);
+        hp.setMargins(14,18,14,0); root.addView(header,hp);
+
+        LinearLayout bottom=new LinearLayout(this); bottom.setOrientation(LinearLayout.VERTICAL);
+        bottom.setPadding(14,12,14,18); bottom.setBackground(bg(0xF2071228,GOLD,24));
+        LinearLayout top=new LinearLayout(this); top.setGravity(Gravity.CENTER_VERTICAL);
+        Button imp=button("＋ Import"), q=button("Quality: "+quality);
+        count=text("0 pages",13,Color.WHITE,true);
+        top.addView(imp,new LinearLayout.LayoutParams(0,48,1));
+        top.addView(q,new LinearLayout.LayoutParams(0,48,1)); top.addView(count);
+        bottom.addView(top);
+        thumbnails=new LinearLayout(this); thumbnails.setOrientation(LinearLayout.HORIZONTAL);
+        ScrollView sc=new ScrollView(this); sc.setHorizontalScrollBarEnabled(false); sc.addView(thumbnails);
+        bottom.addView(sc,new LinearLayout.LayoutParams(-1,82));
+        LinearLayout actions=new LinearLayout(this); actions.setGravity(Gravity.CENTER);
+        Button snap=button("●  Scan Page"), pdf=button("Export PDF");
+        snap.setTextSize(17); snap.setTextColor(NAVY); snap.setBackground(bg(GOLD,0xFFFFE7A8,32));
+        actions.addView(snap,new LinearLayout.LayoutParams(0,58,1.2f));
+        actions.addView(pdf,new LinearLayout.LayoutParams(0,58,1));
+        bottom.addView(actions);
+        root.addView(bottom,new FrameLayout.LayoutParams(-1,-2,Gravity.BOTTOM));
+        setContentView(root);
+        snap.setOnClickListener(v->takePage());
+        imp.setOnClickListener(v->pickImages());
+        q.setOnClickListener(v->{quality=quality.equals("Balanced")?"High":quality.equals("High")?"Small Size":"Balanced";q.setText("Quality: "+quality);});
+        pdf.setOnClickListener(v->makePdf());
+        startCamera();
+    }
+    private void startCamera() {
+        ListenableFuture<ProcessCameraProvider> f=ProcessCameraProvider.getInstance(this);
+        f.addListener(()->{try{
+            ProcessCameraProvider p=f.get(); Preview preview=new Preview.Builder().build();
+            preview.setSurfaceProvider(previewView.getSurfaceProvider());
+            capture=new ImageCapture.Builder().setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY).setJpegQuality(100).build();
+            p.unbindAll(); p.bindToLifecycle(this,CameraSelector.DEFAULT_BACK_CAMERA,preview,capture);
+        }catch(Exception e){Toast.makeText(this,"Camera unavailable: "+e.getMessage(),Toast.LENGTH_LONG).show();}},ContextCompat.getMainExecutor(this));
+    }
+    private void takePage() {
+        if(capture==null){Toast.makeText(this,"Camera is starting",Toast.LENGTH_SHORT).show();return;}
+        File file=new File(getCacheDir(),"scan_"+System.currentTimeMillis()+".jpg");
+        capture.takePicture(new ImageCapture.OutputFileOptions.Builder(file).build(),ContextCompat.getMainExecutor(this),
+            new ImageCapture.OnImageSavedCallback(){
+                @Override public void onImageSaved(ImageCapture.OutputFileResults r){pages.add(file);refresh();}
+                @Override public void onError(ImageCaptureException e){Toast.makeText(DocumentScannerActivity.this,"Scan failed: "+e.getMessage(),Toast.LENGTH_LONG).show();}
+            });
+    }
+    private void pickImages() {
+        Intent i=new Intent(Intent.ACTION_OPEN_DOCUMENT); i.setType("image/*");
+        i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true); i.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(i,REQ_IMPORT);
+    }
+    @Override protected void onActivityResult(int req,int result,Intent data) {
+        super.onActivityResult(req,result,data);
+        if(req!=REQ_IMPORT||result!=RESULT_OK||data==null)return;
+        try{
+            if(data.getClipData()!=null)for(int n=0;n<data.getClipData().getItemCount();n++)copyImage(data.getClipData().getItemAt(n).getUri());
+            else if(data.getData()!=null)copyImage(data.getData());
+            refresh();
+        }catch(Exception e){Toast.makeText(this,"Import failed: "+e.getMessage(),Toast.LENGTH_LONG).show();}
+    }
+    private void copyImage(Uri uri)throws Exception {
+        File f=new File(getCacheDir(),"import_"+System.currentTimeMillis()+".jpg");
+        try(InputStream in=getContentResolver().openInputStream(uri);FileOutputStream out=new FileOutputStream(f)){
+            byte[] b=new byte[8192];int n;while((n=in.read(b))>0)out.write(b,0,n);
+        } pages.add(f);
+    }
+    private void refresh() {
+        count.setText(pages.size()+" pages"); thumbnails.removeAllViews();
+        for(int i=0;i<pages.size();i++){final int at=i;ImageView v=new ImageView(this);
+            Bitmap b=BitmapFactory.decodeFile(pages.get(i).getAbsolutePath());
+            if(b!=null){v.setImageBitmap(Bitmap.createScaledBitmap(b,64,70,true));b.recycle();}
+            v.setScaleType(ImageView.ScaleType.CENTER_CROP);v.setPadding(3,3,3,3);
+            v.setOnClickListener(x->{pages.remove(at).delete();refresh();});
+            thumbnails.addView(v,new LinearLayout.LayoutParams(72,76));
+        }
+    }
+    private Bitmap prepare(File f)throws Exception {
+        BitmapFactory.Options bounds=new BitmapFactory.Options();bounds.inJustDecodeBounds=true;
+        BitmapFactory.decodeFile(f.getAbsolutePath(),bounds);
+        int max=quality.equals("High")?2800:quality.equals("Balanced")?2200:1500;
+        int sample=1;while(Math.max(bounds.outWidth/sample,bounds.outHeight/sample)>max*1.4)sample*=2;
+        BitmapFactory.Options opts=new BitmapFactory.Options();opts.inSampleSize=sample;
+        Bitmap src=BitmapFactory.decodeFile(f.getAbsolutePath(),opts);
+        if(src==null)throw new Exception("Unable to read scan");
+        Bitmap out=Bitmap.createBitmap(src.getWidth(),src.getHeight(),Bitmap.Config.ARGB_8888);
+        android.graphics.Canvas canvas=new android.graphics.Canvas(out);Paint paint=new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
+        if(quality.equals("Small Size")){android.graphics.ColorMatrix m=new android.graphics.ColorMatrix();m.setSaturation(0);paint.setColorFilter(new android.graphics.ColorMatrixColorFilter(m));}
+        canvas.drawBitmap(src,0,0,paint);src.recycle();return out;
+    }
+    private void makePdf() {
+        if(pages.isEmpty()){Toast.makeText(this,"Scan or import at least one page",Toast.LENGTH_SHORT).show();return;}
+        PdfDocument pdf=new PdfDocument();
+        try{
+            int n=1;for(File f:pages){Bitmap b=prepare(f);PdfDocument.Page page=pdf.startPage(new PdfDocument.PageInfo.Builder(b.getWidth(),b.getHeight(),n++).create());
+                page.getCanvas().drawBitmap(b,0,0,new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG));pdf.finishPage(page);b.recycle();}
+            String name="KeyDhan_Scan_"+new SimpleDateFormat("yyyyMMdd_HHmmss",Locale.US).format(new Date())+".pdf";
+            ContentValues v=new ContentValues();v.put(MediaStore.Downloads.DISPLAY_NAME,name);v.put(MediaStore.Downloads.MIME_TYPE,"application/pdf");
+            v.put(MediaStore.Downloads.RELATIVE_PATH,Environment.DIRECTORY_DOCUMENTS+"/KeyDhan Scanner");
+            Uri uri=getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI,v);if(uri==null)throw new Exception("Cannot create PDF");
+            try(OutputStream out=getContentResolver().openOutputStream(uri)){pdf.writeTo(out);}
+            Toast.makeText(this,"Saved in Documents/KeyDhan Scanner",Toast.LENGTH_LONG).show();
+            Intent share=new Intent(Intent.ACTION_SEND);share.setType("application/pdf");share.putExtra(Intent.EXTRA_STREAM,uri);
+            share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);startActivity(Intent.createChooser(share,"Share scanned PDF"));
+        }catch(Exception e){Toast.makeText(this,"PDF export failed: "+e.getMessage(),Toast.LENGTH_LONG).show();}
+        finally{pdf.close();}
+    }
+    @Override public void onRequestPermissionsResult(int r,String[] p,int[] g){
+        super.onRequestPermissionsResult(r,p,g);
+        if(r==REQ_CAMERA&&g.length>0&&g[0]==PackageManager.PERMISSION_GRANTED)buildUi();
+        else if(r==REQ_CAMERA){Toast.makeText(this,"Camera permission is required",Toast.LENGTH_LONG).show();finish();}
+    }
+    @Override protected void onDestroy(){super.onDestroy();for(File f:pages)if(f.exists())f.delete();}
+}
+EOF
