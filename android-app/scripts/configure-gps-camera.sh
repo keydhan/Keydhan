@@ -2131,10 +2131,10 @@ public class DocumentScannerActivity extends ComponentActivity {
                 page.getCanvas().drawBitmap(b,0,0,new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG));pdf.finishPage(page);b.recycle();}
             String name="KeyDhan_Scan_"+new SimpleDateFormat("yyyyMMdd_HHmmss",Locale.US).format(new Date())+".pdf";
             ContentValues v=new ContentValues();v.put(MediaStore.Downloads.DISPLAY_NAME,name);v.put(MediaStore.Downloads.MIME_TYPE,"application/pdf");
-            v.put(MediaStore.Downloads.RELATIVE_PATH,Environment.DIRECTORY_DOWNLOADS+"/KeyDhan Scanner");
+            v.put(MediaStore.Downloads.RELATIVE_PATH,Environment.DIRECTORY_DOCUMENTS+"/KeyDhan Scanner");
             Uri uri=getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI,v);if(uri==null)throw new Exception("Cannot create PDF");
             try(OutputStream out=getContentResolver().openOutputStream(uri)){pdf.writeTo(out);}
-            Toast.makeText(this,"Saved in Downloads/KeyDhan Scanner",Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"Saved in Documents/KeyDhan Scanner",Toast.LENGTH_LONG).show();
             Intent share=new Intent(Intent.ACTION_SEND);share.setType("application/pdf");share.putExtra(Intent.EXTRA_STREAM,uri);
             share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);startActivity(Intent.createChooser(share,"Share scanned PDF"));
         }catch(Exception e){Toast.makeText(this,"PDF export failed: "+e.getMessage(),Toast.LENGTH_LONG).show();}
