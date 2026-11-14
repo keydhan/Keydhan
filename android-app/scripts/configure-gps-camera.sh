@@ -1830,16 +1830,15 @@ public class DocumentScannerActivity extends ComponentActivity {
         }
         if(quality.equals("High Compression")){
             // Strong document compression: downscale to 1100px and threshold to clean black/white.
-            Bitmap compact=Bitmap.createBitmap(edited.getWidth(),edited.getHeight(),Bitmap.Config.ALPHA_8);
+            Bitmap compact=Bitmap.createBitmap(edited.getWidth(),edited.getHeight(),Bitmap.Config.RGB_565);
             int w=edited.getWidth(),h=edited.getHeight();
             int[] pixels=new int[w*h];edited.getPixels(pixels,0,w,0,0,w,h);
-            byte[] alpha=new byte[w*h];
             for(int i=0;i<pixels.length;i++){
                 int c=pixels[i];
                 int gray=(android.graphics.Color.red(c)*30+android.graphics.Color.green(c)*59+android.graphics.Color.blue(c)*11)/100;
-                alpha[i]=(byte)(gray>=178?255:0);
+                pixels[i]=gray>=178?Color.WHITE:Color.BLACK;
             }
-            compact.copyPixelsFromBuffer(java.nio.ByteBuffer.wrap(alpha));
+            compact.setPixels(pixels,0,w,0,0,w,h);
             edited.recycle();edited=compact;
         }
         return edited;
