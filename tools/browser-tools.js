@@ -15,7 +15,7 @@ let rateData=null,usedCache=false;
 try{
 const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),12000);
 try{
-const response=await fetch('https://api.frankfurter.dev/v2/rate/'+encodeURIComponent(f.toLowerCase())+'/'+encodeURIComponent(t.toLowerCase()),{signal:controller.signal,headers:{Accept:'application/json'}});
+const response=await fetch('https://api.frankfurter.dev/v2/rate/'+encodeURIComponent(f.toUpperCase())+'/'+encodeURIComponent(t.toUpperCase()),{signal:controller.signal,headers:{Accept:'application/json'}});
 if(!response.ok)throw Error('Exchange-rate service returned '+response.status+'.');
 const data=await response.json(),rate=Number(data.rate),date=String(data.date||'');
 if(!Number.isFinite(rate)||rate<=0||!/^\d{4}-\d{2}-\d{2}$/.test(date))throw Error('The exchange-rate service returned invalid data.');
