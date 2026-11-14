@@ -1821,7 +1821,7 @@ public class DocumentScannerActivity extends ComponentActivity {
     private Bitmap prepare(File f)throws Exception {
         Bitmap edited=renderPage(f);
         if(edited==null)throw new Exception("Unable to read edited page");
-        int max=quality.equals("High")?2800:quality.equals("Balanced")?2200:1400;
+        int max=quality.equals("High")?2800:quality.equals("Balanced")?2200:1100;
         int longest=Math.max(edited.getWidth(),edited.getHeight());
         if(longest>max){
             float scale=(float)max/longest;
@@ -1829,12 +1829,17 @@ public class DocumentScannerActivity extends ComponentActivity {
             edited.recycle();edited=smaller;
         }
         if(quality.equals("High Compression")){
-            // Grayscale + RGB_565 reduces pixel storage while keeping document text readable.
-            Bitmap compact=Bitmap.createBitmap(edited.getWidth(),edited.getHeight(),Bitmap.Config.RGB_565);
-            Paint p=new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
-            android.graphics.ColorMatrix cm=new android.graphics.ColorMatrix();cm.setSaturation(0);
-            p.setColorFilter(new android.graphics.ColorMatrixColorFilter(cm));
-            new android.graphics.Canvas(compact).drawBitmap(edited,0,0,p);
+            // Strong document compression: downscale to 1100px and threshold to clean black/white.
+            Bitmap compact=Bitmap.createBitmap(edited.getWidth(),edited.getHeight(),Bitmap.Config.ALPHA_8);
+            int w=edited.getWidth(),h=edited.getHeight();
+            int[] pixels=new int[w*h];edited.getPixels(pixels,0,w,0,0,w,h);
+            byte[] alpha=new byte[w*h];
+            for(int i=0;i<pixels.length;i++){
+                int c=pixels[i];
+                int gray=(android.graphics.Color.red(c)*30+android.graphics.Color.green(c)*59+android.graphics.Color.blue(c)*11)/100;
+                alpha[i]=(byte)(gray>=178?255:0);
+            }
+            compact.copyPixelsFromBuffer(java.nio.ByteBuffer.wrap(alpha));
             edited.recycle();edited=compact;
         }
         return edited;
@@ -2085,10 +2090,19 @@ public class DocumentScannerActivity extends ComponentActivity {
                     float scale=Math.min(1f,(float)max/Math.max(sourceWidth,sourceHeight));
                     int width=Math.max(1,Math.round(sourceWidth*scale));
                     int height=Math.max(1,Math.round(sourceHeight*scale));
-                    Bitmap.Config config=quality.equals("High Compression")?Bitmap.Config.RGB_565:Bitmap.Config.ARGB_8888;
+                    Bitmap.Config config=quality.equals("High Compression")?Bitmap.Config.ARGB_8888:Bitmap.Config.ARGB_8888;
                     Bitmap bitmap=Bitmap.createBitmap(width,height,config);
                     src.render(bitmap,null,null,android.graphics.pdf.PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
                     src.close();
+                    if(quality.equals("High Compression")){
+                        int[] pixels=new int[width*height];bitmap.getPixels(pixels,0,width,0,0,width,height);
+                        for(int k=0;k<pixels.length;k++){
+                            int c=pixels[k];
+                            int gray=(android.graphics.Color.red(c)*30+android.graphics.Color.green(c)*59+android.graphics.Color.blue(c)*11)/100;
+                            pixels[k]=gray>=178?Color.WHITE:Color.BLACK;
+                        }
+                        bitmap.setPixels(pixels,0,width,0,0,width,height);
+                    }
                     PdfDocument.Page page=output.startPage(new PdfDocument.PageInfo.Builder(width,height,i+1).create());
                     page.getCanvas().drawBitmap(bitmap,0,0,new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG));
                     addKeyDhanWatermark(page.getCanvas(),width,height);
