@@ -47,6 +47,14 @@ activity='''        <activity
 '''
 if "GpsCameraActivity" not in s:
     s=s.replace("</application>",activity+"</application>")
+scanner_activity='''        <activity
+            android:name="com.keydhan.app.DocumentScannerActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Material.Light.NoActionBar" />
+'''
+if "DocumentScannerActivity" not in s:
+    s=s.replace("</application>",scanner_activity+"</application>")
 p.write_text(s)
 PY
 rm -f "$APP/src/main/AndroidManifest.xml.tmp"
@@ -84,6 +92,24 @@ public class MainActivity extends BridgeActivity {
         gpsButton.setOnClickListener(v ->
             startActivity(new Intent(MainActivity.this, GpsCameraActivity.class))
         );
+        TextView scannerButton = new TextView(this);
+        scannerButton.setText("▤  Doc Scanner");
+        scannerButton.setTextColor(Color.WHITE);
+        scannerButton.setTextSize(14);
+        scannerButton.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        scannerButton.setGravity(Gravity.CENTER);
+        scannerButton.setPadding(22, 14, 22, 14);
+        scannerButton.setBackgroundColor(Color.rgb(10, 40, 88));
+        scannerButton.setElevation(12f);
+        scannerButton.setOnClickListener(v ->
+            startActivity(new Intent(MainActivity.this, DocumentScannerActivity.class))
+        );
+        FrameLayout.LayoutParams scannerParams = new FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT,
+            Gravity.BOTTOM | Gravity.START
+        );
+        scannerParams.setMargins(18, 0, 0, 96);
+        addContentView(scannerButton, scannerParams);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.WRAP_CONTENT,
             FrameLayout.LayoutParams.WRAP_CONTENT,
