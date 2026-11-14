@@ -1022,8 +1022,9 @@ public class GpsCameraActivity extends ComponentActivity {
             MediaStore.Images.Media.DISPLAY_NAME,
             MediaStore.Images.Media.RELATIVE_PATH
         };
-        String selection = MediaStore.Images.Media.RELATIVE_PATH + "=?";
-        String[] selectionArgs = {"Pictures/KeyDhan GPS Camera/"};
+        String selection = MediaStore.Images.Media.RELATIVE_PATH + " LIKE ?";
+        // Recovery scan: include the public GPS Camera folder even if Android/OEM moved its parent directory.
+        String[] selectionArgs = {"%KeyDhan GPS Camera/%"};
         try (Cursor cursor = getContentResolver().query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 projection, selection, selectionArgs,
@@ -1966,8 +1967,8 @@ public class DocumentScannerActivity extends ComponentActivity {
         String folder=Environment.DIRECTORY_DOWNLOADS+"/KeyDhan Scanner";
         String[] projection={MediaStore.Downloads._ID,MediaStore.Downloads.DISPLAY_NAME,MediaStore.Downloads.DATE_ADDED};
         try(Cursor c=getContentResolver().query(MediaStore.Downloads.EXTERNAL_CONTENT_URI,projection,
-                MediaStore.Downloads.RELATIVE_PATH+"=? AND "+MediaStore.Downloads.MIME_TYPE+"=?",
-                new String[]{folder+"/","application/pdf"},MediaStore.Downloads.DATE_ADDED+" DESC")) {
+                MediaStore.Downloads.RELATIVE_PATH+" LIKE ? AND "+MediaStore.Downloads.MIME_TYPE+"=?",
+                new String[]{"%KeyDhan Scanner/%","application/pdf"},MediaStore.Downloads.DATE_ADDED+" DESC")) {
             if(c!=null) while(c.moveToNext()) {
                 long id=c.getLong(0); String name=c.getString(1);
                 files.add(ContentUris.withAppendedId(MediaStore.Downloads.EXTERNAL_CONTENT_URI,id));
