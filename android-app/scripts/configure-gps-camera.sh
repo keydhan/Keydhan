@@ -1621,10 +1621,15 @@ public class DocumentScannerActivity extends ComponentActivity {
         LinearLayout headerRow=new LinearLayout(this);
         headerRow.setOrientation(LinearLayout.HORIZONTAL);
         headerRow.setGravity(Gravity.CENTER_VERTICAL);
-        TextView back=text("‹",36,GOLD,true);
+        // Clear circular gold-outline back control for the Document Scanner header.
+        TextView back=text("←",27,GOLD,true);
         back.setGravity(Gravity.CENTER);
-        back.setBackground(bg(0xFF172640,GOLD,14));
-        LinearLayout.LayoutParams backLp=new LinearLayout.LayoutParams(dp(42),dp(42));
+        back.setIncludeFontPadding(false);
+        back.setContentDescription("Back");
+        back.setBackground(bg(0xFF172640,GOLD,24));
+        back.setClickable(true);
+        back.setFocusable(true);
+        LinearLayout.LayoutParams backLp=new LinearLayout.LayoutParams(dp(44),dp(44));
         backLp.rightMargin=dp(12);
         headerRow.addView(back,backLp);
         LinearLayout brand=new LinearLayout(this);
