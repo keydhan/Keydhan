@@ -5,7 +5,29 @@ const say=s=>{if(status)status.textContent=s};
 if(tool==='unit-converter'){const sets={length:[['m','Meters'],['km','Kilometers'],['cm','Centimeters'],['ft','Feet'],['in','Inches'],['mi','Miles']],weight:[['kg','Kilograms'],['g','Grams'],['lb','Pounds'],['oz','Ounces']],volume:[['l','Liters'],['ml','Milliliters'],['gal','Gallons'],['cup','Cups']],temperature:[['C','Celsius'],['F','Fahrenheit'],['K','Kelvin']]};const update=()=>{const opts=sets[$('category').value];$('from').innerHTML=opts.map((x,i)=>'<option value="'+x[0]+'">'+x[1]+'</option>').join('');$('to').innerHTML=opts.map((x,i)=>'<option value="'+x[0]+'" '+(i===1?'selected':'')+'>'+x[1]+'</option>').join('');};$('category').addEventListener('change',update);update();}
 const btn=$('run');if(btn)btn.addEventListener('click',async()=>{
 try{
-if(tool==='currency-converter'){const a=Number($('amount').value),f=$('from').value,t=$('to').value;if(!Number.isFinite(a)||a<0)throw Error('Enter a valid amount.');const r=await fetch('https://api.frankfurter.app/latest?from='+f+'&to='+t);if(!r.ok)throw Error('Exchange rates unavailable.');const d=await r.json(),v=f===t?a:a*d.rates[t];say(a+' '+f+' = '+v.toLocaleString(undefined,{maximumFractionDigits:4})+' '+t+' · Rate date: '+d.date);}
+if(tool==='currency-converter'){
+const amountInput=$('amount').value.trim(),a=Number(amountInput),f=$('from').value,t=$('to').value;
+if(!amountInput||!Number.isFinite(a)||a<0)throw Error('Enter a valid amount.');
+if(f===t){say(a.toLocaleString(undefined,{maximumFractionDigits:4})+' '+f+' = '+a.toLocaleString(undefined,{maximumFractionDigits:4})+' '+t+' · Rate: 1');return;}
+const cacheKey='keydhan-currency-rate-v1:'+f+':'+t;
+let rateData=null,usedCache=false;
+try{
+const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),12000);
+try{
+const response=await fetch('https://api.frankfurter.dev/v2/rate/'+encodeURIComponent(f.toLowerCase())+'/'+encodeURIComponent(t.toLowerCase()),{signal:controller.signal,headers:{Accept:'application/json'}});
+if(!response.ok)throw Error('Exchange-rate service returned '+response.status+'.');
+const data=await response.json(),rate=Number(data.rate),date=String(data.date||'');
+if(!Number.isFinite(rate)||rate<=0||!/^\\d{4}-\\d{2}-\\d{2}$/.test(date))throw Error('The exchange-rate service returned invalid data.');
+rateData={rate,date,savedAt:Date.now()};
+try{localStorage.setItem(cacheKey,JSON.stringify(rateData));}catch(_){}
+}finally{clearTimeout(timeout);}
+}catch(networkError){
+try{const cached=JSON.parse(localStorage.getItem(cacheKey)||'null');if(cached&&Number.isFinite(cached.rate)&&cached.rate>0&&/^\\d{4}-\\d{2}-\\d{2}$/.test(cached.date)&&Date.now()-cached.savedAt<=7*24*60*60*1000){rateData=cached;usedCache=true;}}catch(_){}
+if(!rateData)throw Error(networkError.name==='AbortError'?'Exchange-rate request timed out. Please check your internet connection and try again.':'Unable to fetch exchange rates. Please check your internet connection and try again.');
+}
+const converted=a*rateData.rate;
+say(a.toLocaleString(undefined,{maximumFractionDigits:4})+' '+f+' = '+converted.toLocaleString(undefined,{maximumFractionDigits:4})+' '+t+' · Rate: '+rateData.rate.toLocaleString(undefined,{maximumSignificantDigits:8})+' · Rate date: '+rateData.date+(usedCache?' · Saved rate (offline)':''));
+}
 if(tool==='text-to-speech'){const s=$('text').value.trim();if(!s)throw Error('Enter text first.');if(!window.speechSynthesis)throw Error('Speech is not supported in this browser.');speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(s);u.rate=Number($('rate').value)||1;const v=speechSynthesis.getVoices().find(x=>x.name===$('voice').value);if(v)u.voice=v;speechSynthesis.speak(u);say('Speaking using your browser.');}
 if(tool==='scientific-calculator'){const s=$('expr').value.trim();if(!s)throw Error('Enter an expression.');if(!window.math)throw Error('Calculator engine is loading; refresh and try again.');say('Result: '+math.evaluate(s,{pi:Math.PI,e:Math.E}).toString());}
 if(tool==='age-calculator'){const d=new Date($('dob').value+'T00:00:00'),a=new Date($('asof').value+'T00:00:00');if(!$('dob').value||!$('asof').value||isNaN(d)||d>a)throw Error('Enter valid dates.');let y=a.getFullYear()-d.getFullYear(),m=a.getMonth()-d.getMonth(),day=a.getDate()-d.getDate();if(day<0){m--;day+=new Date(a.getFullYear(),a.getMonth(),0).getDate();}if(m<0){y--;m+=12;}say('Age: '+y+' years, '+m+' months and '+day+' days.');}
