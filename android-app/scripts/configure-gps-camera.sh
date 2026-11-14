@@ -1829,17 +1829,12 @@ public class DocumentScannerActivity extends ComponentActivity {
             edited.recycle();edited=smaller;
         }
         if(quality.equals("High Compression")){
-            // Strong document compression: downscale to 1100px and threshold to clean black/white.
-            Bitmap compact=Bitmap.createBitmap(edited.getWidth(),edited.getHeight(),Bitmap.Config.RGB_565);
-            int w=edited.getWidth(),h=edited.getHeight();
-            int[] pixels=new int[w*h];edited.getPixels(pixels,0,w,0,0,w,h);
-            for(int i=0;i<pixels.length;i++){
-                int c=pixels[i];
-                int gray=(android.graphics.Color.red(c)*30+android.graphics.Color.green(c)*59+android.graphics.Color.blue(c)*11)/100;
-                pixels[i]=gray>=178?Color.WHITE:Color.BLACK;
-            }
-            compact.setPixels(pixels,0,w,0,0,w,h);
-            edited.recycle();edited=compact;
+            // JPEG round-trip compresses pixels while preserving the selected color/B&W filter.
+            java.io.ByteArrayOutputStream compressed=new java.io.ByteArrayOutputStream();
+            edited.compress(Bitmap.CompressFormat.JPEG,52,compressed);
+            byte[] bytes=compressed.toByteArray();
+            Bitmap compact=BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+            if(compact!=null){edited.recycle();edited=compact;}
         }
         return edited;
     }
@@ -2094,13 +2089,12 @@ public class DocumentScannerActivity extends ComponentActivity {
                     src.render(bitmap,null,null,android.graphics.pdf.PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
                     src.close();
                     if(quality.equals("High Compression")){
-                        int[] pixels=new int[width*height];bitmap.getPixels(pixels,0,width,0,0,width,height);
-                        for(int k=0;k<pixels.length;k++){
-                            int c=pixels[k];
-                            int gray=(android.graphics.Color.red(c)*30+android.graphics.Color.green(c)*59+android.graphics.Color.blue(c)*11)/100;
-                            pixels[k]=gray>=178?Color.WHITE:Color.BLACK;
-                        }
-                        bitmap.setPixels(pixels,0,width,0,0,width,height);
+                        // Preserve the source page's color appearance; only reduce JPEG quality.
+                        java.io.ByteArrayOutputStream compressed=new java.io.ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG,52,compressed);
+                        byte[] bytes=compressed.toByteArray();
+                        Bitmap compact=BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+                        if(compact!=null){bitmap.recycle();bitmap=compact;}
                     }
                     PdfDocument.Page page=output.startPage(new PdfDocument.PageInfo.Builder(width,height,i+1).create());
                     page.getCanvas().drawBitmap(bitmap,0,0,new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG));
