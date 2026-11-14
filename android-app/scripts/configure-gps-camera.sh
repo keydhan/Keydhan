@@ -310,19 +310,25 @@ public class GpsCameraActivity extends ComponentActivity {
                 super.onDraw(canvas);
                 float d = getResources().getDisplayMetrics().density;
                 float cx = getWidth()/2f, cy = getHeight()/2f;
-                p.setColor(Color.WHITE); p.setStyle(Paint.Style.STROKE);
-                p.setStrokeWidth(2.4f*d); p.setStrokeCap(Paint.Cap.ROUND); p.setStrokeJoin(Paint.Join.ROUND);
+                p.setColor(GOLD); p.setStyle(Paint.Style.STROKE);
+                p.setStrokeWidth(3.2f*d); p.setStrokeCap(Paint.Cap.ROUND); p.setStrokeJoin(Paint.Join.ROUND);
                 Path a = new Path();
-                a.moveTo(cx+9*d,cy); a.lineTo(cx-9*d,cy);
-                a.moveTo(cx-9*d,cy); a.lineTo(cx-1*d,cy-7*d);
-                a.moveTo(cx-9*d,cy); a.lineTo(cx-1*d,cy+7*d);
+                a.moveTo(cx+10*d,cy); a.lineTo(cx-10*d,cy);
+                a.moveTo(cx-10*d,cy); a.lineTo(cx-2*d,cy-7*d);
+                a.moveTo(cx-10*d,cy); a.lineTo(cx-2*d,cy+7*d);
                 canvas.drawPath(a,p);
             }
         };
-        exit.setBackground(shape(0xAA172640, GOLD, 28));
+        exit.setBackground(shape(0xFF172640, GOLD, 22));
         exit.setContentDescription("Back");
+        exit.setClickable(true);
+        exit.setFocusable(true);
         exit.setOnClickListener(v -> finish());
-        header.addView(exit, new LinearLayout.LayoutParams(68, 68));
+        LinearLayout.LayoutParams exitParams = new LinearLayout.LayoutParams(
+            (int)(44*getResources().getDisplayMetrics().density),
+            (int)(44*getResources().getDisplayMetrics().density));
+        exitParams.rightMargin = (int)(14*getResources().getDisplayMetrics().density);
+        header.addView(exit, exitParams);
 
         LinearLayout brand = new LinearLayout(this);
         brand.setOrientation(LinearLayout.VERTICAL);
