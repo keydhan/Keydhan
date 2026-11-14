@@ -358,52 +358,53 @@ public class GpsCameraActivity extends ComponentActivity {
             private final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
             @Override protected void onDraw(Canvas canvas) {
                 super.onDraw(canvas);
-                // Scale artwork to the fixed legacy 74px control footprint,
-                // so high-density phones do not make the switch button oversized.
+                // Keep the control at its original 74px footprint on every density.
                 float d = Math.min(getWidth(), getHeight()) / 74f;
                 float cx = getWidth()/2f, cy = getHeight()/2f;
-                float radius = 18f*d;
 
-                // Deep navy inset and two balanced circular arrow strokes.
+                // Navy inset leaves generous breathing room around the arrows.
                 p.setStyle(Paint.Style.FILL);
                 p.setColor(NAVY);
                 canvas.drawCircle(cx, cy, 28.5f*d, p);
 
-                p.setColor(0xFFFFE7A0);
+                // Smaller, separated circular arrows: one pearl-white, one champagne-gold.
+                float radius = 14.5f*d;
+                RectF orbit = new RectF(cx-radius, cy-radius, cx+radius, cy+radius);
                 p.setStyle(Paint.Style.STROKE);
-                p.setStrokeWidth(3.0f*d);
+                p.setStrokeWidth(2.35f*d);
                 p.setStrokeCap(Paint.Cap.ROUND);
                 p.setStrokeJoin(Paint.Join.ROUND);
-                RectF orbit = new RectF(cx-radius, cy-radius, cx+radius, cy+radius);
-                canvas.drawArc(orbit, 135f, 200f, false, p);
-                canvas.drawArc(orbit, 315f, 200f, false, p);
 
-                // Arrowheads are tangent-aligned to their arc ends, so they look
-                // like two continuous rotating arrows rather than detached triangles.
-                p.setStyle(Paint.Style.FILL);
+                float[] starts = {135f, 315f};
+                int[] arrowColors = {0xFFFFF8E8, 0xFFFFD978};
                 float[] ends = {335f, 155f};
-                for (float angle : ends) {
-                    double radians = Math.toRadians(angle);
+                for (int i = 0; i < 2; i++) {
+                    p.setColor(arrowColors[i]);
+                    p.setStyle(Paint.Style.STROKE);
+                    canvas.drawArc(orbit, starts[i], 200f, false, p);
+
+                    double radians = Math.toRadians(ends[i]);
                     float ex = cx + radius*(float)Math.cos(radians);
                     float ey = cy + radius*(float)Math.sin(radians);
-                    double tangent = Math.toRadians(angle + 90f);
+                    double tangent = Math.toRadians(ends[i] + 90f);
                     float tx = (float)Math.cos(tangent), ty = (float)Math.sin(tangent);
                     float nx = -ty, ny = tx;
-                    float back = 8.5f*d, halfWidth = 5.2f*d;
+                    float back = 6.5f*d, halfWidth = 3.8f*d;
                     Path arrow = new Path();
                     arrow.moveTo(ex, ey);
                     arrow.lineTo(ex - tx*back + nx*halfWidth, ey - ty*back + ny*halfWidth);
                     arrow.lineTo(ex - tx*back - nx*halfWidth, ey - ty*back - ny*halfWidth);
                     arrow.close();
+                    p.setStyle(Paint.Style.FILL);
                     canvas.drawPath(arrow, p);
                 }
             }
         };
         GradientDrawable flipRing = new GradientDrawable(
             GradientDrawable.Orientation.TL_BR,
-            new int[]{0xFFFFF3C7, 0xFFE2B84F, 0xFFB98532});
+            new int[]{0xFFFFF6D8, 0xFFE2B84F, 0xFFB98532});
         flipRing.setShape(GradientDrawable.OVAL);
-        flipRing.setStroke((int)(1.2f * getResources().getDisplayMetrics().density), 0xFFFFE7A0);
+        flipRing.setStroke((int)(1.2f * getResources().getDisplayMetrics().density), 0xFFFFF0C2);
         flip.setBackground(flipRing);
         flip.setContentDescription("Switch front and rear camera");
         flip.setOnClickListener(v -> selectCamera(!useFrontCamera));
