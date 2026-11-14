@@ -9,6 +9,25 @@
     }
 
     const path = window.location.pathname.replace(/\/+$/, "") || "/";
+    // Add a reliable return link to every individual Free Tool page (including future tools using the shared header).
+    if (path.startsWith("/tools/") && path !== "/tools") {
+      const toolsWrap = document.querySelector(".tools-wrap");
+      if (toolsWrap && !document.querySelector(".kd-tools-back")) {
+        const back = document.createElement("a");
+        back.className = "kd-tools-back";
+        back.href = "/tools/";
+        back.setAttribute("aria-label", "Back to Free Tools");
+        back.innerHTML = '<span aria-hidden="true">←</span><span>Back to Free Tools</span>';
+        toolsWrap.insertBefore(back, toolsWrap.firstChild);
+        if (!document.getElementById("kd-tools-back-style")) {
+          const backStyle = document.createElement("style");
+          backStyle.id = "kd-tools-back-style";
+          backStyle.textContent = '.kd-tools-back{display:inline-flex;align-items:center;gap:9px;min-height:42px;margin:0 0 18px;padding:10px 16px;border:1px solid rgba(212,175,55,.38);border-radius:999px;background:linear-gradient(135deg,rgba(16,34,56,.96),rgba(6,15,28,.98));color:#f0d36b;text-decoration:none;font-size:13px;font-weight:750;box-shadow:0 8px 22px rgba(0,0,0,.18);transition:transform .18s,border-color .18s,background .18s}.kd-tools-back span:first-child{font-size:19px;line-height:1}.kd-tools-back:hover,.kd-tools-back:focus-visible{transform:translateX(-2px);border-color:#e5c75a;background:linear-gradient(135deg,#142943,#0a1729);outline:none}.kd-tools-back:focus-visible{box-shadow:0 0 0 3px rgba(212,175,55,.2)}';
+          document.head.appendChild(backStyle);
+        }
+      }
+    }
+
     const groups = [
       { title: "Explore", links: [
         { label: "Home", href: "/", icon: "⌂", match: path === "/" },
