@@ -1626,11 +1626,14 @@ public class DocumentScannerActivity extends ComponentActivity {
         back.setGravity(Gravity.CENTER);
         back.setIncludeFontPadding(false);
         back.setContentDescription("Back");
-        back.setBackground(bg(0xFF172640,GOLD,24));
+        back.setBackground(bg(0xFF172640,GOLD,22));
         back.setClickable(true);
         back.setFocusable(true);
+        back.setMinimumWidth(dp(44));
+        back.setMinimumHeight(dp(44));
         LinearLayout.LayoutParams backLp=new LinearLayout.LayoutParams(dp(44),dp(44));
-        backLp.rightMargin=dp(12);
+        backLp.gravity=Gravity.CENTER_VERTICAL;
+        backLp.setMargins(0,0,dp(14),0);
         headerRow.addView(back,backLp);
         LinearLayout brand=new LinearLayout(this);
         brand.setOrientation(LinearLayout.VERTICAL);
