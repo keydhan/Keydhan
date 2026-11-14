@@ -1693,7 +1693,7 @@ public class DocumentScannerActivity extends ComponentActivity {
         auto.setOnClickListener(v->launchAutoScan());
         snap.setOnClickListener(v->takePage());
         imp.setOnClickListener(v->pickImages());
-        q.setOnClickListener(v->{quality=quality.equals("Balanced")?"High":quality.equals("High")?"Small Size":"Balanced";q.setText("Quality: "+quality);});
+        q.setOnClickListener(v->{quality=quality.equals("Balanced")?"High":quality.equals("High")?"High Compression":"Balanced";q.setText("Quality: "+quality);});
         pdf.setOnClickListener(v->makePdf());
         startCamera();
     }
@@ -1821,19 +1821,21 @@ public class DocumentScannerActivity extends ComponentActivity {
     private Bitmap prepare(File f)throws Exception {
         Bitmap edited=renderPage(f);
         if(edited==null)throw new Exception("Unable to read edited page");
-        int max=quality.equals("High")?2800:quality.equals("Balanced")?2200:1500;
+        int max=quality.equals("High")?2800:quality.equals("Balanced")?2200:1400;
         int longest=Math.max(edited.getWidth(),edited.getHeight());
         if(longest>max){
             float scale=(float)max/longest;
             Bitmap smaller=Bitmap.createScaledBitmap(edited,Math.max(1,(int)(edited.getWidth()*scale)),Math.max(1,(int)(edited.getHeight()*scale)),true);
             edited.recycle();edited=smaller;
         }
-        if(quality.equals("Small Size")){
-            Bitmap gray=Bitmap.createBitmap(edited.getWidth(),edited.getHeight(),Bitmap.Config.ARGB_8888);
+        if(quality.equals("High Compression")){
+            // Grayscale + RGB_565 reduces pixel storage while keeping document text readable.
+            Bitmap compact=Bitmap.createBitmap(edited.getWidth(),edited.getHeight(),Bitmap.Config.RGB_565);
             Paint p=new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
             android.graphics.ColorMatrix cm=new android.graphics.ColorMatrix();cm.setSaturation(0);
             p.setColorFilter(new android.graphics.ColorMatrixColorFilter(cm));
-            new android.graphics.Canvas(gray).drawBitmap(edited,0,0,p);edited.recycle();edited=gray;
+            new android.graphics.Canvas(compact).drawBitmap(edited,0,0,p);
+            edited.recycle();edited=compact;
         }
         return edited;
     }
@@ -2078,8 +2080,13 @@ public class DocumentScannerActivity extends ComponentActivity {
                 android.graphics.pdf.PdfRenderer renderer=new android.graphics.pdf.PdfRenderer(pfd)) {
                 for(int i=0;i<renderer.getPageCount();i++) {
                     android.graphics.pdf.PdfRenderer.Page src=renderer.openPage(i);
-                    int width=src.getWidth(),height=src.getHeight();
-                    Bitmap bitmap=Bitmap.createBitmap(width,height,Bitmap.Config.ARGB_8888);
+                    int sourceWidth=src.getWidth(),sourceHeight=src.getHeight();
+                    int max=quality.equals("High")?2800:quality.equals("Balanced")?2200:1400;
+                    float scale=Math.min(1f,(float)max/Math.max(sourceWidth,sourceHeight));
+                    int width=Math.max(1,Math.round(sourceWidth*scale));
+                    int height=Math.max(1,Math.round(sourceHeight*scale));
+                    Bitmap.Config config=quality.equals("High Compression")?Bitmap.Config.RGB_565:Bitmap.Config.ARGB_8888;
+                    Bitmap bitmap=Bitmap.createBitmap(width,height,config);
                     src.render(bitmap,null,null,android.graphics.pdf.PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
                     src.close();
                     PdfDocument.Page page=output.startPage(new PdfDocument.PageInfo.Builder(width,height,i+1).create());
