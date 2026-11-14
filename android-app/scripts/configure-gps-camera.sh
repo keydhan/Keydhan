@@ -942,155 +942,43 @@ public class GpsCameraActivity extends ComponentActivity {
         }
     }
 
-    // Return to the live camera from the in-app KeyDhan GPS photo album.
-    private void closeGpsPhotos() {
-        if (gpsPhotosBackCallback != null) gpsPhotosBackCallback.setEnabled(false);
-        buildCameraUi();
-        if (cameraProvider != null) bindSelectedCamera();
-    }
+    // Open the GPS Camera folder in Android's system document picker.
+    // The OS renders the folder; KeyDhan does not decode or hold a grid of thumbnails.
+    private static final int REQ_GPS_FOLDER_IMAGE = 412;
 
-    // Show only photos captured and saved by KeyDhan GPS Camera.
     private void openGpsPhotos() {
-        String imagePermission = android.os.Build.VERSION.SDK_INT >= 33
-            ? "android.permission.READ_MEDIA_IMAGES"
-            : Manifest.permission.READ_EXTERNAL_STORAGE;
-        if (ContextCompat.checkSelfPermission(this, imagePermission) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{imagePermission}, 411);
-            return;
-        }
-        if (gpsPhotosBackCallback == null) {
-            gpsPhotosBackCallback = new OnBackPressedCallback(false) {
-                @Override public void handleOnBackPressed() {
-                    closeGpsPhotos();
-                }
-            };
-            getOnBackPressedDispatcher().addCallback(this, gpsPhotosBackCallback);
-        }
-        gpsPhotosBackCallback.setEnabled(true);
-
-        final float density = getResources().getDisplayMetrics().density;
-        LinearLayout page = new LinearLayout(this);
-        page.setOrientation(LinearLayout.VERTICAL);
-        page.setPadding((int)(14*density), (int)(10*density),
-            (int)(14*density), (int)(12*density));
-        page.setBackgroundColor(NAVY);
-
-        LinearLayout top = new LinearLayout(this);
-        top.setGravity(Gravity.CENTER_VERTICAL);
-        top.setPadding(0, 0, 0, (int)(12*density));
-
-        // Draw a clear gold back arrow instead of a font glyph that can render as a dash.
-        View back = new View(this) {
-            private final Paint arrowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            @Override protected void onDraw(Canvas canvas) {
-                super.onDraw(canvas);
-                float cx = getWidth()/2f, cy = getHeight()/2f;
-                float d = getResources().getDisplayMetrics().density;
-                arrowPaint.setColor(0xFFFFE7A0);
-                arrowPaint.setStyle(Paint.Style.STROKE);
-                arrowPaint.setStrokeWidth(2.5f*d);
-                arrowPaint.setStrokeCap(Paint.Cap.ROUND);
-                arrowPaint.setStrokeJoin(Paint.Join.ROUND);
-                Path path = new Path();
-                path.moveTo(cx+9*d, cy);
-                path.lineTo(cx-9*d, cy);
-                path.moveTo(cx-9*d, cy);
-                path.lineTo(cx-1*d, cy-8*d);
-                path.moveTo(cx-9*d, cy);
-                path.lineTo(cx-1*d, cy+8*d);
-                canvas.drawPath(path, arrowPaint);
-            }
-        };
-        back.setBackground(shape(0xFF142944, GOLD, 28));
-        back.setContentDescription("Back to GPS Camera");
-        back.setClickable(true);
-        back.setFocusable(true);
-        top.addView(back, new LinearLayout.LayoutParams((int)(48*density), (int)(48*density)));
-        back.setOnClickListener(v -> closeGpsPhotos());
-
-        LinearLayout heading = new LinearLayout(this);
-        heading.setOrientation(LinearLayout.VERTICAL);
-        heading.setPadding((int)(12*density), 0, 0, 0);
-        TextView albumTitle = text("KeyDhan GPS Photos", 19, Color.WHITE, true);
-        TextView albumSubtitle = text("Photos captured with KeyDhan GPS Camera", 11, 0xFFE7C270, false);
-        heading.addView(albumTitle);
-        heading.addView(albumSubtitle);
-        top.addView(heading, new LinearLayout.LayoutParams(0, -2, 1));
-        page.addView(top);
-
-        ScrollView scroll = new ScrollView(this);
-        scroll.setFillViewport(true);
-        GridLayout grid = new GridLayout(this);
-        grid.setColumnCount(3);
-        grid.setUseDefaultMargins(true);
-        grid.setPadding(2, 4, 2, 12);
-
-        int count = 0;
-        String[] projection = {
-            MediaStore.Images.Media._ID,
-            MediaStore.Images.Media.DISPLAY_NAME,
-            MediaStore.Images.Media.RELATIVE_PATH
-        };
-        String selection = MediaStore.Images.Media.RELATIVE_PATH + " LIKE ?";
-        // Recovery scan: include the public GPS Camera folder even if Android/OEM moved its parent directory.
-        String[] selectionArgs = {"%KeyDhan GPS Camera/%"};
-        try (Cursor cursor = getContentResolver().query(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                projection, selection, selectionArgs,
-                MediaStore.Images.Media.DATE_ADDED + " DESC")) {
-            if (cursor != null) {
-                int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
-                while (cursor.moveToNext()) {
-                    long imageId = cursor.getLong(idColumn);
-                    Uri imageUri = Uri.withAppendedPath(
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, String.valueOf(imageId));
-                    ImageView thumb = new ImageView(this);
-                    thumb.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    thumb.setBackground(shape(0xFF142944, GOLD, 10));
-                    thumb.setImageURI(imageUri);
-                    GridLayout.LayoutParams tile = new GridLayout.LayoutParams();
-                    tile.width = getResources().getDisplayMetrics().widthPixels / 3
-                        - (int)(18 * density);
-                    tile.height = tile.width;
-                    tile.setMargins(3, 3, 3, 3);
-                    grid.addView(thumb, tile);
-                    thumb.setContentDescription("Open saved KeyDhan GPS photo");
-                    thumb.setOnClickListener(v -> {
-                        try {
-                            Intent view = new Intent(Intent.ACTION_VIEW);
-                            view.setDataAndType(imageUri, "image/*");
-                            view.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                            startActivity(view);
-                        } catch (Exception e) {
-                            Toast.makeText(this, "Could not open this photo.", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    count++;
-                }
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= 26) {
+                Intent folder = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                folder.setType("image/*");
+                folder.addCategory(Intent.CATEGORY_OPENABLE);
+                Uri initialFolder = android.provider.DocumentsContract.buildDocumentUri(
+                    "com.android.externalstorage.documents",
+                    "primary:Pictures/KeyDhan GPS Camera");
+                folder.putExtra(android.provider.DocumentsContract.EXTRA_INITIAL_URI, initialFolder);
+                startActivityForResult(folder, REQ_GPS_FOLDER_IMAGE);
+            } else {
+                openDeviceGallery();
             }
         } catch (Exception e) {
-            android.util.Log.e("KeyDhanGPS", "Could not load KeyDhan GPS photos", e);
+            // Fall back to the phone's Gallery app if its document provider cannot open the folder.
+            openDeviceGallery();
         }
-        if (count == 0) {
-            TextView empty = text("No KeyDhan GPS photos yet.\nCapture and save a GPS photo to see it here.", 15, 0xFFE8D8B2, false);
-            empty.setGravity(Gravity.CENTER);
-            empty.setPadding(24, 48, 24, 48);
-            page.addView(empty, new LinearLayout.LayoutParams(-1, -2));
-        } else {
-            scroll.addView(grid);
-            page.addView(scroll, new LinearLayout.LayoutParams(-1, 0, 1));
-        }
+    }
 
-        // Respect Android status/navigation bars: keep title clear of status icons.
-        ViewCompat.setOnApplyWindowInsetsListener(page, (view, windowInsets) -> {
-            androidx.core.graphics.Insets bars =
-                windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
-            page.setPadding((int)(14*density), bars.top + (int)(8*density),
-                (int)(14*density), bars.bottom + (int)(10*density));
-            return windowInsets;
-        });
-        setContentView(page);
-        ViewCompat.requestApplyInsets(page);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode != REQ_GPS_FOLDER_IMAGE || resultCode != RESULT_OK || data == null || data.getData() == null) return;
+        Uri selectedPhoto = data.getData();
+        try {
+            Intent view = new Intent(Intent.ACTION_VIEW);
+            view.setDataAndType(selectedPhoto, "image/*");
+            view.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(view);
+        } catch (Exception e) {
+            Toast.makeText(this, "Could not open selected photo.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void changeZoom(float delta) {
