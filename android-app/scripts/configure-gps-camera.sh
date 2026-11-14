@@ -1583,6 +1583,7 @@ public class DocumentScannerActivity extends ComponentActivity {
     private final HashMap<String,Integer> pageRotations=new HashMap<>();
     private final HashMap<String,Integer> pageFilters=new HashMap<>();
     private ActivityResultLauncher<IntentSenderRequest> autoScanLauncher;
+    private boolean cameraMode=false;
 
     @Override public void onCreate(Bundle b) {
         super.onCreate(b);
@@ -1683,6 +1684,7 @@ public class DocumentScannerActivity extends ComponentActivity {
     }
 
     private void buildUi() {
+        cameraMode=false;
         FrameLayout root=new FrameLayout(this);
         root.setBackgroundColor(NAVY);
         LinearLayout page=new LinearLayout(this);
@@ -1799,13 +1801,26 @@ public class DocumentScannerActivity extends ComponentActivity {
         library.setOnClickListener(v->showSavedScans());
     }
     private void buildCameraUi() {
+        cameraMode=true;
         FrameLayout root=new FrameLayout(this); root.setBackgroundColor(Color.BLACK);
         previewView=new PreviewView(this); previewView.setScaleType(PreviewView.ScaleType.FILL_CENTER);
         root.addView(previewView,new FrameLayout.LayoutParams(-1,-1));
-        LinearLayout header=new LinearLayout(this); header.setOrientation(LinearLayout.VERTICAL);
-        header.setPadding(dp(16),dp(14),dp(16),dp(12)); header.setBackground(bg(0xEE071228,GOLD,22));
-        header.addView(text("KeyDhan™  DOC SCANNER",21,Color.WHITE,true));
-        header.addView(text("Private • On-device processing",12,GOLD,true));
+        LinearLayout header=new LinearLayout(this); header.setOrientation(LinearLayout.HORIZONTAL);
+        header.setGravity(Gravity.CENTER_VERTICAL);
+        header.setPadding(dp(12),dp(12),dp(16),dp(12)); header.setBackground(bg(0xEE071228,GOLD,22));
+        TextView back=text("‹",36,GOLD,true);
+        back.setGravity(Gravity.CENTER);
+        back.setContentDescription("Back to Document Scanner");
+        back.setBackground(bg(0xFF172640,GOLD,24));
+        LinearLayout.LayoutParams backLp=new LinearLayout.LayoutParams(dp(44),dp(44));
+        backLp.rightMargin=dp(12);
+        header.addView(back,backLp);
+        back.setOnClickListener(v->returnToScannerHome());
+        LinearLayout headerCopy=new LinearLayout(this);
+        headerCopy.setOrientation(LinearLayout.VERTICAL);
+        headerCopy.addView(text("KeyDhan™  DOC SCANNER",21,Color.WHITE,true));
+        headerCopy.addView(text("Private • On-device processing",12,GOLD,true));
+        header.addView(headerCopy,new LinearLayout.LayoutParams(0,-2,1));
         FrameLayout.LayoutParams hp=new FrameLayout.LayoutParams(-1,-2,Gravity.TOP);
         hp.setMargins(dp(12),dp(12),dp(12),0); root.addView(header,hp);
 
@@ -1837,6 +1852,27 @@ public class DocumentScannerActivity extends ComponentActivity {
         pdf.setOnClickListener(v->makePdf());
         startCamera();
     }
+    private void returnToScannerHome() {
+        cameraMode=false;
+        try {
+            ListenableFuture<ProcessCameraProvider> future=ProcessCameraProvider.getInstance(this);
+            future.addListener(()->{
+                try { future.get().unbindAll(); }
+                catch(Exception ignored) {}
+            },ContextCompat.getMainExecutor(this));
+        } catch(Exception ignored) {}
+        capture=null;
+        buildUi();
+    }
+
+    @Override public void onBackPressed() {
+        if(cameraMode) {
+            returnToScannerHome();
+            return;
+        }
+        super.onBackPressed();
+    }
+
     private void launchAutoScan() {
         GmsDocumentScannerOptions options=new GmsDocumentScannerOptions.Builder()
             .setGalleryImportAllowed(true)
