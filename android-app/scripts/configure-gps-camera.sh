@@ -1989,7 +1989,9 @@ public class DocumentScannerActivity extends ComponentActivity {
         new android.app.AlertDialog.Builder(this).setTitle("Rename PDF").setView(field)
             .setNegativeButton("Cancel",null)
             .setPositiveButton("Save",(d,w)->{
-                String value=field.getText().toString().trim().replaceAll("[\\\\/:*?\\"<>|]","_");
+                String value=field.getText().toString().trim();
+                char[] invalid={'/','\\\\',':','*','?','"','<','>','|'};
+                for(char ch:invalid) value=value.replace(ch,'_');
                 if(value.isEmpty()) { Toast.makeText(this,"Enter a file name",Toast.LENGTH_SHORT).show(); return; }
                 ContentValues update=new ContentValues(); update.put(MediaStore.Downloads.DISPLAY_NAME,value+".pdf");
                 try {
