@@ -1621,16 +1621,31 @@ public class DocumentScannerActivity extends ComponentActivity {
         LinearLayout headerRow=new LinearLayout(this);
         headerRow.setOrientation(LinearLayout.HORIZONTAL);
         headerRow.setGravity(Gravity.CENTER_VERTICAL);
-        // Clear circular gold-outline back control for the Document Scanner header.
-        TextView back=text("←",27,GOLD,true);
-        back.setGravity(Gravity.CENTER);
-        back.setIncludeFontPadding(false);
+        // Draw the back arrow manually so its visual center is exact (font glyphs have uneven side bearings).
+        View back=new View(this) {
+            private final android.graphics.Paint arrowPaint=new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
+            @Override protected void onDraw(android.graphics.Canvas canvas) {
+                super.onDraw(canvas);
+                float cx=getWidth()/2f, cy=getHeight()/2f, d=getResources().getDisplayMetrics().density;
+                arrowPaint.setColor(GOLD);
+                arrowPaint.setStyle(android.graphics.Paint.Style.STROKE);
+                arrowPaint.setStrokeWidth(3.2f*d);
+                arrowPaint.setStrokeCap(android.graphics.Paint.Cap.ROUND);
+                arrowPaint.setStrokeJoin(android.graphics.Paint.Join.ROUND);
+                android.graphics.Path arrow=new android.graphics.Path();
+                arrow.moveTo(cx+10*d,cy);
+                arrow.lineTo(cx-10*d,cy);
+                arrow.moveTo(cx-10*d,cy);
+                arrow.lineTo(cx-2*d,cy-7*d);
+                arrow.moveTo(cx-10*d,cy);
+                arrow.lineTo(cx-2*d,cy+7*d);
+                canvas.drawPath(arrow,arrowPaint);
+            }
+        };
         back.setContentDescription("Back");
         back.setBackground(bg(0xFF172640,GOLD,22));
         back.setClickable(true);
         back.setFocusable(true);
-        back.setMinimumWidth(dp(44));
-        back.setMinimumHeight(dp(44));
         LinearLayout.LayoutParams backLp=new LinearLayout.LayoutParams(dp(44),dp(44));
         backLp.gravity=Gravity.CENTER_VERTICAL;
         backLp.setMargins(0,0,dp(14),0);
