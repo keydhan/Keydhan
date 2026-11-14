@@ -1584,6 +1584,8 @@ import java.util.HashMap;
 
 import android.Manifest;
 import android.content.ContentValues;
+import android.content.ContentUris;
+import android.database.Cursor;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -1600,6 +1602,7 @@ import android.view.View;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -1734,11 +1737,14 @@ public class DocumentScannerActivity extends ComponentActivity {
         auto.setBackground(bg(GOLD,0xFFFFE7A8,24));
         Button manual=button("▣   Scan with Camera");
         Button imp=button("＋   Import from Gallery");
+        Button library=button("▤   My Scans");
         actions.addView(auto,new LinearLayout.LayoutParams(-1,dp(54)));
         LinearLayout.LayoutParams mp=new LinearLayout.LayoutParams(-1,dp(50)); mp.topMargin=dp(9);
         actions.addView(manual,mp);
         LinearLayout.LayoutParams ip=new LinearLayout.LayoutParams(-1,dp(50)); ip.topMargin=dp(8);
         actions.addView(imp,ip);
+        LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-1,dp(48)); lp.topMargin=dp(8);
+        actions.addView(library,lp);
         page.addView(actions,new LinearLayout.LayoutParams(-1,-2));
         root.addView(page,new FrameLayout.LayoutParams(-1,-1));
         applySafeInsets(root);
@@ -1750,6 +1756,7 @@ public class DocumentScannerActivity extends ComponentActivity {
             else buildCameraUi();
         });
         imp.setOnClickListener(v->pickImages());
+        library.setOnClickListener(v->showSavedScans());
     }
     private void buildCameraUi() {
         FrameLayout root=new FrameLayout(this); root.setBackgroundColor(Color.BLACK);
@@ -1916,6 +1923,83 @@ public class DocumentScannerActivity extends ComponentActivity {
         }
         return edited;
     }
+
+    private void showSavedScans() {
+        final ArrayList<Uri> files=new ArrayList<>();
+        final ArrayList<String> names=new ArrayList<>();
+        String folder=Environment.DIRECTORY_DOCUMENTS+"/KeyDhan Scanner";
+        String[] projection={MediaStore.Downloads._ID,MediaStore.Downloads.DISPLAY_NAME};
+        try(Cursor c=getContentResolver().query(MediaStore.Downloads.EXTERNAL_CONTENT_URI,projection,
+                MediaStore.Downloads.RELATIVE_PATH+"=? AND "+MediaStore.Downloads.MIME_TYPE+"=?",
+                new String[]{folder+"/","application/pdf"},MediaStore.Downloads.DATE_ADDED+" DESC")) {
+            if(c!=null) while(c.moveToNext()) {
+                long id=c.getLong(0); String name=c.getString(1);
+                files.add(ContentUris.withAppendedId(MediaStore.Downloads.EXTERNAL_CONTENT_URI,id));
+                names.add(name==null?"Scanned document":name);
+            }
+        } catch(Exception e) {
+            Toast.makeText(this,"Could not load saved scans: "+e.getMessage(),Toast.LENGTH_LONG).show();
+            return;
+        }
+        if(files.isEmpty()) {
+            new android.app.AlertDialog.Builder(this).setTitle("My Scans")
+                .setMessage("No saved PDFs yet. Export a scan to see it here.")
+                .setPositiveButton("OK",null).show();
+            return;
+        }
+        String[] labels=new String[names.size()];
+        for(int i=0;i<names.size();i++) labels[i]="PDF  ·  "+names.get(i);
+        new android.app.AlertDialog.Builder(this).setTitle("My Scans  ("+files.size()+")")
+            .setItems(labels,(dialog,which)->showScanActions(files.get(which),names.get(which)))
+            .setNegativeButton("Close",null).show();
+    }
+
+    private void showScanActions(Uri uri,String currentName) {
+        String[] actions={"Open PDF","Share PDF","Rename","Delete"};
+        new android.app.AlertDialog.Builder(this).setTitle(currentName)
+            .setItems(actions,(d,which)->{
+                if(which==0) {
+                    Intent view=new Intent(Intent.ACTION_VIEW); view.setDataAndType(uri,"application/pdf");
+                    view.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    try { startActivity(view); }
+                    catch(Exception e) { Toast.makeText(this,"No PDF viewer found",Toast.LENGTH_LONG).show(); }
+                } else if(which==1) {
+                    Intent share=new Intent(Intent.ACTION_SEND); share.setType("application/pdf");
+                    share.putExtra(Intent.EXTRA_STREAM,uri); share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    startActivity(Intent.createChooser(share,"Share PDF"));
+                } else if(which==2) renameSavedScan(uri,currentName);
+                else if(which==3) new android.app.AlertDialog.Builder(this)
+                    .setTitle("Delete PDF?")
+                    .setMessage("This will permanently delete "+currentName)
+                    .setNegativeButton("Cancel",null)
+                    .setPositiveButton("Delete",(confirm,w)->{
+                        try {
+                            int deleted=getContentResolver().delete(uri,null,null);
+                            Toast.makeText(this,deleted>0?"PDF deleted":"Could not delete PDF",Toast.LENGTH_SHORT).show();
+                            showSavedScans();
+                        } catch(Exception e) { Toast.makeText(this,"Delete failed: "+e.getMessage(),Toast.LENGTH_LONG).show(); }
+                    }).show();
+            }).setNegativeButton("Close",null).show();
+    }
+
+    private void renameSavedScan(Uri uri,String oldName) {
+        EditText field=new EditText(this); field.setSingleLine(true);
+        field.setText(oldName.endsWith(".pdf")?oldName.substring(0,oldName.length()-4):oldName);
+        field.setSelection(field.getText().length());
+        new android.app.AlertDialog.Builder(this).setTitle("Rename PDF").setView(field)
+            .setNegativeButton("Cancel",null)
+            .setPositiveButton("Save",(d,w)->{
+                String value=field.getText().toString().trim().replaceAll("[\\\\/:*?\\"<>|]","_");
+                if(value.isEmpty()) { Toast.makeText(this,"Enter a file name",Toast.LENGTH_SHORT).show(); return; }
+                ContentValues update=new ContentValues(); update.put(MediaStore.Downloads.DISPLAY_NAME,value+".pdf");
+                try {
+                    int changed=getContentResolver().update(uri,update,null,null);
+                    Toast.makeText(this,changed>0?"PDF renamed":"Rename failed",Toast.LENGTH_SHORT).show();
+                    showSavedScans();
+                } catch(Exception e) { Toast.makeText(this,"Rename failed: "+e.getMessage(),Toast.LENGTH_LONG).show(); }
+            }).show();
+    }
+
     private void makePdf() {
         if(pages.isEmpty()){Toast.makeText(this,"Scan or import at least one page",Toast.LENGTH_SHORT).show();return;}
         PdfDocument pdf=new PdfDocument();
