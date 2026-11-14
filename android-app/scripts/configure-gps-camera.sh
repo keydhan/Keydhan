@@ -21,6 +21,7 @@ deps='''dependencies {
     implementation "com.google.android.gms:play-services-location:21.3.0"
     implementation "com.google.zxing:core:3.5.3"
     implementation "com.google.android.gms:play-services-mlkit-document-scanner:16.0.0"
+    implementation "com.google.mlkit:text-recognition:16.0.1"
 '''
 s=s.replace(needle,deps,1)
 p.write_text(s)
@@ -1576,6 +1577,10 @@ import com.google.mlkit.vision.documentscanner.GmsDocumentScanner;
 import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions;
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanning;
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult;
+import com.google.mlkit.vision.common.InputImage;
+import com.google.mlkit.vision.text.TextRecognition;
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
+import java.util.HashMap;
 
 import android.Manifest;
 import android.content.ContentValues;
@@ -1629,6 +1634,8 @@ public class DocumentScannerActivity extends ComponentActivity {
     private TextView count;
     private LinearLayout thumbnails;
     private String quality="Balanced";
+    private final HashMap<String,Integer> pageRotations=new HashMap<>();
+    private final HashMap<String,Integer> pageFilters=new HashMap<>();
     private ActivityResultLauncher<IntentSenderRequest> autoScanLauncher;
 
     @Override public void onCreate(Bundle b) {
@@ -1671,7 +1678,7 @@ public class DocumentScannerActivity extends ComponentActivity {
     }
     private Button button(String s) {
         Button b=new Button(this); b.setText(s); b.setTextColor(Color.WHITE); b.setTextSize(13);
-        b.setAllCaps(false); b.setBackground(bg(0xFF172640,GOLD,18)); return b;
+        b.setAllCaps(false); b.setGravity(Gravity.CENTER); b.setIncludeFontPadding(false); b.setMinHeight(0); b.setMinimumHeight(0); b.setMinWidth(0); b.setMinimumWidth(0); b.setPadding(12,8,12,8); b.setMaxLines(2); b.setBackground(bg(0xFF172640,GOLD,18)); return b;
     }
     private void applySafeInsets(View root) {
         ViewCompat.setOnApplyWindowInsetsListener(root,(view,insets)->{
@@ -1715,10 +1722,10 @@ public class DocumentScannerActivity extends ComponentActivity {
         auto.setTextColor(NAVY); auto.setTextSize(16); auto.setBackground(bg(GOLD,0xFFFFE7A8,24));
         Button manual=button("▣  Manual Camera");
         Button imp=button("＋  Import from Gallery");
-        actions.addView(auto,new LinearLayout.LayoutParams(-1,58));
-        LinearLayout.LayoutParams mp=new LinearLayout.LayoutParams(-1,54); mp.topMargin=10;
+        actions.addView(auto,new LinearLayout.LayoutParams(-1,62));
+        LinearLayout.LayoutParams mp=new LinearLayout.LayoutParams(-1,58); mp.topMargin=10;
         actions.addView(manual,mp);
-        LinearLayout.LayoutParams ip=new LinearLayout.LayoutParams(-1,54); ip.topMargin=8;
+        LinearLayout.LayoutParams ip=new LinearLayout.LayoutParams(-1,58); ip.topMargin=8;
         actions.addView(imp,ip);
         page.addView(actions,new LinearLayout.LayoutParams(-1,-2));
         root.addView(page,new FrameLayout.LayoutParams(-1,-1));
@@ -1827,7 +1834,7 @@ public class DocumentScannerActivity extends ComponentActivity {
             Bitmap b=BitmapFactory.decodeFile(pages.get(i).getAbsolutePath());
             if(b!=null){v.setImageBitmap(Bitmap.createScaledBitmap(b,64,70,true));b.recycle();}
             v.setScaleType(ImageView.ScaleType.CENTER_CROP);v.setPadding(3,3,3,3);
-            v.setOnClickListener(x->{pages.remove(at).delete();refresh();});
+            v.setOnClickListener(x->openPageEditor(at));
             thumbnails.addView(v,new LinearLayout.LayoutParams(72,76));
         }
     }
