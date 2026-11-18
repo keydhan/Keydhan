@@ -17,9 +17,9 @@
  const prices={"MSME / Udyam Registration":500,"GST Registration":1000,"Trademark Registration":2000,"PAN Application":500};
  const upi="greenindiaearth@upi";
  async function init(){
-  let content={};
-  try{const r=await fetch(API_URL+"/content",{cache:"no-store"});if(r.ok){const d=await r.json();content=d.content||{};}}catch(e){console.warn("Business Services CMS unavailable; showing defaults.",e);}
-  Object.keys(defaults).forEach(id=>text(id,content[id]||defaults[id]));
+  // Bind the application flow immediately; CMS content loads separately so a slow API cannot hide or delay Apply.
+  const loadContent=async()=>{let content={};try{const r=await fetch(API_URL+"/content",{cache:"no-store"});if(r.ok){const d=await r.json();content=d.content||{};}}catch(e){console.warn("Business Services CMS unavailable; showing defaults.",e);}Object.keys(defaults).forEach(id=>text(id,content[id]||defaults[id]));};
+  loadContent();
   const applyButtons=document.querySelectorAll("[data-apply-service]");
   const form=document.getElementById("businessServiceForm"),select=document.getElementById("bsService"),pay=document.getElementById("businessPay"),fields=document.getElementById("businessApplicationFields");
   if(!form||!select)return;
