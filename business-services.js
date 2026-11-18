@@ -14,17 +14,44 @@
   businessTrademarkDocuments:"Brand/logo details, applicant information and the relevant goods/services classes may be needed."
  };
  const text=(id,value)=>{const el=document.getElementById(id);if(el&&typeof value==="string"&&value.trim())el.textContent=value;};
- const WHATSAPP_BASE="https://wa.me/keydhan";
+ const prices={"MSME / Udyam Registration":500,"GST Registration":1000,"Trademark Registration":2000,"PAN Application":500};
+ const upi="greenindiaearth@upi";
  async function init(){
-  let content={},settings={};
-  try{const [cr,sr]=await Promise.all([fetch(API_URL+"/content",{cache:"no-store"}),fetch(API_URL+"/settings",{cache:"no-store"})]);if(cr.ok){const d=await cr.json();content=d.content||{};}if(sr.ok){const d=await sr.json();settings=d.settings||{};}}catch(e){console.warn("Business Services CMS unavailable; showing defaults.",e);}
+  let content={};
+  try{const r=await fetch(API_URL+"/content",{cache:"no-store"});if(r.ok){const d=await r.json();content=d.content||{};}}catch(e){console.warn("Business Services CMS unavailable; showing defaults.",e);}
   Object.keys(defaults).forEach(id=>text(id,content[id]||defaults[id]));
   document.querySelectorAll("[data-service]").forEach(link=>{
    const service=link.getAttribute("data-service");
    const message="Hello KeyDhan, I would like to enquire about "+service+". Please share the process, eligibility, documents and applicable charges.";
-   link.href=WHATSAPP_BASE+"?text="+encodeURIComponent(message);
-   link.target="_blank";
-   link.rel="noopener noreferrer";
+   link.href="https://wa.me/918368538542?text="+encodeURIComponent(message);
+   link.target="_blank";link.rel="noopener noreferrer";
+  });
+  const form=document.getElementById("businessServiceForm"),select=document.getElementById("bsService"),pay=document.getElementById("businessPay");
+  if(!form||!select)return;
+  select.addEventListener("change",()=>{
+   const fee=prices[select.value],box=document.getElementById("businessPay");
+   if(!fee){box.hidden=true;return;}
+   const uri="upi://pay?pa="+encodeURIComponent(upi)+"&pn="+encodeURIComponent("KEY DHAN")+"&am="+fee.toFixed(2)+"&cu=INR&tn="+encodeURIComponent("KeyDhan "+select.value);
+   document.getElementById("businessFee").textContent="Pay ₹"+fee.toLocaleString("en-IN");
+   document.getElementById("businessQr").src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=8&data="+encodeURIComponent(uri);
+   document.getElementById("businessUpiLink").href=uri;box.hidden=false;
+  });
+  form.addEventListener("submit",async e=>{
+   e.preventDefault();
+   const status=document.getElementById("businessStatus"),button=form.querySelector("button[type=submit]");
+   if(!prices[select.value]){status.textContent="Please select a service.";return;}
+   const file=form.elements.paymentScreenshot.files[0];
+   if(!file||file.size>5*1024*1024||!["image/jpeg","image/png","image/webp"].includes(file.type)){status.textContent="Please upload a JPG, PNG or WEBP screenshot up to 5 MB.";return;}
+   button.disabled=true;button.textContent="Submitting…";status.textContent="Sending your application securely…";
+   try{
+    const data=new FormData(form);
+    const response=await fetch(API_URL+"/business-service-enquiry",{method:"POST",body:data});
+    const result=await response.json();
+    if(!response.ok||!result.success)throw new Error(result.error||"Submission failed. Please try again.");
+    status.textContent=result.message||"Application submitted successfully.";
+    form.reset();pay.hidden=true;
+   }catch(err){status.textContent=err.message||"Unable to submit. Please try again or contact KeyDhan on WhatsApp.";}
+   finally{button.disabled=false;button.innerHTML='Submit Application <span aria-hidden="true">↗</span>';}
   });
  }
  init();
