@@ -20,22 +20,18 @@
   let content={};
   try{const r=await fetch(API_URL+"/content",{cache:"no-store"});if(r.ok){const d=await r.json();content=d.content||{};}}catch(e){console.warn("Business Services CMS unavailable; showing defaults.",e);}
   Object.keys(defaults).forEach(id=>text(id,content[id]||defaults[id]));
-  document.querySelectorAll("[data-service]").forEach(link=>{
-   const service=link.getAttribute("data-service");
-   const message="Hello KeyDhan, I would like to enquire about "+service+". Please share the process, eligibility, documents and applicable charges.";
-   link.href="https://wa.me/918368538542?text="+encodeURIComponent(message);
-   link.target="_blank";link.rel="noopener noreferrer";
-  });
-  const form=document.getElementById("businessServiceForm"),select=document.getElementById("bsService"),pay=document.getElementById("businessPay");
+  const applyButtons=document.querySelectorAll("[data-apply-service]");
+  const form=document.getElementById("businessServiceForm"),select=document.getElementById("bsService"),pay=document.getElementById("businessPay"),fields=document.getElementById("businessApplicationFields");
   if(!form||!select)return;
   select.addEventListener("change",()=>{
    const fee=prices[select.value],box=document.getElementById("businessPay");
-   if(!fee){box.hidden=true;return;}
+   if(!fee){box.hidden=true;fields.hidden=true;return;}
    const uri="upi://pay?pa="+encodeURIComponent(upi)+"&pn="+encodeURIComponent("KEY DHAN")+"&am="+fee.toFixed(2)+"&cu=INR&tn="+encodeURIComponent("KeyDhan "+select.value);
    document.getElementById("businessFee").textContent="Pay ₹"+fee.toLocaleString("en-IN");
    document.getElementById("businessQr").src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=8&data="+encodeURIComponent(uri);
-   document.getElementById("businessUpiLink").href=uri;box.hidden=false;
+   document.getElementById("businessUpiLink").href=uri;box.hidden=false;fields.hidden=false;
   });
+  applyButtons.forEach(button=>button.addEventListener("click",()=>{select.value=button.getAttribute("data-apply-service");select.dispatchEvent(new Event("change"));document.getElementById("businessApply").scrollIntoView({behavior:"smooth",block:"start"});}));
   form.addEventListener("submit",async e=>{
    e.preventDefault();
    const status=document.getElementById("businessStatus"),button=form.querySelector("button[type=submit]");
@@ -49,7 +45,7 @@
     const result=await response.json();
     if(!response.ok||!result.success)throw new Error(result.error||"Submission failed. Please try again.");
     status.textContent=result.message||"Application submitted successfully.";
-    form.reset();pay.hidden=true;
+    form.reset();pay.hidden=true;fields.hidden=true;
    }catch(err){status.textContent=err.message||"Unable to submit. Please try again or contact KeyDhan on WhatsApp.";}
    finally{button.disabled=false;button.innerHTML='Submit Application <span aria-hidden="true">↗</span>';}
   });
