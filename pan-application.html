@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PAN Application Assistance | KeyDhan</title>
+<meta name="description" content="Apply for assistance with a new PAN application through KeyDhan.">
+<link rel="canonical" href="https://keydhan.com/pan-application.html">
+<link rel="stylesheet" href="/style.css?v=20261029-business-services">
+<style>
+.service-page{max-width:900px;margin:0 auto;padding:42px 18px 72px}.service-back{display:inline-block;color:var(--gold);text-decoration:none;margin-bottom:22px}.service-panel{padding:clamp(20px,4vw,34px);border:1px solid rgba(212,175,55,.3);border-radius:22px;background:linear-gradient(150deg,rgba(13,29,48,.98),rgba(5,14,26,.99));box-shadow:0 14px 38px rgba(0,0,0,.15)}.service-eyebrow{color:var(--gold);font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}.service-panel h1{color:var(--gold);font-size:clamp(30px,5vw,44px);line-height:1.15;margin:12px 0}.service-panel>p{color:var(--muted);line-height:1.7}.service-fee{display:inline-block;margin:10px 0 20px;padding:10px 18px;border:1px solid rgba(212,175,55,.45);border-radius:12px;color:var(--gold);font-size:22px;font-weight:800}.service-steps{padding-left:22px;color:var(--text);line-height:1.8}.service-note{padding:14px 16px;border-left:3px solid var(--gold);background:rgba(212,175,55,.07);color:var(--muted);line-height:1.65;border-radius:8px}.business-apply{margin-top:28px;padding:22px;border:1px solid rgba(212,175,55,.3);border-radius:18px;background:#0b1a2b}.business-apply h2{color:var(--gold);margin-top:0}.business-apply p{color:var(--muted);line-height:1.6}.business-apply-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.business-apply input{width:100%;min-width:0;box-sizing:border-box;padding:14px;border:1px solid #344255;border-radius:10px;background:#071323;color:#fff}.business-apply .full{grid-column:1/-1}.business-pay{margin:18px 0;padding:18px;border:1px dashed rgba(212,175,55,.5);border-radius:14px;text-align:center}.business-pay img{display:block;width:190px;height:190px;object-fit:contain;margin:12px auto;background:#fff;border-radius:8px}.business-pay strong{color:var(--gold);font-size:22px}.business-pay a{display:inline-block;margin-top:10px;color:var(--gold)}.business-application-fields[hidden]{display:none}.business-apply button{width:100%;padding:15px;border:0;border-radius:12px;background:var(--gold);color:#111827;font-weight:850;font-size:16px}.business-apply small{display:block;margin-top:10px;color:var(--muted);line-height:1.5}.business-status{margin-top:12px;color:var(--gold);font-weight:700}@media(max-width:600px){.business-apply-grid{grid-template-columns:1fr}.business-apply .full{grid-column:1}}
+</style>
+</head>
+<body data-fixed-service="PAN Application">
+<main class="service-page">
+<a class="service-back" href="/business-services.html">← All Business Services</a>
+<section class="service-panel">
+<span class="service-eyebrow">KEYDHAN · BUSINESS SERVICES</span>
+<h1>PAN Application Assistance</h1>
+<p>Apply for assistance with a new PAN application through KeyDhan.</p>
+<div class="service-fee">Service Fee: ₹500</div>
+<h2>How the process works</h2>
+<ol class="service-steps"><li>Keep the applicant's basic details ready for the PAN application process.</li><li>Pay the KeyDhan service fee of ₹500 using the displayed UPI QR code.</li><li>Enter your contact details, upload payment proof and submit. Your application enquiry will be emailed to KeyDhan.</li></ol>
+<p class="service-note"><strong>Important:</strong> This page collects contact details and payment proof only. Do not upload Aadhaar, PAN documents or other sensitive identity documents here.</p>
+<section class="business-apply" id="businessApply">
+<h2>Pay & Submit Application</h2>
+<p>Scan the service-specific QR code below. After payment, complete the form and upload your payment screenshot.</p>
+<form id="businessServiceForm">
+<select id="bsService" name="service" required hidden><option value="PAN Application" selected>PAN Application</option></select>
+<div class="business-pay" id="businessPay" hidden><strong id="businessFee"></strong><p>Scan with any UPI app or use the UPI payment link below.</p><img id="businessQr" alt="UPI payment QR code for PAN Application Assistance"><a id="businessUpiLink" href="#">Open UPI App to Pay</a><p>UPI ID: greenindiaearth@upi</p></div>
+<div class="business-application-fields" id="businessApplicationFields" hidden><div class="business-apply-grid">
+<input name="name" placeholder="Full Name" autocomplete="name" maxlength="100" required>
+<input name="mobile" placeholder="10-digit Mobile Number" inputmode="numeric" pattern="[6-9][0-9]{9}" maxlength="10" required>
+<input class="full" name="email" type="email" placeholder="Email Address" autocomplete="email" maxlength="254" required>
+<input class="full" name="transactionId" placeholder="UPI Transaction ID / UTR (optional)" maxlength="80">
+<label class="full">Payment Screenshot (JPG, PNG or WEBP; max 5 MB)<input class="full" type="file" name="paymentScreenshot" accept="image/jpeg,image/png,image/webp" required></label>
+<button class="full" type="submit">Submit Application ↗</button>
+</div></div>
+<small>Only payment proof and contact details are collected here. Your submission and screenshot are emailed to hello@keydhan.com. No data is saved in the Admin Panel.</small>
+<div class="business-status" id="businessStatus" role="status" aria-live="polite"></div>
+</form>
+</section>
+<p class="service-note" style="margin-top:20px">KeyDhan's service fee is separate from any applicable government fee. Eligibility, approval, processing time and government charges are determined by the relevant authority. No approval is guaranteed.</p>
+</section>
+</main>
+<div data-keydhan-footer></div>
+<script src="/footer.js?v=20270127-mobile-legal-fix"></script>
+<script src="/app.js?v=20261029-business-services"></script>
+<script src="/business-services.js?v=20261118-service-pages"></script>
+<script src="/site-header.js?v=20261105-loan-services-nav-v2" defer></script>
+</body></html>
