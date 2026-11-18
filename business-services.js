@@ -24,7 +24,6 @@
   const form=document.getElementById("businessServiceForm"),select=document.getElementById("bsService"),pay=document.getElementById("businessPay"),fields=document.getElementById("businessApplicationFields");
   if(!form||!select)return;
   const fixedService=document.body.dataset.fixedService;
-  if(fixedService&&prices[fixedService]){select.value=fixedService;select.hidden=true;select.dispatchEvent(new Event("change"));}
   select.addEventListener("change",()=>{
    const fee=prices[select.value],box=document.getElementById("businessPay");
    if(!fee){box.hidden=true;fields.hidden=true;return;}
@@ -33,6 +32,9 @@
    document.getElementById("businessQr").src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=8&data="+encodeURIComponent(uri);
    document.getElementById("businessUpiLink").href=uri;box.hidden=false;fields.hidden=false;
   });
+  if(fixedService&&prices[fixedService]){select.value=fixedService;select.hidden=true;}
+  const beginButton=document.getElementById("beginServiceApplication");
+  if(beginButton)beginButton.addEventListener("click",()=>{document.getElementById("servicePaymentFlow").hidden=false;select.dispatchEvent(new Event("change"));beginButton.hidden=true;});
   applyButtons.forEach(button=>button.addEventListener("click",()=>{select.value=button.getAttribute("data-apply-service");select.dispatchEvent(new Event("change"));document.getElementById("businessApply").scrollIntoView({behavior:"smooth",block:"start"});}));
   form.addEventListener("submit",async e=>{
    e.preventDefault();
