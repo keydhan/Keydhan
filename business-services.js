@@ -27,7 +27,7 @@
   select.addEventListener("change",()=>{
    const fee=prices[select.value],box=document.getElementById("businessPay");
    if(!fee){box.hidden=true;fields.hidden=true;return;}
-   const uri="upi://pay?pa="+encodeURIComponent(upi)+"&pn="+encodeURIComponent("KEY DHAN")+"&am="+fee.toFixed(2)+"&cu=INR&tn="+encodeURIComponent("KeyDhan "+select.value);
+   const uri="upi://pay?pa="+upi+"&pn="+encodeURIComponent("KEY DHAN")+"&am="+fee.toFixed(2)+"&cu=INR&tn="+encodeURIComponent("KeyDhan "+select.value);
    document.getElementById("businessFee").textContent="Pay ₹"+fee.toLocaleString("en-IN");
    document.getElementById("businessQr").src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=8&data="+encodeURIComponent(uri);
    document.getElementById("businessUpiLink").href=uri;box.hidden=false;fields.hidden=false;
