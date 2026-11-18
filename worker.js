@@ -116,6 +116,29 @@ export default {async fetch(req,env,ctx){
   if(path==="/api/knowledge"&&method==="GET"){const list=await read(env,keys.articles,[]);return response({success:true,articles:list.filter(a=>a.status==="published").sort((a,b)=>String(b.publishedAt||b.updatedAt).localeCompare(String(a.publishedAt||a.updatedAt))).map(({id,title,slug,summary,category,language,author,reviewer,publishedAt,updatedAt,seoTitle,seoDescription})=>({id,title,slug,summary,category,language,author,reviewer,publishedAt,updatedAt,seoTitle,seoDescription}))},200,origin);}
   if(path==="/api/content"&&method==="GET")return response({success:true,content:await read(env,keys.content,{})},200,origin);
   if(path==="/api/settings"&&method==="GET")return response({success:true,settings:await read(env,keys.settings,{businessName:"KeyDhan",contactEmail:"hello@keydhan.com"})},200,origin);
+  if(path==="/api/business-service-enquiry"&&method==="POST"){
+   if(!env.EMAIL)return response({success:false,error:"Email service is not configured"},503,origin);
+   const form=await req.formData();
+   const service=str(form.get("service"),80),name=str(form.get("name"),100),mobile=str(form.get("mobile"),20),email=str(form.get("email"),254),reference=str(form.get("transactionId"),80);
+   const prices={"MSME / Udyam Registration":"500","GST Registration":"1000","Trademark Registration":"2000","PAN Application":"500"};
+   if(!prices[service])return response({success:false,error:"Please select a valid service"},400,origin);
+   if(!name||!/^[6-9][0-9]{9}$/.test(mobile)||!/^\S+@\S+\.\S+$/.test(email))return response({success:false,error:"Enter valid name, 10-digit mobile and email"},400,origin);
+   const proof=form.get("paymentScreenshot");
+   if(!proof||typeof proof.arrayBuffer!=="function"||!proof.size)return response({success:false,error:"Payment screenshot is required"},400,origin);
+   if(proof.size>5*1024*1024)return response({success:false,error:"Screenshot must be 5 MB or smaller"},413,origin);
+   if(!/^image\/(jpeg|png|webp)$/.test(proof.type||""))return response({success:false,error:"Upload JPG, PNG or WEBP screenshot"},400,origin);
+   const bytes=new Uint8Array(await proof.arrayBuffer());
+   let binary="";for(let i=0;i<bytes.length;i+=0x8000)binary+=String.fromCharCode(...bytes.subarray(i,i+0x8000));
+   const encoded=btoa(binary),safeName=str(proof.name||"payment-proof",100).replace(/[^a-zA-Z0-9._-]/g,"_");
+   const boundary="kd_"+crypto.randomUUID().replace(/-/g,"");
+   const clean=v=>String(v||"").replace(/[\r\n]/g," ").slice(0,500);
+   const bodyText="New KeyDhan Business Service Application\n\nService: "+service+"\nFee: INR "+prices[service]+"\nApplicant: "+name+"\nMobile: "+mobile+"\nEmail: "+email+"\nUPI Transaction ID: "+(reference||"Not provided")+"\nReceived: "+stamp()+"\n\nPayment screenshot is attached.";
+   const html="<h2>New Business Service Application – KeyDhan</h2><table>"+[["Service",service],["Fee","₹"+prices[service]],["Applicant",name],["Mobile",mobile],["Email",email],["UPI Transaction ID",reference||"Not provided"],["Received",stamp()]].map(([k,v])=>"<tr><th align='left'>"+k+"</th><td>"+htmlEscape(v)+"</td></tr>").join("")+"</table><p>Payment screenshot is attached.</p>";
+   const mime="From: KeyDhan <hello@keydhan.com>\r\nTo: hello@keydhan.com\r\nSubject: "+clean("New "+service+" Application – KeyDhan")+"\r\nMIME-Version: 1.0\r\nContent-Type: multipart/mixed; boundary=\""+boundary+"\"\r\n\r\n--"+boundary+"\r\nContent-Type: multipart/alternative; boundary=\"alt_"+boundary+"\"\r\n\r\n--alt_"+boundary+"\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: 8bit\r\n\r\n"+bodyText+"\r\n\r\n--alt_"+boundary+"\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Transfer-Encoding: 8bit\r\n\r\n"+html+"\r\n\r\n--alt_"+boundary+"--\r\n--"+boundary+"\r\nContent-Type: "+proof.type+"; name=\""+safeName+"\"\r\nContent-Transfer-Encoding: base64\r\nContent-Disposition: attachment; filename=\""+safeName+"\"\r\n\r\n"+encoded+"\r\n--"+boundary+"--\r\n";
+   const {EmailMessage}=await import("cloudflare:email");
+   await env.EMAIL.send(new EmailMessage("hello@keydhan.com","hello@keydhan.com",mime));
+   return response({success:true,message:"Application submitted successfully. KeyDhan will contact you after verifying the payment."},200,origin);
+  }
   if(path==="/api/leads"&&method==="POST"){
    const b=await req.json();if(str(b.website,200))return response({success:true},201,origin);
    const name=str(b.name,100),phone=str(b.phone??b.mobile,30),email=str(b.email,150),message=str(b.message,2000);
