@@ -16,6 +16,7 @@
  const text=(id,value)=>{const el=document.getElementById(id);if(el&&typeof value==="string"&&value.trim())el.textContent=value;};
  const prices={"MSME / Udyam Registration":500,"GST Registration":1000,"Trademark Registration":2000,"PAN Application":500};
  const upi="greenindiaearth@upi";
+ const chooserStyle=document.createElement("style");chooserStyle.textContent="\n  .upi-app-chooser{margin:14px auto 4px;max-width:520px;text-align:left}.upi-app-chooser>p{text-align:center;margin:10px 0;color:var(--text)}.upi-app-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.upi-app-options a{display:flex;align-items:center;justify-content:center;min-height:44px;padding:9px 12px;border:1px solid rgba(212,175,55,.45);border-radius:10px;color:var(--gold);font-weight:750;text-decoration:none;background:rgba(212,175,55,.06)}.upi-app-options a:last-child{grid-column:1/-1}.upi-app-options a:focus,.upi-app-options a:hover{background:rgba(212,175,55,.16)}.upi-app-chooser small{display:block;text-align:center;margin-top:9px;color:var(--muted)}\n";document.head.appendChild(chooserStyle);
  async function init(){
   // Bind the application flow immediately; CMS content loads separately so a slow API cannot hide or delay Apply.
   const loadContent=async()=>{let content={};try{const r=await fetch(API_URL+"/content",{cache:"no-store"});if(r.ok){const d=await r.json();content=d.content||{};}}catch(e){console.warn("Business Services CMS unavailable; showing defaults.",e);}Object.keys(defaults).forEach(id=>text(id,content[id]||defaults[id]));};
@@ -30,7 +31,23 @@
    const uri="upi://pay?pa="+upi+"&pn="+encodeURIComponent("KEY DHAN")+"&am="+fee.toFixed(2)+"&cu=INR&tn="+encodeURIComponent("KeyDhan "+select.value);
    document.getElementById("businessFee").textContent="Pay ₹"+fee.toLocaleString("en-IN");
    document.getElementById("businessQr").src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=8&data="+encodeURIComponent(uri);
-   document.getElementById("businessUpiLink").href=uri;box.hidden=false;fields.hidden=false;
+   const payLink=document.getElementById("businessUpiLink");
+   payLink.href=uri;payLink.textContent="Choose UPI App to Pay";
+   let chooser=document.getElementById("upiAppChooser");
+   if(!chooser){
+    chooser=document.createElement("div");chooser.id="upiAppChooser";chooser.className="upi-app-chooser";
+    chooser.innerHTML='<p><strong>Choose your UPI app</strong></p><div class="upi-app-options"><a data-upi-app="gpay">Google Pay</a><a data-upi-app="phonepe">PhonePe</a><a data-upi-app="paytm">Paytm</a><a data-upi-app="bhim">BHIM</a><a data-upi-app="other">Other UPI Apps</a></div><small>Select an app installed on your phone. If an app is not installed, choose another option.</small>';
+    payLink.insertAdjacentElement("afterend",chooser);
+    const packages={gpay:"com.google.android.apps.nbu.paisa.user",phonepe:"com.phonepe.app",paytm:"net.one97.paytm",bhim:"in.org.npci.upiapp"};
+    chooser.addEventListener("click",event=>{
+     const link=event.target.closest("a[data-upi-app]");if(!link)return;
+     event.preventDefault();const app=link.dataset.upiApp;
+     if(app==="other"){window.location.href=uri;return;}
+     const intent="intent://pay?"+uri.split("?")[1]+"#Intent;scheme=upi;package="+packages[app]+";action=android.intent.action.VIEW;end";
+     window.location.href=intent;
+    });
+   }
+   box.hidden=false;fields.hidden=false;
   });
   if(fixedService&&prices[fixedService]){select.value=fixedService;select.hidden=true;}
   const beginButton=document.getElementById("beginServiceApplication");
