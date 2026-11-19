@@ -36,12 +36,12 @@
    let chooser=document.getElementById("upiAppChooser");
    if(!chooser){
     chooser=document.createElement("div");chooser.id="upiAppChooser";chooser.className="upi-app-chooser";
-    chooser.innerHTML='<p><strong>1. Choose your UPI app</strong></p><div class="upi-app-options"><button type="button" data-upi-app="gpay" aria-pressed="false">Google Pay</button><button type="button" data-upi-app="phonepe" aria-pressed="false">PhonePe</button><button type="button" data-upi-app="paytm" aria-pressed="false">Paytm</button><button type="button" data-upi-app="bhim" aria-pressed="false">BHIM</button><button type="button" data-upi-app="other" aria-pressed="false">Other UPI Apps</button></div><small>Tap once to select. Your selected app will be highlighted.</small><button type="button" class="upi-continue" disabled>Continue to Pay &amp; Application</button>';
+    chooser.innerHTML='<p><strong>1. Choose your UPI app</strong></p><div class="upi-app-options"><button type="button" data-upi-app="gpay" aria-pressed="false">Google Pay</button><button type="button" data-upi-app="phonepe" aria-pressed="false">PhonePe</button><button type="button" data-upi-app="paytm" aria-pressed="false">Paytm</button><button type="button" data-upi-app="bhim" aria-pressed="false">BHIM</button><button type="button" data-upi-app="other" aria-pressed="false">Other UPI Apps</button></div><small>Tap one app only. Your selection will be highlighted.</small><button type="button" class="upi-continue" hidden>Continue to Pay</button>';
     payLink.insertAdjacentElement("afterend",chooser);
     let selectedApp="";
     chooser.addEventListener("click",event=>{
      const option=event.target.closest("button[data-upi-app]");
-     if(option){selectedApp=option.dataset.upiApp;chooser.querySelectorAll("button[data-upi-app]").forEach(btn=>{btn.classList.toggle("selected",btn===option);btn.setAttribute("aria-pressed",btn===option?"true":"false");});chooser.querySelector(".upi-continue").disabled=false;return;}
+     if(option){selectedApp=option.dataset.upiApp;chooser.querySelectorAll("button[data-upi-app]").forEach(btn=>{btn.classList.toggle("selected",btn===option);btn.setAttribute("aria-pressed",btn===option?"true":"false");});const continueButton=chooser.querySelector(".upi-continue");continueButton.hidden=false;continueButton.disabled=false;continueButton.textContent="Continue to Pay with "+option.textContent.trim();return;}
      const next=event.target.closest(".upi-continue");
      if(!next||!selectedApp)return;
      fields.hidden=false;fields.scrollIntoView({behavior:"smooth",block:"start"});
