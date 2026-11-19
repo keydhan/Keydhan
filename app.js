@@ -297,33 +297,9 @@ font:{size:12}
 
 /* ---------- PROPERTY AUTO FILL ---------- */
 
-function enquire(property,amount){
-
-const contact=document.getElementById("contact");
-
-if(contact){
-
-contact.scrollIntoView({
-
-behavior:"smooth"
-
-});
-
-}
-
-const budget=document.getElementById("budget");
-const propertyName=document.getElementById("propertyName");
-const message=document.getElementById("message");
-
-if(budget) budget.value=amount;
-if(propertyName) propertyName.value=property;
-
-if(message){
-
-message.value="I'm interested in "+property+".";
-
-}
-
+function enquire(property,amount,propertyId,location){
+const params=new URLSearchParams({property:property||"",price:amount||"",propertyId:propertyId||"",location:location||""});
+window.location.href="/property-enquiry.html?"+params.toString();
 }
 
 /* ---------- ENTER KEY ---------- */
@@ -611,7 +587,7 @@ console.log("KeyDhan™ V20.1 Loaded");
    const detailSlug=String(p.slug||p.title||"property").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
    const detailHref="/property/"+encodeURIComponent(detailSlug)+"/";
    const pin='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="1.8"/></svg>';
-   return '<article class="card home-property-card">'+visual+'<div class="home-property-body"><h3 class="home-property-title"><a href="'+detailHref+'">'+title+'</a></h3><div class="home-property-price">'+price+'</div><div class="home-property-location">'+pin+'<span>'+location+'</span></div><div class="home-property-tags">'+(beds?'<span class="home-property-detail">'+beds+' BHK</span>':'')+(type?'<span class="home-property-detail">'+type+'</span>':'')+(p.featured?'<span class="home-property-badge">★ Featured</span>':'')+'</div>'+(description?'<p class="home-property-description">'+description+'</p>':'')+'<a class="home-property-enquire" href="'+detailHref+'">View Details <span aria-hidden="true">→</span></a><button type="button" class="home-property-enquire" data-enquire-title="'+title+'" data-enquire-price="'+safe(p.price)+'">Enquire Now <span aria-hidden="true">↗</span></button></div></article>';
+   return '<article class="card home-property-card">'+visual+'<div class="home-property-body"><h3 class="home-property-title"><a href="'+detailHref+'">'+title+'</a></h3><div class="home-property-price">'+price+'</div><div class="home-property-location">'+pin+'<span>'+location+'</span></div><div class="home-property-tags">'+(beds?'<span class="home-property-detail">'+beds+' BHK</span>':'')+(type?'<span class="home-property-detail">'+type+'</span>':'')+(p.featured?'<span class="home-property-badge">★ Featured</span>':'')+'</div>'+(description?'<p class="home-property-description">'+description+'</p>':'')+'<a class="home-property-enquire" href="'+detailHref+'">View Details <span aria-hidden="true">→</span></a><button type="button" class="home-property-enquire" data-enquire-title="'+title+'" data-enquire-price="'+safe(p.price)+'" data-enquire-id="'+safe(p.id||"")+'" data-enquire-location="'+location+'">Enquire Now <span aria-hidden="true">↗</span></button></div></article>';
   }
   if(grid){
    const status=document.getElementById("featuredStatus"),prev=document.getElementById("featuredPrev"),next=document.getElementById("featuredNext"),dots=document.getElementById("featuredDots");
@@ -621,7 +597,7 @@ console.log("KeyDhan™ V20.1 Loaded");
    render();if(prev)prev.addEventListener("click",()=>{if(current>0){current--;render();}});if(next)next.addEventListener("click",()=>{if(current<slides.length-1){current++;render();}});if(dots)dots.addEventListener("click",e=>{const b=e.target.closest("[data-slide]");if(b){current=Number(b.dataset.slide)||0;render();}});
    if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches){window.setInterval(()=>{if(!document.hidden&&slides.length>1){current=(current+1)%slides.length;render();}},5000);}
    let startX=0;grid.addEventListener("touchstart",e=>{startX=e.changedTouches[0].clientX;},{passive:true});grid.addEventListener("touchend",e=>{const dx=e.changedTouches[0].clientX-startX;if(Math.abs(dx)>45){current=Math.max(0,Math.min(slides.length-1,current+(dx<0?1:-1)));render();}},{passive:true});
-   grid.addEventListener("click",e=>{const b=e.target.closest("[data-enquire-title]");if(b)enquire(b.dataset.enquireTitle,b.dataset.enquirePrice);});
+   grid.addEventListener("click",e=>{const b=e.target.closest("[data-enquire-title]");if(b)enquire(b.dataset.enquireTitle,b.dataset.enquirePrice,b.dataset.enquireId,b.dataset.enquireLocation);});
   }
   const offerGrid=document.querySelector("#offers .grid");const offers=Array.isArray(od.offers)?od.offers:[];if(offerGrid)offerGrid.innerHTML=offers.map(o=>'<div class="card"><h3>'+safe(o.title)+'</h3><p>'+safe(o.lender)+'</p><p>'+safe(o.interestRate)+'</p><p>'+safe(o.description)+'</p></div>').join("");
   if(s.contactEmail){const emailLink=document.querySelector("footer .footer-email a");const emailText=emailLink&&emailLink.querySelector("span");if(emailLink&&emailText){emailText.textContent=s.contactEmail;emailLink.href="mailto:"+s.contactEmail;}}
