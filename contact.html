@@ -78,7 +78,7 @@
   </div>
 </main>
 <div data-keydhan-footer></div>
-<script src="/footer.js?v=20270127-mobile-legal-fix"></script>
+<script src="/footer.js?v=20261119-antifraud"></script>
 <script src="/app.js?v=20261105-loan-enquiry-prefill"></script>
 <script>
 (function(){const params=new URLSearchParams(location.search);const requested=params.get("type");const field=document.getElementById("loanType");if(!field||!requested)return;const match=[...field.options].find(o=>o.text.trim().toLowerCase()===requested.trim().toLowerCase());if(match){field.value=match.value;field.dispatchEvent(new Event("change",{bubbles:true}));const message=document.getElementById("message");if(message&&!message.value)message.value="I would like to enquire about "+match.text+".";}})();
