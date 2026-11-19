@@ -16,7 +16,7 @@
  const text=(id,value)=>{const el=document.getElementById(id);if(el&&typeof value==="string"&&value.trim())el.textContent=value;};
  const prices={"MSME / Udyam Registration":500,"GST Registration":1000,"Trademark Registration":2000,"PAN Application":500};
  const upi="greenindiaearth@upi";
- const chooserStyle=document.createElement("style");chooserStyle.textContent="\n  .upi-app-chooser{margin:14px auto 4px;max-width:520px;text-align:left}.upi-app-chooser>p{text-align:center;margin:10px 0;color:var(--text)}.upi-app-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.upi-app-options a{display:flex;align-items:center;justify-content:center;min-height:44px;padding:9px 12px;border:1px solid rgba(212,175,55,.45);border-radius:10px;color:var(--gold);font-weight:750;text-decoration:none;background:rgba(212,175,55,.06)}.upi-app-options a:last-child{grid-column:1/-1}.upi-app-options a:focus,.upi-app-options a:hover{background:rgba(212,175,55,.16)}.upi-app-chooser small{display:block;text-align:center;margin-top:9px;color:var(--muted)}\n";document.head.appendChild(chooserStyle);
+ const chooserStyle=document.createElement("style");chooserStyle.textContent="\n.upi-app-chooser{margin:14px auto 4px;max-width:520px;text-align:left}.upi-app-chooser>p{text-align:center;margin:10px 0;color:var(--text)}.upi-app-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.upi-app-options button{display:flex;align-items:center;justify-content:center;min-height:54px;padding:10px 12px;border:1.5px solid rgba(212,175,55,.45);border-radius:12px;color:var(--gold);font-weight:750;background:rgba(212,175,55,.06);cursor:pointer}.upi-app-options button:last-child{grid-column:1/-1}.upi-app-options button.selected{border:2px solid #e3bd36;background:rgba(212,175,55,.24);color:#ffe28a;box-shadow:0 0 0 3px rgba(212,175,55,.16),0 0 18px rgba(212,175,55,.18)}.upi-app-options button.selected:after{content:' ✓';margin-left:7px}.upi-app-chooser small{display:block;text-align:center;margin-top:9px;color:var(--muted)}.upi-continue{display:block;width:100%;margin-top:14px;padding:14px;border:0;border-radius:12px;background:#d7b333;color:#101827;font-weight:850;font-size:16px;cursor:pointer}.upi-continue:disabled{opacity:.45;cursor:not-allowed}\n";document.head.appendChild(chooserStyle);
  async function init(){
   // Bind the application flow immediately; CMS content loads separately so a slow API cannot hide or delay Apply.
   const loadContent=async()=>{let content={};try{const r=await fetch(API_URL+"/content",{cache:"no-store"});if(r.ok){const d=await r.json();content=d.content||{};}}catch(e){console.warn("Business Services CMS unavailable; showing defaults.",e);}Object.keys(defaults).forEach(id=>text(id,content[id]||defaults[id]));};
@@ -32,19 +32,23 @@
    document.getElementById("businessFee").textContent="Pay ₹"+fee.toLocaleString("en-IN");
    document.getElementById("businessQr").src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=8&data="+encodeURIComponent(uri);
    const payLink=document.getElementById("businessUpiLink");
-   payLink.href=uri;payLink.textContent="Choose UPI App to Pay";
+   payLink.href=uri;payLink.textContent="UPI payment link (use if needed)";fields.hidden=true;
    let chooser=document.getElementById("upiAppChooser");
    if(!chooser){
     chooser=document.createElement("div");chooser.id="upiAppChooser";chooser.className="upi-app-chooser";
-    chooser.innerHTML='<p><strong>Choose your UPI app</strong></p><div class="upi-app-options"><a data-upi-app="gpay">Google Pay</a><a data-upi-app="phonepe">PhonePe</a><a data-upi-app="paytm">Paytm</a><a data-upi-app="bhim">BHIM</a><a data-upi-app="other">Other UPI Apps</a></div><small>Select an app installed on your phone. If an app is not installed, choose another option.</small>';
+    chooser.innerHTML='<p><strong>1. Choose your UPI app</strong></p><div class="upi-app-options"><button type="button" data-upi-app="gpay" aria-pressed="false">Google Pay</button><button type="button" data-upi-app="phonepe" aria-pressed="false">PhonePe</button><button type="button" data-upi-app="paytm" aria-pressed="false">Paytm</button><button type="button" data-upi-app="bhim" aria-pressed="false">BHIM</button><button type="button" data-upi-app="other" aria-pressed="false">Other UPI Apps</button></div><small>Tap once to select. Your selected app will be highlighted.</small><button type="button" class="upi-continue" disabled>Continue to Pay &amp; Application</button>';
     payLink.insertAdjacentElement("afterend",chooser);
-    const packages={gpay:"com.google.android.apps.nbu.paisa.user",phonepe:"com.phonepe.app",paytm:"net.one97.paytm",bhim:"in.org.npci.upiapp"};
+    let selectedApp="";
     chooser.addEventListener("click",event=>{
-     const link=event.target.closest("a[data-upi-app]");if(!link)return;
-     event.preventDefault();const app=link.dataset.upiApp;
-     if(app==="other"){window.location.href=uri;return;}
-     const intent="intent://pay?"+uri.split("?")[1]+"#Intent;scheme=upi;package="+packages[app]+";action=android.intent.action.VIEW;end";
-     window.location.href=intent;
+     const option=event.target.closest("button[data-upi-app]");
+     if(option){selectedApp=option.dataset.upiApp;chooser.querySelectorAll("button[data-upi-app]").forEach(btn=>{btn.classList.toggle("selected",btn===option);btn.setAttribute("aria-pressed",btn===option?"true":"false");});chooser.querySelector(".upi-continue").disabled=false;return;}
+     const next=event.target.closest(".upi-continue");
+     if(!next||!selectedApp)return;
+     fields.hidden=false;fields.scrollIntoView({behavior:"smooth",block:"start"});
+     if(selectedApp==="other"){window.location.href=uri;return;}
+     const query=uri.split("?")[1],isAndroid=/Android/i.test(navigator.userAgent);
+     if(isAndroid){const packages={gpay:"com.google.android.apps.nbu.paisa.user",phonepe:"com.phonepe.app",paytm:"net.one97.paytm",bhim:"in.org.npci.upiapp"};window.location.href="intent://pay?"+query+"#Intent;scheme=upi;package="+packages[selectedApp]+";action=android.intent.action.VIEW;end";}
+     else{const schemes={gpay:"gpay://upi/pay?",phonepe:"phonepe://pay?",paytm:"paytmmp://pay?",bhim:"bhim://upi/pay?"};window.location.href=schemes[selectedApp]+query;}
     });
    }
    box.hidden=false;fields.hidden=false;
