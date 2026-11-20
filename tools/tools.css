@@ -145,3 +145,65 @@
  .category-grid .tool-card small{font-size:10px;margin-top:11px}
  .category-head h2{font-size:18px}
 }
+
+
+/* KeyDhan Free Tools — shared premium content system (all tool detail pages) */
+:root{--kd-tool-gold:#e5c75a;--kd-tool-muted:#aebbd0;--kd-tool-line:rgba(212,175,55,.2);--kd-tool-surface:#0b192b}
+.tools-wrap{isolation:isolate}
+.tools-wrap>.tools-hero{position:relative;overflow:hidden}
+.tools-wrap>.tools-hero h1{line-height:1.14;letter-spacing:-.55px;text-wrap:balance}
+.tools-wrap>.tools-hero p{font-size:clamp(13px,1.8vw,16px);line-height:1.7}
+.tools-wrap .tool-panel{position:relative;overflow:hidden;margin-top:22px;padding:clamp(19px,3.4vw,30px);border:1px solid var(--kd-tool-line);border-radius:22px;background:linear-gradient(155deg,#0d1d31 0%,#07111f 100%);box-shadow:0 16px 42px rgba(0,0,0,.18)}
+.tools-wrap .tool-panel>h2{margin:0 0 9px;color:#f3d66c;font-size:clamp(21px,3vw,27px);line-height:1.25;letter-spacing:-.3px}
+.tools-wrap .tool-panel>h3{margin:22px 0 8px;color:#f1d36b;font-size:17px;line-height:1.35}
+.tools-wrap .tool-panel>p,.tools-wrap .tool-panel .tool-desc{color:var(--kd-tool-muted);font-size:14px;line-height:1.7}
+.tools-wrap .tool-panel .tool-desc{margin:0 0 20px}
+.tools-wrap .tool-panel label:not(.dropzone){color:#e6edf7;font-size:13px;font-weight:650;line-height:1.5}
+.tools-wrap .tool-panel input:not([type=checkbox]):not([type=radio]):not([type=file]),.tools-wrap .tool-panel select,.tools-wrap .tool-panel textarea{width:100%;min-height:46px;margin-top:7px;padding:12px 13px;border:1px solid #34465e;border-radius:12px;background:#081526;color:#f8fafc;font:inherit;font-size:14px;outline:none;transition:border-color .18s,box-shadow .18s}
+.tools-wrap .tool-panel textarea{min-height:120px;resize:vertical}
+.tools-wrap .tool-panel input:focus,.tools-wrap .tool-panel select:focus,.tools-wrap .tool-panel textarea:focus{border-color:#d4af37;box-shadow:0 0 0 3px rgba(212,175,55,.12)}
+.tools-wrap .tool-panel input::placeholder,.tools-wrap .tool-panel textarea::placeholder{color:#8493a9}
+.tools-wrap .tool-panel .options{gap:11px}
+.tools-wrap .tool-panel .actions{gap:10px;margin-top:18px}
+.tools-wrap .tool-panel .actions button,.tools-wrap .tool-panel .download-link{min-height:47px;border-radius:12px;font-weight:800;letter-spacing:.1px}
+.tools-wrap .tool-panel .status{padding:10px 12px;border:1px solid rgba(212,175,55,.13);border-radius:11px;background:rgba(212,175,55,.045);line-height:1.6}
+.tools-wrap .tool-panel .hint,.tools-wrap>.hint{color:#91a0b6;font-size:11px;line-height:1.65}
+.tools-wrap .seo-guide{margin-top:24px;padding:clamp(20px,4vw,30px);border-color:rgba(212,175,55,.16);background:linear-gradient(155deg,#0c1a2c,#07111f)}
+.tools-wrap .seo-guide h2{margin:0 0 11px;color:#f1d36b;font-size:clamp(21px,3vw,27px);line-height:1.28;letter-spacing:-.25px}
+.tools-wrap .seo-guide h3{margin:25px 0 8px;padding-top:15px;border-top:1px solid rgba(148,163,184,.13);color:#f1d36b;font-size:17px;line-height:1.4}
+.tools-wrap .seo-guide h4{margin:15px 0 5px;color:#f1f5fb;font-size:14px;line-height:1.45}
+.tools-wrap .seo-guide p,.tools-wrap .seo-guide li{color:#b5c1d1;font-size:13px;line-height:1.8}
+.tools-wrap .seo-guide p{margin:7px 0 12px}
+.tools-wrap .seo-guide ul,.tools-wrap .seo-guide ol{padding-left:21px;margin:10px 0 16px}
+.tools-wrap .seo-guide li{padding-left:3px;margin:5px 0}
+.tools-wrap .seo-guide a{color:#e5c75a;text-decoration:underline;text-underline-offset:3px}
+.tools-wrap .seo-guide strong{color:#f4d66d}
+.tools-wrap .seo-guide [lang=hi]{padding:15px 16px;margin-top:20px;border-left:3px solid #d4af37;border-radius:0 12px 12px 0;background:rgba(212,175,55,.055);color:#d2dbea;line-height:1.85}
+.tools-wrap .tool-panel .dropzone{margin:12px 0;padding:27px 15px;border:1px dashed rgba(212,175,55,.5);border-radius:15px;background:rgba(212,175,55,.045)}
+.tools-wrap .tool-panel .file-list{margin:15px 0}
+.tools-wrap .tool-panel .file-row{border-color:rgba(148,163,184,.17);background:#0a1728}
+.tools-wrap .tool-panel .result,.tools-wrap .tool-panel [id*=Result],.tools-wrap .tool-panel [id*=result]{overflow-wrap:anywhere}
+.tools-wrap .tool-panel table{width:100%;border-collapse:collapse;color:#dce5f2;font-size:13px}
+.tools-wrap .tool-panel th,.tools-wrap .tool-panel td{padding:10px;border-bottom:1px solid rgba(148,163,184,.16);text-align:left}
+.tools-wrap .tool-panel th{color:#f1d36b}
+.tools-wrap .topbar{position:relative;top:auto}
+.tools-wrap .back{display:inline-flex;align-items:center;gap:7px;padding:10px 14px;border:1px solid var(--kd-tool-line);border-radius:999px;background:#0b192b;font-weight:700}
+@media(max-width:600px){
+ .tools-wrap{padding:20px 13px 42px}
+ .tools-wrap>.tools-hero{padding:25px 12px 21px}
+ .tools-wrap>.tools-hero h1{font-size:clamp(27px,8vw,34px);line-height:1.14}
+ .tools-wrap>.tools-hero p{font-size:13px;line-height:1.6}
+ .tools-wrap .tool-panel{margin-top:16px;padding:17px 14px;border-radius:18px}
+ .tools-wrap .tool-panel>h2{font-size:21px}
+ .tools-wrap .tool-panel>h3{font-size:16px}
+ .tools-wrap .tool-panel>p,.tools-wrap .tool-panel .tool-desc{font-size:13px;line-height:1.65}
+ .tools-wrap .tool-panel input:not([type=checkbox]):not([type=radio]):not([type=file]),.tools-wrap .tool-panel select,.tools-wrap .tool-panel textarea{font-size:16px}
+ .tools-wrap .seo-guide{margin-top:17px;padding:18px 15px;border-radius:18px}
+ .tools-wrap .seo-guide h2{font-size:21px;line-height:1.3}
+ .tools-wrap .seo-guide h3{margin-top:21px;padding-top:13px;font-size:16px}
+ .tools-wrap .seo-guide h4{font-size:13px}
+ .tools-wrap .seo-guide p,.tools-wrap .seo-guide li{font-size:12px;line-height:1.75}
+ .tools-wrap .seo-guide [lang=hi]{padding:13px;margin-top:16px}
+ .tools-wrap .tool-panel .actions{display:grid;grid-template-columns:1fr}
+ .tools-wrap .tool-panel .actions button,.tools-wrap .tool-panel .download-link{width:100%}
+}
