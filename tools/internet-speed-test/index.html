@@ -19,6 +19,69 @@
 .speed-details{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}.speed-detail{padding:12px;border:1px solid rgba(148,163,184,.14);border-radius:12px;background:rgba(255,255,255,.025)}.speed-detail span{display:block;color:#91a0b6;font-size:10px}.speed-detail strong{display:block;color:#dce5f2;font-size:12px;margin-top:5px;overflow-wrap:anywhere}
 .speed-disclaimer{margin:16px 0 0;color:#8f9db2;font-size:11px;line-height:1.6;text-align:center}
 @media(max-width:430px){.speed-metric{padding:13px 5px}.speed-metric span{font-size:11px}.speed-actions{display:grid;grid-template-columns:1fr}.speed-actions button{width:100%}.speed-details{gap:8px}.speed-detail{padding:10px}}
+
+/* Premium, mobile-first speed test guide and result presentation */
+.speedtest-panel{padding:clamp(17px,3vw,28px)}
+.speed-gauge{width:min(62vw,238px);margin:18px auto 12px}
+.speed-status{margin:8px 0 15px;font-size:12px}
+.speed-metric{padding:15px 8px}
+.speed-detail{padding:13px}
+.speed-actions{gap:12px}
+.speed-actions button{min-height:50px}
+.speed-disclaimer{max-width:620px;margin:18px auto 0;font-size:10px;line-height:1.65}
+.speed-guide{max-width:900px;margin:38px auto 54px;padding:clamp(18px,4vw,30px);border:1px solid rgba(212,175,55,.2);border-radius:23px;background:linear-gradient(155deg,#0c1b2e,#07111f);box-shadow:0 16px 42px rgba(0,0,0,.16)}
+.guide-heading{max-width:650px;margin:0 auto 22px;text-align:center}
+.guide-heading h2,.speed-tips h2,.speed-faq-heading h2,.speed-hindi h2{margin:8px 0;color:#f3d36a;font-size:clamp(21px,3.5vw,27px);line-height:1.25;letter-spacing:-.35px}
+.guide-heading p{margin:0;color:#aebbd0;font-size:13px;line-height:1.65}
+.speed-guide-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.speed-guide-card{padding:17px;border:1px solid rgba(212,175,55,.16);border-radius:16px;background:linear-gradient(145deg,#11243a,#0a1728)}
+.guide-icon{display:grid;place-items:center;width:32px;height:32px;border:1px solid rgba(212,175,55,.3);border-radius:10px;color:#f0d16a;font-size:20px}
+.speed-guide-card h3{margin:11px 0 5px;color:#f3d36a;font-size:15px}
+.speed-guide-card p{margin:0;color:#b4c0d1;font-size:12px;line-height:1.65}
+.speed-tips{margin-top:26px;padding:20px;border:1px solid rgba(212,175,55,.16);border-radius:17px;background:rgba(255,255,255,.025)}
+.speed-tips h2{font-size:20px}
+.speed-tips ul{margin:12px 0 0;padding-left:19px;color:#b9c5d5;font-size:13px;line-height:1.8}
+.speed-tips li{padding-left:3px;margin:4px 0}
+.speed-faq{margin-top:26px;padding:20px;border:1px solid rgba(212,175,55,.16);border-radius:17px;background:#091626}
+.speed-faq-heading{margin-bottom:12px}
+.speed-faq-heading h2{font-size:21px}
+.speed-faq details{border-top:1px solid rgba(148,163,184,.16)}
+.speed-faq details:last-child{border-bottom:1px solid rgba(148,163,184,.16)}
+.speed-faq summary{position:relative;padding:15px 32px 15px 0;list-style:none;cursor:pointer;color:#eef2f8;font-size:13px;font-weight:750;line-height:1.5}
+.speed-faq summary::-webkit-details-marker{display:none}
+.speed-faq summary:after{content:"+";position:absolute;right:3px;top:50%;transform:translateY(-50%);color:#e5c75a;font-size:22px;font-weight:400}
+.speed-faq details[open] summary:after{content:"−"}
+.speed-faq details p{margin:0;padding:0 20px 15px 0;color:#aebbd0;font-size:12px;line-height:1.7}
+.speed-faq summary:focus-visible{outline:2px solid #d4af37;outline-offset:3px;border-radius:5px}
+.speed-hindi{margin-top:22px;padding:19px;border-left:3px solid #d4af37;border-radius:0 14px 14px 0;background:rgba(212,175,55,.055)}
+.speed-hindi h2{font-size:20px}
+.speed-hindi p{margin:8px 0 0;color:#b8c4d4;font-size:13px;line-height:1.85}
+@media(max-width:520px){
+ .speedtest-panel{border-radius:20px;padding:17px 15px}
+ .speed-gauge{width:min(59vw,218px);margin:15px auto 9px}
+ .speed-metrics{gap:7px}
+ .speed-metric{padding:12px 4px;border-radius:13px}
+ .speed-metric strong{font-size:20px}
+ .speed-metric span{font-size:11px}
+ .speed-metric small{font-size:9px}
+ .speed-details{margin-top:12px}
+ .speed-actions{display:grid;grid-template-columns:1fr;gap:9px;margin-top:16px}
+ .speed-actions button{width:100%;min-width:0;padding:13px 16px}
+ .speed-guide{margin:25px auto 38px;padding:18px 15px;border-radius:19px}
+ .guide-heading{text-align:left;margin-bottom:17px}
+ .guide-heading h2,.speed-tips h2,.speed-faq-heading h2,.speed-hindi h2{font-size:21px}
+ .speed-guide-grid{grid-template-columns:1fr;gap:9px}
+ .speed-guide-card{display:grid;grid-template-columns:34px 1fr;column-gap:11px;align-items:center;padding:13px}
+ .guide-icon{grid-row:1 / span 2}
+ .speed-guide-card h3{margin:0 0 3px;font-size:14px}
+ .speed-guide-card p{grid-column:2;font-size:11px;line-height:1.55}
+ .speed-tips,.speed-faq{margin-top:17px;padding:16px 14px}
+ .speed-tips ul{font-size:12px;line-height:1.7}
+ .speed-faq summary{font-size:12px;padding:14px 28px 14px 0}
+ .speed-faq details p{font-size:11px}
+ .speed-hindi{margin-top:17px;padding:15px 13px}
+ .speed-hindi p{font-size:12px;line-height:1.8}
+}
 </style></head>
 <body>
 <main class="tools-wrap">
@@ -40,7 +103,27 @@
 <p class="speed-disclaimer">This test transfers data to Cloudflare's speed-test service to measure your connection. A complete test may use several MB of mobile or Wi-Fi data. Results vary with network conditions, device, server routing and browser limitations. KeyDhan does not store your test results.</p>
 </section>
 <p class="hint" style="text-align:center"><a href="/tools/" style="color:#e5c75a">← Back to all Free Tools</a></p>
-<section class="tool-panel seo-guide"><h2>Internet Speed Test: check your broadband or mobile connection</h2><p>Use this free browser-based speed test to estimate internet latency, download throughput, upload throughput and jitter. The test uses a Cloudflare speed-test endpoint and does not require an account.</p><h3>How to get a better speed test result</h3><p>Pause large downloads and video streams, move closer to your Wi-Fi router, and run the test more than once at different times. Compare results using the same device and network.</p><h3>Understanding the results</h3><p>Ping measures response time in milliseconds; lower is generally more responsive. Download speed measures how quickly data reaches your device. Upload speed measures how quickly your device sends data. Jitter describes variation in response time.</p><h3>Frequently asked questions</h3><h4>Does this show my ISP or public IP address?</h4><p>No. This version does not display or save your public IP address or ISP details.</p><h4>Is this an official TRAI speed test?</h4><p>No. This is an independent browser-based test for general guidance and is not a TRAI-certified measurement.</p><h4>Why can results vary?</h4><p>Wi-Fi signal, network congestion, device performance, VPNs, background downloads and the selected test endpoint can affect the result.</p><p lang="hi"><strong>हिंदी में:</strong> यह टूल इंटरनेट की अनुमानित Ping, Download और Upload Speed दिखाता है। बेहतर परिणाम के लिए अन्य डाउनलोड और वीडियो स्ट्रीमिंग रोककर टेस्ट करें। यह TRAI का आधिकारिक टेस्ट नहीं है।</p></section>
+<section class="speed-guide" aria-labelledby="speed-guide-title">
+  <div class="guide-heading"><span class="speedtest-kicker">KNOW YOUR CONNECTION</span><h2 id="speed-guide-title">Understand Your Speed Test Results</h2><p>A quick guide to what each number means and how to get a more reliable reading.</p></div>
+  <div class="speed-guide-grid">
+    <article class="speed-guide-card"><span class="guide-icon">↔</span><h3>Ping</h3><p>Response time in milliseconds (ms). Lower ping generally means a more responsive connection.</p></article>
+    <article class="speed-guide-card"><span class="guide-icon">↓</span><h3>Download</h3><p>How quickly data reaches your device. Higher download speed helps with streaming and downloads.</p></article>
+    <article class="speed-guide-card"><span class="guide-icon">↑</span><h3>Upload</h3><p>How quickly your device sends data. Important for video calls, backups and sharing files.</p></article>
+    <article class="speed-guide-card"><span class="guide-icon">⌁</span><h3>Jitter</h3><p>Variation in response time. Lower jitter generally supports smoother calls and real-time apps.</p></article>
+  </div>
+  <div class="speed-tips">
+    <span class="speedtest-kicker">GET A BETTER READING</span><h2>How to get a more accurate speed test</h2>
+    <ul><li>Pause large downloads, updates and video streams.</li><li>Move closer to your Wi-Fi router or test using a wired connection.</li><li>Close apps using the internet in the background.</li><li>Run two or three tests at different times and compare the results.</li></ul>
+  </div>
+  <div class="speed-faq">
+    <div class="speed-faq-heading"><span class="speedtest-kicker">QUICK ANSWERS</span><h2>Frequently Asked Questions</h2></div>
+    <details><summary>Does this show my ISP or public IP address?</summary><p>No. This page does not display or save your public IP address or ISP details. The speed test request is handled by Cloudflare's test endpoint.</p></details>
+    <details><summary>Is this an official TRAI speed test?</summary><p>No. This is an independent browser-based test for general guidance. It is not a TRAI-certified measurement.</p></details>
+    <details><summary>Why can my results vary?</summary><p>Wi-Fi signal, network congestion, device performance, VPNs, background downloads, server routing and browser limitations can affect the result.</p></details>
+    <details><summary>Will the test use my mobile data?</summary><p>Yes. The test transfers data to measure download and upload speed. The amount can vary depending on your connection and test run.</p></details>
+  </div>
+  <div class="speed-hindi"><span class="speedtest-kicker">HINDI GUIDE</span><h2>इंटरनेट स्पीड टेस्ट को समझें</h2><p>Ping इंटरनेट की प्रतिक्रिया का समय बताता है। Download Speed बताती है कि डेटा आपके डिवाइस तक कितनी तेजी से आता है, जबकि Upload Speed डेटा भेजने की गति बताती है। Jitter प्रतिक्रिया समय में होने वाले बदलाव को दर्शाता है। बेहतर परिणाम के लिए बैकग्राउंड डाउनलोड और वीडियो स्ट्रीमिंग रोककर टेस्ट करें।</p></div>
+</section>
 </main>
 <div data-keydhan-footer></div>
 <script src="/footer.js?v=20261120-speedtest"></script>
