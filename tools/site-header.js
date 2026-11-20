@@ -1,4 +1,6 @@
 /* Shared KeyDhan mobile navigation for Free Tools pages. */
+/* Force-refresh the shared premium stylesheet across every tool detail page. */
+(function(){const href='/tools/tools.css?v=20261121-premium-global';let link=document.querySelector('link[data-kd-tools-premium]');if(!link){link=document.createElement('link');link.rel='stylesheet';link.dataset.kdToolsPremium='true';document.head.appendChild(link);}if(link.getAttribute('href')!==href)link.href=href;})();
 (function(){
  const header=document.querySelector('body > header');
  if(header && header.dataset.kdMenuReady==='true') return;
