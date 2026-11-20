@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Internet Speed Test – Ping, Download & Upload | KeyDhan</title>
+<meta name="description" content="Check your internet connection speed with KeyDhan's free online speed test. Measure ping, download speed, upload speed and jitter in your browser.">
+<link rel="canonical" href="https://keydhan.com/tools/internet-speed-test/">
+<meta name="robots" content="index,follow">
+<link rel="stylesheet" href="/style.css?v=20261031-tools-nav">
+<link rel="stylesheet" href="/tools/tools.css?v=20261120-speedtest">
+<style>
+.speedtest-panel{max-width:820px;margin:0 auto;padding:clamp(18px,4vw,30px);border:1px solid rgba(212,175,55,.25);border-radius:24px;background:linear-gradient(155deg,#0c1b2e,#050d19);box-shadow:0 18px 50px rgba(0,0,0,.22)}
+.speedtest-top{text-align:center}.speedtest-kicker{color:#e5c75a;font-size:10px;font-weight:800;letter-spacing:2px}.speedtest-top h2{margin:8px 0;color:#fff;font-size:clamp(23px,4vw,30px)}.speedtest-top p{color:#aebbd0;font-size:13px;line-height:1.6}
+.speed-gauge{width:min(68vw,260px);aspect-ratio:1;margin:20px auto 16px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(from 225deg,#d4af37 0deg,#f3d66b 240deg,rgba(255,255,255,.1) 240deg 270deg,transparent 270deg);position:relative}
+.speed-gauge:before{content:"";position:absolute;inset:13px;border-radius:50%;background:radial-gradient(circle at 50% 35%,#142943,#07111f 70%);border:1px solid rgba(212,175,55,.22)}
+.speed-gauge-inner{position:relative;text-align:center}.speed-gauge-inner strong{display:block;color:#fff;font-size:clamp(34px,9vw,48px);line-height:1.1;font-variant-numeric:tabular-nums}.speed-gauge-inner span{display:block;color:#e5c75a;font-size:14px;margin-top:6px}.speed-gauge-inner small{display:block;color:#94a3b8;font-size:10px;margin-top:7px}
+.speed-status{min-height:22px;text-align:center;color:#e5c75a;font-size:13px;margin:10px 0 18px}
+.speed-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.speed-metric{padding:16px 8px;border:1px solid rgba(212,175,55,.2);border-radius:16px;background:#0b1a2d;text-align:center}.speed-metric strong{display:block;color:#f4d36b;font-size:clamp(19px,4.5vw,26px);font-variant-numeric:tabular-nums}.speed-metric span{display:block;color:#eaf0f8;font-size:12px;font-weight:700;margin-top:6px}.speed-metric small{display:block;color:#91a0b6;font-size:10px;margin-top:3px}
+.speed-actions{display:flex;justify-content:center;gap:10px;margin-top:20px}.speed-actions button{min-width:180px;padding:14px 22px;border-radius:14px;background:linear-gradient(135deg,#f3d66b,#c9a32d);color:#10151d;font-weight:850;font-size:15px}.speed-actions button.secondary{background:#15243a;border:1px solid rgba(212,175,55,.35);color:#f1d66b}.speed-actions button:disabled{opacity:.55}
+.speed-details{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}.speed-detail{padding:12px;border:1px solid rgba(148,163,184,.14);border-radius:12px;background:rgba(255,255,255,.025)}.speed-detail span{display:block;color:#91a0b6;font-size:10px}.speed-detail strong{display:block;color:#dce5f2;font-size:12px;margin-top:5px;overflow-wrap:anywhere}
+.speed-disclaimer{margin:16px 0 0;color:#8f9db2;font-size:11px;line-height:1.6;text-align:center}
+@media(max-width:430px){.speed-metric{padding:13px 5px}.speed-metric span{font-size:11px}.speed-actions{display:grid;grid-template-columns:1fr}.speed-actions button{width:100%}.speed-details{gap:8px}.speed-detail{padding:10px}}
+</style></head>
+<body>
+<main class="tools-wrap">
+<div class="tools-hero"><div class="eyebrow">KEYDHAN · SMART UTILITIES</div><h1>Internet <span>Speed Test</span></h1><p>Check your connection's ping, download speed, upload speed and jitter in a few seconds.</p><div class="privacy-pill">🔒 No account · No result history stored</div></div>
+<section class="speedtest-panel" aria-label="Internet speed test">
+<div class="speedtest-top"><span class="speedtest-kicker">CONNECTION PERFORMANCE</span><h2>Your Internet Speed</h2><p>For a more accurate result, pause downloads, close streaming apps and keep this page open during the test.</p></div>
+<div class="speed-gauge" aria-hidden="true"><div class="speed-gauge-inner"><strong id="speedValue">--</strong><span>Mbps</span><small id="speedPhase">READY TO TEST</small></div></div>
+<div id="speedStatus" class="speed-status" role="status" aria-live="polite">Tap Start Speed Test to begin.</div>
+<div class="speed-metrics">
+<div class="speed-metric"><strong id="pingValue">--</strong><span>Ping</span><small>ms</small></div>
+<div class="speed-metric"><strong id="downloadValue">--</strong><span>Download</span><small>Mbps</small></div>
+<div class="speed-metric"><strong id="uploadValue">--</strong><span>Upload</span><small>Mbps</small></div>
+</div>
+<div class="speed-details">
+<div class="speed-detail"><span>Jitter</span><strong id="jitterValue">-- ms</strong></div>
+<div class="speed-detail"><span>Test server</span><strong>Cloudflare Speed Test Edge</strong></div>
+</div>
+<div class="speed-actions"><button id="startTest" type="button">▶ Start Speed Test</button><button id="shareResult" class="secondary" type="button" disabled>Share Result</button></div>
+<p class="speed-disclaimer">This test transfers data to Cloudflare's speed-test service to measure your connection. A complete test may use several MB of mobile or Wi-Fi data. Results vary with network conditions, device, server routing and browser limitations. KeyDhan does not store your test results.</p>
+</section>
+<p class="hint" style="text-align:center"><a href="/tools/" style="color:#e5c75a">← Back to all Free Tools</a></p>
+<section class="tool-panel seo-guide"><h2>Internet Speed Test: check your broadband or mobile connection</h2><p>Use this free browser-based speed test to estimate internet latency, download throughput, upload throughput and jitter. The test uses a Cloudflare speed-test endpoint and does not require an account.</p><h3>How to get a better speed test result</h3><p>Pause large downloads and video streams, move closer to your Wi-Fi router, and run the test more than once at different times. Compare results using the same device and network.</p><h3>Understanding the results</h3><p>Ping measures response time in milliseconds; lower is generally more responsive. Download speed measures how quickly data reaches your device. Upload speed measures how quickly your device sends data. Jitter describes variation in response time.</p><h3>Frequently asked questions</h3><h4>Does this show my ISP or public IP address?</h4><p>No. This version does not display or save your public IP address or ISP details.</p><h4>Is this an official TRAI speed test?</h4><p>No. This is an independent browser-based test for general guidance and is not a TRAI-certified measurement.</p><h4>Why can results vary?</h4><p>Wi-Fi signal, network congestion, device performance, VPNs, background downloads and the selected test endpoint can affect the result.</p><p lang="hi"><strong>हिंदी में:</strong> यह टूल इंटरनेट की अनुमानित Ping, Download और Upload Speed दिखाता है। बेहतर परिणाम के लिए अन्य डाउनलोड और वीडियो स्ट्रीमिंग रोककर टेस्ट करें। यह TRAI का आधिकारिक टेस्ट नहीं है।</p></section>
+</main>
+<div data-keydhan-footer></div>
+<script src="/footer.js?v=20261120-speedtest"></script>
+<script src="/tools/internet-speed-test.js?v=1"></script>
+<script src="/site-header.js?v=20261114-tools-back-v1" defer></script>
+</body></html>
