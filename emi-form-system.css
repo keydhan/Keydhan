@@ -95,3 +95,108 @@
   #calculator>.card .emi-field{gap:7px;margin-bottom:12px}
   #calculator .emi-actions{margin-top:8px}
 }
+
+
+/* 2026-11-21: Premium visual pass for both customer-facing EMI calculators */
+.calculator-page{max-width:980px;margin:0 auto;padding:26px 18px 64px}
+.calculator-page .emi-page-intro{position:relative;overflow:hidden;margin:0 auto 25px;padding:40px 22px 34px;text-align:center;border:1px solid rgba(212,175,55,.22);border-radius:25px;background:radial-gradient(ellipse at 50% 0,rgba(212,175,55,.17),transparent 68%),linear-gradient(145deg,#0c1c30,#050c18);box-shadow:0 18px 48px rgba(0,0,0,.22)}
+.calculator-page .emi-page-intro .emi-guide-eyebrow,.calculator-page .emi-guide-eyebrow{display:block;color:#e8cd6a;font-size:10px;font-weight:850;letter-spacing:2.2px}
+.calculator-page .emi-page-intro h1{max-width:780px;margin:14px auto;color:#f8fafc;font-size:clamp(29px,5vw,43px);line-height:1.16;letter-spacing:-.8px;text-wrap:balance}
+.calculator-page .emi-page-intro p{max-width:690px;margin:0 auto;color:#b6c3d5;font-size:15px;line-height:1.75}
+.calculator-page .emi-main-heading{margin:28px 0 15px;text-align:center;color:#e8c64e;font-size:clamp(27px,4vw,36px);letter-spacing:-.5px}
+.calculator-page #calculator>.card,.calculator-page .advanced-card{padding:clamp(20px,3.5vw,34px);border:1px solid rgba(212,175,55,.23);border-radius:23px;background:linear-gradient(155deg,#0d1d31,#07111f);box-shadow:0 18px 48px rgba(0,0,0,.24)}
+.calculator-page #calculator>.card .emi-field-label,.calculator-page .advanced-field label{color:#f0d36b;font-weight:750}
+.calculator-page #calculator>.card .emi-field input,.calculator-page #calculator>.card #type,.calculator-page .advanced-field input,.calculator-page .advanced-field select{border:1px solid rgba(151,166,190,.28);background-color:#09172a;color:#f8fafc;box-shadow:inset 0 1px 0 rgba(255,255,255,.035)}
+.calculator-page #calculator>.card .emi-field input:focus,.calculator-page #calculator>.card #type:focus,.calculator-page .advanced-field input:focus,.calculator-page .advanced-field select:focus{border-color:#d9ba4c;box-shadow:0 0 0 3px rgba(212,175,55,.13)}
+.calculator-page #calculator .emi-actions,.calculator-page .advanced-actions{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(112px,.7fr);gap:12px;margin-top:20px}
+.calculator-page #calculator .emi-actions button,.calculator-page .advanced-actions button{min-height:60px;border-radius:15px;font-weight:800;letter-spacing:.1px;transition:transform .18s,filter .18s,box-shadow .18s}
+.calculator-page #calculator .emi-actions .emi-calculate-btn,.calculator-page .advanced-actions .emi-calculate-btn{border:0;background:linear-gradient(115deg,#f2d86f,#cba52e);color:#101827;box-shadow:0 8px 22px rgba(212,175,55,.16)}
+.calculator-page #calculator .emi-actions .emi-reset-btn,.calculator-page .advanced-actions .emi-reset-btn{border:1px solid rgba(212,175,55,.32);background:linear-gradient(145deg,#172b43,#0c192b);color:#f0d36b}
+.calculator-page #calculator .emi-actions button:active,.calculator-page .advanced-actions button:active{transform:scale(.985)}
+.calculator-page #results{margin-top:25px;padding:20px;border:1px solid rgba(212,175,55,.24);border-radius:19px;background:linear-gradient(145deg,#10243a,#081526)}
+.calculator-page .emi-results-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:15px}
+.calculator-page .emi-results-heading .emi-kicker,.calculator-page .advanced-result-head .emi-kicker{color:#e8cd6a;font-size:10px;font-weight:850;letter-spacing:1.8px}
+.calculator-page .emi-status{color:#8ed8b0;font-size:10px;font-weight:800;letter-spacing:.8px}
+.calculator-page .emi-status i{display:inline-block;width:7px;height:7px;margin-right:6px;border-radius:50%;background:#61c98f;box-shadow:0 0 10px rgba(97,201,143,.5)}
+.calculator-page .emi-highlight{padding:20px;border:1px solid rgba(212,175,55,.23);border-radius:16px;background:radial-gradient(ellipse at 50% 0,rgba(212,175,55,.15),transparent 75%),#0b1a2d;text-align:center}
+.calculator-page .emi-highlight .emi-label,.calculator-page .emi-caption{display:block;color:#b7c5d7;font-size:12px}
+.calculator-page .emi-amount{display:block;margin:8px 0;color:#f3d56b;font-size:clamp(30px,6vw,42px);line-height:1.2}
+.calculator-page .emi-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:13px}
+.calculator-page .emi-metric{padding:14px;border:1px solid rgba(148,163,184,.16);border-radius:13px;background:rgba(255,255,255,.025)}
+.calculator-page .emi-metric>span{display:block;color:#aebbd0;font-size:11px}
+.calculator-page .emi-metric strong{display:block;margin-top:7px;color:#f5d66a;font-size:16px;overflow-wrap:anywhere}
+.calculator-page .emi-metric small{display:block;margin-top:4px;color:#8e9eb3;font-size:10px}
+.calculator-page .emi-chart-card{margin-top:14px;padding:16px;border:1px solid rgba(148,163,184,.17);border-radius:15px;background:rgba(4,12,23,.4)}
+.calculator-page .emi-chart-heading{display:flex;justify-content:space-between;align-items:center;color:#f4f6fa}
+.calculator-page .emi-chart-heading small{display:block;margin-top:4px;color:#91a1b7;font-size:11px}
+.calculator-page .emi-chart-icon{color:#e8cd6a;font-size:25px}
+.calculator-page .emi-amortisation-btn{display:flex;justify-content:space-between;width:100%;margin-top:12px;padding:14px 16px;border:1px solid rgba(212,175,55,.24);border-radius:12px;background:#14263c;color:#f0d36b;font-weight:750}
+.calculator-page .emi-amortisation-table{overflow:auto}
+.calculator-page .emi-amortisation-table table{min-width:540px;color:#dbe4ef}
+.calculator-page .advanced-intro{text-align:center;margin:54px auto 22px;padding:0 12px}
+.calculator-page .advanced-intro .services-eyebrow{color:#e8cd6a;font-size:10px;font-weight:850;letter-spacing:2px}
+.calculator-page .advanced-intro h2{margin:13px 0 10px;color:#f0d36b;font-size:clamp(30px,5vw,40px);line-height:1.18;text-wrap:balance}
+.calculator-page .advanced-intro p{max-width:600px;margin:0 auto;color:#b5c1d3;font-size:14px;line-height:1.75}
+.calculator-page .advanced-fields{display:grid;grid-template-columns:minmax(0,1fr);gap:17px}
+.calculator-page .advanced-field{display:grid;gap:8px;min-width:0}
+.calculator-page .advanced-field label{font-size:14px;line-height:1.45}
+.calculator-page .advanced-field input,.calculator-page .advanced-field select{min-height:58px;padding:13px 16px;border-radius:15px;font-size:16px}
+.calculator-page .advanced-field .kd-input-shell input{padding-left:50px}
+.calculator-page .advanced-field .kd-input-shell input:has(+.kd-input-suffix){padding-right:48px}
+.calculator-page .advanced-results{margin-top:22px;padding:18px;border:1px solid rgba(212,175,55,.24);border-radius:17px;background:linear-gradient(145deg,#10243a,#081526)}
+.calculator-page .advanced-result-head h3{margin:7px 0 14px;color:#f8fafc;font-size:21px}
+.calculator-page .advanced-net{padding:17px;border:1px solid rgba(212,175,55,.25);border-radius:14px;background:radial-gradient(ellipse at 50% 0,rgba(212,175,55,.16),transparent 80%),#0a192b}
+.calculator-page .advanced-net-copy{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.calculator-page .advanced-net-copy span,.calculator-page .advanced-net-copy small{display:block;color:#aebbd0;font-size:11px}
+.calculator-page .advanced-net-copy strong{display:block;margin:7px 0;color:#f3d56b;font-size:clamp(25px,5vw,34px);overflow-wrap:anywhere}
+.calculator-page .advanced-copy-btn{padding:9px 12px;border:1px solid rgba(212,175,55,.3);border-radius:10px;background:#172b43;color:#f0d36b}
+.calculator-page .advanced-results-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px}
+.calculator-page .advanced-result-row{padding:12px;border:1px solid rgba(148,163,184,.15);border-radius:11px;background:rgba(255,255,255,.025)}
+.calculator-page .advanced-result-row span{display:block;color:#aebbd0;font-size:10px;line-height:1.5}
+.calculator-page .advanced-result-row strong{display:block;margin-top:5px;color:#f4d66c;font-size:14px;overflow-wrap:anywhere}
+.calculator-page .advanced-result-emi{grid-column:1/-1;border-color:rgba(212,175,55,.3)}
+.calculator-page .advanced-footnote,.calculator-page .advanced-copy-status{color:#91a1b7;font-size:11px;line-height:1.7}
+.calculator-page .emi-guide-section{margin-top:58px}
+.calculator-page .emi-guide-intro{text-align:center;max-width:760px;margin:0 auto 24px}
+.calculator-page .emi-guide-intro h2{margin:12px 0;color:#f0d36b;font-size:clamp(26px,4vw,34px)}
+.calculator-page .emi-guide-intro p{color:#b4c1d3;font-size:14px;line-height:1.8}
+.calculator-page .emi-factor-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.calculator-page .emi-factor-card{padding:19px;border:1px solid rgba(212,175,55,.2);border-radius:16px;background:linear-gradient(145deg,#102238,#091525)}
+.calculator-page .emi-factor-number{display:inline-flex;margin-bottom:12px;color:#e8cd6a;font-size:11px;font-weight:850;letter-spacing:1px}
+.calculator-page .emi-factor-card h3{margin:0 0 7px;color:#f0d36b;font-size:16px}
+.calculator-page .emi-factor-card p{margin:0;color:#aebbd0;font-size:12px;line-height:1.7}
+.calculator-page .emi-faq-wrap{margin-top:24px;padding:21px;border:1px solid rgba(212,175,55,.2);border-radius:18px;background:linear-gradient(145deg,#0e1e32,#07111f)}
+.calculator-page .emi-faq-heading h2{margin:9px 0 14px;color:#f5f7fb;font-size:23px}
+.calculator-page .emi-faq-item{padding:14px 0;border-top:1px solid rgba(148,163,184,.15);color:#dbe4ef}
+.calculator-page .emi-faq-item summary{color:#f0d36b;font-weight:700;cursor:pointer}
+.calculator-page .emi-faq-item p{margin:10px 0 0;color:#aebbd0;font-size:13px;line-height:1.7}
+@media(max-width:650px){
+ .calculator-page{padding:16px 13px 44px}
+ .calculator-page .emi-page-intro{padding:30px 16px 26px;border-radius:20px}
+ .calculator-page .emi-page-intro h1{font-size:29px}
+ .calculator-page .emi-page-intro p{font-size:13px}
+ .calculator-page #calculator>.card,.calculator-page .advanced-card{padding:19px 14px;border-radius:19px}
+ .calculator-page .emi-main-heading{font-size:28px;margin:22px 0 13px}
+ .calculator-page #calculator .emi-actions,.calculator-page .advanced-actions{grid-template-columns:minmax(0,1fr) minmax(105px,.62fr);gap:9px}
+ .calculator-page #calculator .emi-actions button,.calculator-page .advanced-actions button{min-height:56px;padding:10px 8px;border-radius:13px;font-size:13px}
+ .calculator-page #results{padding:13px;border-radius:16px}
+ .calculator-page .emi-highlight{padding:16px 10px}
+ .calculator-page .emi-metrics{gap:8px}
+ .calculator-page .emi-metric{padding:11px}
+ .calculator-page .emi-metric strong{font-size:14px}
+ .calculator-page .advanced-intro{margin:42px auto 18px}
+ .calculator-page .advanced-intro h2{font-size:30px}
+ .calculator-page .advanced-fields{gap:14px}
+ .calculator-page .advanced-field label{font-size:13px}
+ .calculator-page .advanced-field input,.calculator-page .advanced-field select{min-height:55px;font-size:16px}
+ .calculator-page .advanced-results{padding:13px}
+ .calculator-page .advanced-results-grid{gap:7px}
+ .calculator-page .advanced-result-row{padding:10px}
+ .calculator-page .advanced-result-row strong{font-size:12px}
+ .calculator-page .emi-factor-grid{grid-template-columns:1fr}
+ .calculator-page .emi-factor-card{display:grid;grid-template-columns:45px 1fr;column-gap:12px;padding:15px}
+ .calculator-page .emi-factor-number{grid-row:1/3;align-self:center;justify-content:center;padding:10px;border:1px solid rgba(212,175,55,.25);border-radius:10px}
+ .calculator-page .emi-factor-card h3{align-self:end}
+ .calculator-page .emi-factor-card p{grid-column:2}
+}
+@media(prefers-reduced-motion:reduce){.calculator-page *{scroll-behavior:auto!important;transition:none!important}}
