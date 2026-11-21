@@ -21,24 +21,55 @@
 <meta name="twitter:description" content="Explore loan EMI calculators and useful financial utilities from KeyDhan.">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Financial Tools & Loan Calculators","description":"Explore loan EMI calculators and useful financial utilities from KeyDhan.","url":"https://keydhan.com/financial-tools.html","isPartOf":{"@type":"WebSite","name":"KeyDhan","url":"https://keydhan.com/"},"inLanguage":"en-IN"}</script>
 <style>
-.financial-hub{max-width:1120px;margin:auto;padding:54px 20px 72px}
-.financial-hero{text-align:center;padding:42px 20px 48px;background:radial-gradient(ellipse at center,rgba(212,175,55,.13),transparent 68%);border-bottom:1px solid var(--border)}
-.financial-eyebrow{color:var(--gold2);font-size:12px;font-weight:700;letter-spacing:2px}
-.financial-hero h1{font-size:clamp(32px,5vw,48px);line-height:1.2;margin:14px 0;color:#fff}
-.financial-hero h1 span{color:var(--gold)}
-.financial-hero p{max-width:720px;margin:0 auto;color:var(--muted);line-height:1.8;font-size:16px}
-.financial-section{margin-top:46px}
-.financial-section h2{font-size:clamp(24px,3vw,32px);color:var(--gold);margin-bottom:10px}
-.financial-section>p{color:var(--muted);line-height:1.7;margin-bottom:20px}
-.financial-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
-.financial-card{display:flex;flex-direction:column;gap:10px;min-height:190px;padding:22px;background:linear-gradient(160deg,#0b1a2d,#07101d);border:1px solid var(--border);border-radius:18px;text-decoration:none;color:var(--text);transition:transform .2s,border-color .2s}
-.financial-card:hover{transform:translateY(-3px);border-color:rgba(212,175,55,.55)}
-.financial-card .symbol{font-size:27px}
-.financial-card h3{font-size:18px;color:var(--gold2)}
-.financial-card p{font-size:13px;line-height:1.65;color:var(--muted)}
-.financial-card .open-link{margin-top:auto;color:var(--gold);font-size:13px;font-weight:700}
-.financial-note{margin-top:30px;padding:18px;border:1px solid var(--border);border-radius:14px;color:var(--muted);font-size:13px;line-height:1.7;background:#071323}
-@media(max-width:600px){.financial-hub{padding:28px 15px 50px}.financial-hero{padding:28px 8px 35px}.financial-card{min-height:0;padding:18px}}
+:root{--fh-gold:#e4c451;--fh-gold2:#f4dc83;--fh-muted:#aebbd0;--fh-line:rgba(212,175,55,.2)}
+.financial-hub{max-width:1160px;margin:auto;padding:30px 22px 76px}
+.financial-hero{position:relative;isolation:isolate;overflow:hidden;text-align:center;padding:clamp(38px,6vw,66px) 22px 42px;border:1px solid var(--fh-line);border-radius:28px;background:radial-gradient(ellipse at 50% 0,rgba(212,175,55,.17),transparent 62%),linear-gradient(145deg,#0b192b,#050b17 75%);box-shadow:0 22px 60px rgba(0,0,0,.22)}
+.financial-hero:before{content:"";position:absolute;z-index:-1;width:270px;height:270px;right:-120px;top:-155px;border:1px solid rgba(212,175,55,.15);border-radius:50%;box-shadow:0 0 0 24px rgba(212,175,55,.025),0 0 0 50px rgba(212,175,55,.02)}
+.financial-eyebrow{display:inline-flex;align-items:center;gap:9px;color:var(--fh-gold2);font-size:11px;font-weight:800;letter-spacing:2.4px}
+.financial-eyebrow:before,.financial-eyebrow:after{content:"";width:22px;height:1px;background:rgba(228,196,81,.55)}
+.financial-hero h1{max-width:850px;margin:17px auto 15px;color:#fff;font-size:clamp(30px,5vw,49px);line-height:1.12;letter-spacing:-1.1px;text-wrap:balance}
+.financial-hero h1 span{color:var(--fh-gold)}
+.financial-hero p{max-width:680px;margin:0 auto;color:#b8c4d5;line-height:1.75;font-size:clamp(14px,1.8vw,16px)}
+.financial-trust{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:24px}
+.financial-trust span{display:inline-flex;align-items:center;gap:7px;padding:8px 13px;border:1px solid rgba(212,175,55,.19);border-radius:999px;background:rgba(8,20,36,.72);color:#d5deea;font-size:11px;font-weight:650}
+.financial-section{margin-top:48px}
+.financial-section-head{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:18px}
+.financial-section h2{margin:0;color:var(--fh-gold);font-size:clamp(22px,3vw,29px);line-height:1.2;letter-spacing:-.4px}
+.financial-section>p{max-width:680px;color:var(--fh-muted);font-size:14px;line-height:1.7;margin:9px 0 0}
+.financial-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.financial-card{position:relative;isolation:isolate;overflow:hidden;display:flex;flex-direction:column;gap:11px;min-height:224px;padding:22px;border:1px solid rgba(148,163,184,.17);border-radius:19px;background:linear-gradient(150deg,#102239 0%,#0a1728 58%,#07111e 100%);text-decoration:none;color:#f8fafc;box-shadow:0 12px 30px rgba(0,0,0,.14);transition:transform .22s,border-color .22s,box-shadow .22s}
+.financial-card:before{content:"";position:absolute;z-index:-1;right:-48px;top:-58px;width:145px;height:145px;border-radius:50%;background:radial-gradient(circle,rgba(212,175,55,.11),transparent 68%)}
+.financial-card:hover,.financial-card:focus-visible{transform:translateY(-4px);border-color:rgba(228,196,81,.58);box-shadow:0 18px 38px rgba(0,0,0,.25),0 0 0 1px rgba(212,175,55,.08);outline:none}
+.financial-card .symbol{display:grid;place-items:center;width:43px;height:43px;border:1px solid rgba(212,175,55,.24);border-radius:13px;background:rgba(212,175,55,.08);font-size:21px;color:var(--fh-gold2)}
+.financial-card h3{margin:1px 0 0;color:#f2d779;font-size:17px;line-height:1.35;letter-spacing:-.15px}
+.financial-card p{margin:0;color:#b3c0d1;font-size:13px;line-height:1.7}
+.financial-card .open-link{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:13px;border-top:1px solid rgba(148,163,184,.13);color:#e5c75a;font-size:12px;font-weight:800}
+.financial-card .open-link:after{content:"↗";font-size:16px}
+.financial-note{margin-top:34px;padding:19px 21px;border:1px solid rgba(212,175,55,.18);border-radius:16px;color:#aebbd0;font-size:12px;line-height:1.8;background:linear-gradient(120deg,#0c1a2b,#07111f)}
+.financial-note strong{color:#f0d36e}
+@media(max-width:900px){.financial-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){
+ .financial-hub{padding:18px 13px 50px}
+ .financial-hero{padding:34px 16px 27px;border-radius:21px}
+ .financial-eyebrow{font-size:9px;letter-spacing:1.65px}
+ .financial-eyebrow:before,.financial-eyebrow:after{width:12px}
+ .financial-hero h1{font-size:clamp(29px,8vw,36px);line-height:1.15;letter-spacing:-.65px;margin:15px auto 12px}
+ .financial-hero p{font-size:13px;line-height:1.7}
+ .financial-trust{gap:7px;margin-top:18px}
+ .financial-trust span{font-size:10px;padding:7px 10px}
+ .financial-section{margin-top:32px}
+ .financial-section-head{display:block;margin-bottom:14px}
+ .financial-section h2{font-size:22px;line-height:1.25}
+ .financial-section>p{font-size:12px;line-height:1.7;margin-top:7px}
+ .financial-grid{grid-template-columns:1fr;gap:11px}
+ .financial-card{min-height:0;padding:17px;border-radius:16px;gap:8px}
+ .financial-card .symbol{width:39px;height:39px;font-size:19px;border-radius:11px}
+ .financial-card h3{font-size:16px}
+ .financial-card p{font-size:12px;line-height:1.65}
+ .financial-card .open-link{padding-top:10px;font-size:11px}
+ .financial-note{margin-top:24px;padding:15px;font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){.financial-card{transition:none}.financial-card:hover{transform:none}}
 </style>
 </head>
 <body>
@@ -48,7 +79,7 @@
 <section class="financial-hero">
 <div class="financial-eyebrow">KEYDHAN · FINANCIAL PLANNING TOOLS</div>
 <h1>Make informed moves with <span>Financial Tools</span></h1>
-<p>Explore calculators and everyday utilities to understand loan repayments and work with common financial figures. Use estimates as a starting point and confirm actual terms with your lender.</p>
+<p>Plan smarter with practical calculators for home loans, business loans and everyday financial decisions. Explore repayment scenarios, compare costs and understand your numbers before speaking with a lender.</p><div class="financial-trust"><span>🔒 Free to use</span><span>📊 Instant estimates</span><span>✓ Simple planning tools</span></div>
 </section>
 <section class="financial-section" aria-labelledby="loan-tools-title">
 <h2 id="loan-tools-title">Loan & EMI Calculators</h2>
