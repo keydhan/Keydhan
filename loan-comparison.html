@@ -3,15 +3,72 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Loan Planning Centre | KeyDhan</title>
 <meta name="description" content="Plan loan scenarios, EMI burden, prepayment savings and repayment schedules using your own figures.">
-<link rel="canonical" href="https://keydhan.com/loan-comparison.html"><meta name="robots" content="index,follow"><link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/style.css?v=20261031-loan-planning">
+<link rel="canonical" href="https://keydhan.com/loan-comparison.html"><meta name="robots" content="index,follow"><link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/style.css?v=20261121-loan-planning-premium">
 <meta property="og:type" content="website"><meta property="og:site_name" content="KeyDhan"><meta property="og:title" content="Loan Planning Centre | KeyDhan"><meta property="og:description" content="Independent loan planning tools using your own inputs."><meta property="og:url" content="https://keydhan.com/loan-comparison.html">
 <style>
 .lp{max-width:1120px;margin:auto;padding:30px 16px 60px}.hero{text-align:center;padding:38px 16px;background:radial-gradient(ellipse,rgba(212,175,55,.13),transparent 70%);border-bottom:1px solid var(--border)}.hero h1{color:#fff;font-size:clamp(30px,5vw,46px)}.hero h1 span{color:var(--gold)}.hero p{color:var(--muted);max-width:720px;margin:auto;line-height:1.7}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.card{padding:22px;background:linear-gradient(155deg,#0b192b,#07111f);border:1px solid var(--border);border-radius:18px;min-width:0}.card h2{color:var(--gold2);font-size:20px}.help{color:var(--muted);font-size:12px;line-height:1.6}.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field label{display:block;color:#dce5f0;font-size:12px;margin-bottom:6px}.field input{width:100%;min-height:44px;padding:10px;background:#071323;border:1px solid #33445a;border-radius:9px;color:white}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.actions button,.actions a{padding:11px 16px;min-height:42px;border-radius:9px}.secondary{background:#17263a!important;color:#f4d77a!important;border:1px solid var(--border)!important}.out{margin-top:13px;padding:13px;background:#081525;border:1px solid rgba(212,175,55,.2);border-radius:11px;color:#e2e8f0;font-size:13px;line-height:1.8}.out:empty{display:none}.out strong{color:#f4d77a}.checks{display:grid;gap:10px}.checks label{display:flex;gap:9px;color:#dce5f0;font-size:13px}.checks input{accent-color:#d4af37}.bar{height:8px;background:#1b2b40;border-radius:9px;margin-top:12px;overflow:hidden}.bar span{display:block;height:100%;width:0;background:#d4af37}.tablewrap{overflow:auto;margin-top:12px}.table{width:100%;min-width:440px;border-collapse:collapse;font-size:12px}.table th,.table td{padding:8px;text-align:right;border-bottom:1px solid #33445a;color:#e2e8f0}.table th{color:#f4d77a}.table th:first-child,.table td:first-child{text-align:left}.note{margin-top:22px;padding:16px;background:#081525;border:1px solid rgba(212,175,55,.2);border-radius:12px;color:#aebbd0;font-size:12px;line-height:1.7}.note strong{color:#f4d77a}
 @media(max-width:760px){.grid{grid-template-columns:1fr}.lp{padding:22px 13px 45px}}@media(max-width:420px){.fields{grid-template-columns:1fr}}
+
+
+/* KeyDhan Loan Planning Centre — responsive premium refinement */
+.lp{max-width:1080px;padding:24px 16px 54px}
+.loan-planning-hero{position:relative;isolation:isolate;min-height:0!important;height:auto!important;display:block!important;overflow:hidden;text-align:center;padding:42px 18px 34px!important;border-bottom:1px solid rgba(212,175,55,.2);background:radial-gradient(ellipse at 50% 12%,rgba(212,175,55,.13),transparent 65%),linear-gradient(180deg,#071321 0%,#050b16 100%)}
+.loan-planning-hero:before{content:"";position:absolute;z-index:-1;inset:0;background-image:linear-gradient(rgba(212,175,55,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(212,175,55,.035) 1px,transparent 1px);background-size:46px 46px;mask-image:linear-gradient(to bottom,black,transparent 85%)}
+.loan-planning-hero .financial-eyebrow{color:#e8cd6a;font-size:10px;font-weight:850;letter-spacing:2.3px;line-height:1.5}
+.loan-planning-hero h1{margin:13px auto 12px!important;color:#f8fafc;font-size:clamp(31px,5vw,45px)!important;line-height:1.14!important;letter-spacing:-.7px;text-wrap:balance}
+.loan-planning-hero h1 span{color:#e4c04b}
+.loan-planning-hero p{max-width:650px;margin:0 auto!important;color:#b7c4d6;font-size:14px;line-height:1.75}
+.lp .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:stretch}
+.lp .card{min-width:0;padding:22px;border:1px solid rgba(212,175,55,.2);border-radius:19px;background:linear-gradient(150deg,#0e1d30 0%,#081322 100%);box-shadow:0 12px 32px rgba(0,0,0,.18);transition:border-color .18s,transform .18s}
+.lp .card h2{margin:0 0 7px;color:#f0d36b;font-size:clamp(17px,2.3vw,20px);line-height:1.35;letter-spacing:-.2px}
+.lp .card .help{margin:0 0 15px;color:#aebbd0;font-size:12px;line-height:1.65}
+.lp .fields{display:grid;grid-template-columns:minmax(0,1fr);gap:13px}
+.lp .field{min-width:0}
+.lp .field label{display:block;width:auto;margin:0 0 7px;color:#d3deeb;font-size:12px;font-weight:600;line-height:1.4;text-align:left}
+.lp .field input{display:block;box-sizing:border-box;width:100%;min-width:0;min-height:48px;padding:11px 13px;border:1px solid rgba(148,163,184,.28);border-radius:12px;background:#081629;color:#f8fafc;font-size:16px;line-height:1.3;box-shadow:inset 0 1px 0 rgba(255,255,255,.025);transition:border-color .18s,box-shadow .18s}
+.lp .field input:focus{outline:none;border-color:#d9ba4c;box-shadow:0 0 0 3px rgba(212,175,55,.13)}
+.lp .field input::placeholder{color:#8795a9}
+.lp .actions{display:flex;align-items:stretch;gap:10px;flex-wrap:wrap;margin-top:17px}
+.lp .actions button,.lp .actions a{display:inline-flex;justify-content:center;align-items:center;min-height:46px;padding:10px 16px;border:1px solid transparent;border-radius:12px;background:linear-gradient(115deg,#f0d36b,#cda72e);color:#111827;font-size:13px;font-weight:800;line-height:1.25;text-align:center;text-decoration:none;box-shadow:0 6px 16px rgba(212,175,55,.12);cursor:pointer}
+.lp .actions button.secondary{background:linear-gradient(145deg,#172b43,#0d1a2b)!important;border-color:rgba(212,175,55,.25)!important;color:#f0d36b!important;box-shadow:none}
+.lp .out{margin-top:14px;padding:14px;border:1px solid rgba(212,175,55,.2);border-radius:13px;background:linear-gradient(145deg,#0b1b2e,#081525);color:#d5dfeb;font-size:12px;line-height:1.8;overflow-wrap:anywhere}
+.lp .out strong{color:#f0d36b}
+.lp .checks{display:grid;gap:0}
+.lp .checks label{display:grid!important;grid-template-columns:22px minmax(0,1fr);align-items:center;gap:11px;width:100%;min-height:48px;margin:0!important;padding:9px 0;border-bottom:1px solid rgba(148,163,184,.12);color:#d5dfeb;font-size:12px;line-height:1.45;text-align:left!important}
+.lp .checks label:last-child{border-bottom:0}
+.lp .checks input{appearance:auto!important;-webkit-appearance:checkbox!important;display:block!important;width:20px!important;height:20px!important;min-width:20px!important;min-height:20px!important;margin:0!important;padding:0!important;accent-color:#d4af37;justify-self:start}
+.lp .bar{height:7px;margin-top:15px;background:#1b2b40;border-radius:10px;overflow:hidden}
+.lp .bar span{height:100%;border-radius:10px;background:linear-gradient(90deg,#cda72e,#f4dc7b);transition:width .2s}
+.lp .tablewrap{max-width:100%;overflow:auto;border:1px solid rgba(148,163,184,.15);border-radius:12px}
+.lp .table{min-width:500px;border-collapse:collapse}
+.lp .table th,.lp .table td{padding:10px 9px;font-size:11px;white-space:nowrap}
+.lp .table th{background:#13253a}
+.lp .note{margin-top:20px;padding:17px;border:1px solid rgba(212,175,55,.18);border-radius:15px;background:linear-gradient(145deg,#0d1d30,#081322);color:#aebbd0;font-size:11px;line-height:1.8}
+.lp .note strong{color:#f0d36b}
+@media(min-width:761px){.lp .fields{grid-template-columns:repeat(2,minmax(0,1fr))}.lp .card{padding:24px}}
+@media(max-width:760px){
+ .loan-planning-hero{padding:34px 17px 28px!important}
+ .loan-planning-hero h1{font-size:32px!important}
+ .loan-planning-hero p{font-size:13px}
+ .lp{padding:17px 13px 42px}
+ .lp .grid{grid-template-columns:minmax(0,1fr);gap:13px}
+ .lp .card{padding:19px 16px;border-radius:17px}
+ .lp .card h2{font-size:19px}
+ .lp .fields{grid-template-columns:minmax(0,1fr);gap:12px}
+ .lp .field input{min-height:49px;font-size:16px}
+ .lp .actions{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px}
+ .lp .actions button,.lp .actions a{min-height:47px;padding:10px 13px;font-size:13px}
+ .lp .actions .secondary{min-width:88px}
+ .lp .checks label{min-height:46px}
+ .lp .note{padding:14px;font-size:11px}
+}
+@media(max-width:360px){.lp .card{padding:17px 13px}.lp .actions button,.lp .actions a{font-size:12px;padding:9px 10px}}
+@media(prefers-reduced-motion:reduce){.lp *,.loan-planning-hero *{transition:none!important}}
+
 </style></head><body>
 
 
-<main><section class="hero"><div class="financial-eyebrow">KEYDHAN · FINANCIAL DECISION SUPPORT</div><h1>Loan <span>Planning Centre</span></h1><p>Plan hypothetical loan scenarios, understand EMI burden and review repayment using your own figures. No lender listings, promotions or prefilled lender rates.</p></section>
+<main><section class="loan-planning-hero"><div class="financial-eyebrow">KEYDHAN · FINANCIAL DECISION SUPPORT</div><h1>Loan <span>Planning Centre</span></h1><p>Plan hypothetical loan scenarios, understand EMI burden and review repayment using your own figures. No lender listings, promotions or prefilled lender rates.</p></section>
 <div class="lp"><div class="grid">
 <section class="card"><h2>1. Loan Scenario Comparison</h2><p class="help">Compare two hypothetical loans. Enter the figures yourself.</p><div class="fields">
 <div class="field"><label for="aP">Scenario A amount (₹)</label><input id="aP" type="number" min="1" value="2500000"></div><div class="field"><label for="aR">Scenario A rate (%)</label><input id="aR" type="number" min="0" max="60" step=".01" value="9"></div><div class="field"><label for="aN">Scenario A tenure (months)</label><input id="aN" type="number" min="1" max="600" value="240"></div><div class="field"><label for="bP">Scenario B amount (₹)</label><input id="bP" type="number" min="1" value="2500000"></div><div class="field"><label for="bR">Scenario B rate (%)</label><input id="bR" type="number" min="0" max="60" step=".01" value="9.5"></div><div class="field"><label for="bN">Scenario B tenure (months)</label><input id="bN" type="number" min="1" max="600" value="240"></div></div><div class="actions"><button id="compare">Compare scenarios</button><button id="compareReset" class="secondary">Reset</button></div><div class="out" id="compareOut" aria-live="polite"></div></section>
