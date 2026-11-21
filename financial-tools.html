@@ -70,6 +70,25 @@
  .financial-note{margin-top:24px;padding:15px;font-size:11px}
 }
 @media(prefers-reduced-motion:reduce){.financial-card{transition:none}.financial-card:hover{transform:none}}
+
+/* Calculator cards: refined iconography, labels and clear single action */
+.financial-card{gap:12px;min-height:236px;padding:22px 21px}
+.financial-card .symbol{width:46px;height:46px;border-radius:14px;background:linear-gradient(145deg,rgba(228,196,81,.16),rgba(228,196,81,.035));box-shadow:inset 0 1px 0 rgba(255,255,255,.07)}
+.financial-card .symbol>span{display:grid;place-items:center;width:100%;height:100%;color:#f2d779;font-family:Georgia,serif;font-size:25px;font-weight:600;line-height:1}
+.financial-card h3{font-size:17px;line-height:1.38}
+.financial-card p{font-size:13px;line-height:1.72}
+.financial-card .open-link{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:13px}
+.financial-card .open-link:after{content:"";display:grid;place-items:center;flex:0 0 30px;width:30px;height:30px;border:1px solid rgba(228,196,81,.28);border-radius:50%;background:rgba(228,196,81,.08);color:#f2d779;font-size:17px;transition:transform .2s,background .2s}
+.financial-card:hover .open-link:after{content:"↗";transform:translate(2px,-2px);background:rgba(228,196,81,.16)}
+.financial-card .open-link{font-size:12px;letter-spacing:.1px}
+@media(max-width:600px){
+ .financial-card{min-height:0;padding:18px 17px;gap:9px}
+ .financial-card .symbol{width:42px;height:42px;border-radius:12px}
+ .financial-card .symbol>span{font-size:23px}
+ .financial-card h3{font-size:16px}
+ .financial-card p{font-size:12px;line-height:1.68}
+ .financial-card .open-link{padding-top:11px}
+}
 </style>
 </head>
 <body>
@@ -85,36 +104,36 @@
 <h2 id="loan-tools-title">Loan & EMI Calculators</h2>
 <p>Estimate monthly instalments, interest and repayment amounts using the loan details you enter.</p>
 <div class="financial-grid">
-<a class="financial-card" href="/tools/home-loan-eligibility/"><span class="symbol" aria-hidden="true">🏠</span><h3>Home Loan Eligibility</h3><p>Estimate an indicative loan amount from monthly income, existing EMIs, an adjustable FOIR scenario, rate and tenure.</p><span class="open-link">Open Calculator ↗</span></a>
-<a class="financial-card" href="/tools/home-loan-affordability/"><span class="symbol" aria-hidden="true">▤</span><h3>Home Loan Affordability Calculator</h3><p>Estimate an indicative home purchase budget from monthly income, expenses, down payment, interest rate and tenure.</p><span class="open-link">Open Calculator ↗</span></a>
-<a class="financial-card" href="/tools/balance-transfer-calculator/"><span class="symbol" aria-hidden="true">▤</span><h3>Home Loan Balance Transfer Calculator</h3><p>Compare an existing home loan with a proposed lower rate, remaining tenure and transfer fees.</p><span class="open-link">Open Calculator ↗</span></a>
-<a class="financial-card" href="/tools/stamp-duty-calculator/"><span class="symbol" aria-hidden="true">▤</span><h3>Stamp Duty & Registration Calculator</h3><p>Estimate property stamp duty and registration charges using rates you enter for the relevant state and transaction.</p><span class="open-link">Open Calculator ↗</span></a>
-<a class="financial-card" href="/tools/home-loan-prepayment/"><span class="symbol" aria-hidden="true">▤</span><h3>Home Loan Prepayment Calculator</h3><p>Estimate how a lump-sum home loan prepayment may reduce remaining tenure and interest.</p><span class="open-link">Open Calculator ↗</span></a>
-<a class="financial-card" href="/tools/business-loan-emi-calculator/"><span class="symbol" aria-hidden="true">▤</span><h3>Business Loan EMI Calculator</h3><p>Estimate monthly EMI, total interest and repayment for a reducing-balance business loan.</p><span class="open-link">Open Calculator ↗</span></a>
+<a class="financial-card" href="/tools/home-loan-eligibility/"><span class="symbol" aria-hidden="true"><span>⌂</span></span><h3>Home Loan Eligibility</h3><p>Estimate an indicative loan amount from monthly income, existing EMIs, an adjustable FOIR scenario, rate and tenure.</p><span class="open-link">Open Calculator</span></a>
+<a class="financial-card" href="/tools/home-loan-affordability/"><span class="symbol" aria-hidden="true"><span>▦</span></span><h3>Home Loan Affordability Calculator</h3><p>Estimate an indicative home purchase budget from monthly income, expenses, down payment, interest rate and tenure.</p><span class="open-link">Open Calculator</span></a>
+<a class="financial-card" href="/tools/balance-transfer-calculator/"><span class="symbol" aria-hidden="true"><span>⇄</span></span><h3>Home Loan Balance Transfer Calculator</h3><p>Compare an existing home loan with a proposed lower rate, remaining tenure and transfer fees.</p><span class="open-link">Open Calculator</span></a>
+<a class="financial-card" href="/tools/stamp-duty-calculator/"><span class="symbol" aria-hidden="true"><span>▤</span></span><h3>Stamp Duty & Registration Calculator</h3><p>Estimate property stamp duty and registration charges using rates you enter for the relevant state and transaction.</p><span class="open-link">Open Calculator</span></a>
+<a class="financial-card" href="/tools/home-loan-prepayment/"><span class="symbol" aria-hidden="true"><span>↘</span></span><h3>Home Loan Prepayment Calculator</h3><p>Estimate how a lump-sum home loan prepayment may reduce remaining tenure and interest.</p><span class="open-link">Open Calculator</span></a>
+<a class="financial-card" href="/tools/business-loan-emi-calculator/"><span class="symbol" aria-hidden="true"><span>₹</span></span><h3>Business Loan EMI Calculator</h3><p>Estimate monthly EMI, total interest and repayment for a reducing-balance business loan.</p><span class="open-link">Open Calculator</span></a>
 <a class="financial-card" href="/calculator.html">
-<span class="symbol" aria-hidden="true">⌂</span><h3>EMI Calculator</h3>
+<span class="symbol" aria-hidden="true"><span>◉</span></span><h3>EMI Calculator</h3>
 <p>Estimate monthly EMI, total interest and total repayment for a home loan, business loan or loan against property.</p>
-<span class="open-link">Open EMI Calculator ↗</span>
+<span class="open-link">Open EMI Calculator</span>
 </a>
 <a class="financial-card" href="/calculator.html#advanced-calculator">
-<span class="symbol" aria-hidden="true">▤</span><h3>Advanced EMI Calculator</h3>
+<span class="symbol" aria-hidden="true"><span>▥</span></span><h3>Advanced EMI Calculator</h3>
 <p>Review estimated processing fee, insurance, deductions and net disbursement alongside repayment details.</p>
-<span class="open-link">Open Advanced Calculator ↗</span>
+<span class="open-link">Open Advanced Calculator</span>
 </a>
 </div>
 </section>
-<section class="financial-section" aria-labelledby="loan-planning-title"><h2 id="loan-planning-title">Loan Planning Centre</h2><p>Plan hypothetical loan scenarios, understand EMI burden and review repayment using your own inputs. No lender listings or lender-specific offers are displayed.</p><div class="financial-grid"><a class="financial-card" href="/loan-comparison.html"><span class="symbol" aria-hidden="true">⌁</span><h3>Loan Planning Centre</h3><p>Explore scenario comparison, EMI burden, loan readiness, prepayment savings and repayment schedule tools.</p><span class="open-link">Open Loan Planning Centre ↗</span></a></div></section>
+<section class="financial-section" aria-labelledby="loan-planning-title"><h2 id="loan-planning-title">Loan Planning Centre</h2><p>Plan hypothetical loan scenarios, understand EMI burden and review repayment using your own inputs. No lender listings or lender-specific offers are displayed.</p><div class="financial-grid"><a class="financial-card" href="/loan-comparison.html"><span class="symbol" aria-hidden="true"><span>◇</span></span><h3>Loan Planning Centre</h3><p>Explore scenario comparison, EMI burden, loan readiness, prepayment savings and repayment schedule tools.</p><span class="open-link">Open Loan Planning Centre ↗</span></a></div></section>
 <section class="financial-section" aria-labelledby="everyday-tools-title">
 <h2 id="everyday-tools-title">Everyday Financial Utilities</h2>
 <p>Quick calculations for common numbers and currency conversions.</p>
 <div class="financial-grid">
 <a class="financial-card" href="/tools/currency-converter/">
-<span class="symbol" aria-hidden="true">₹</span><h3>Currency Converter</h3>
+<span class="symbol" aria-hidden="true"><span>◇</span></span><h3>Currency Converter</h3>
 <p>Convert between supported currencies using the tool's displayed reference exchange rate.</p>
 <span class="open-link">Open Currency Converter ↗</span>
 </a>
 <a class="financial-card" href="/tools/percentage-calculator/">
-<span class="symbol" aria-hidden="true">％</span><h3>Percentage Calculator</h3>
+<span class="symbol" aria-hidden="true"><span>◇</span></span><h3>Percentage Calculator</h3>
 <p>Calculate a percentage of a value or work out percentage increase and decrease.</p>
 <span class="open-link">Open Percentage Calculator ↗</span>
 </a>
