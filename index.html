@@ -3,6 +3,13 @@
 <head>
 
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#020814">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="KeyDhan">
+<link rel="apple-touch-icon" href="/assets/keydhan-app-icon.svg">
 <link rel="canonical" href="https://keydhan.com/">
 
 <meta name="robots" content="index, follow">
@@ -252,5 +259,14 @@
 
 
 <script src="/site-header.js?v=20261105-loan-services-nav-v2" defer></script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("/service-worker.js", { scope: "/" }).catch(function (error) {
+      console.warn("KeyDhan offline support could not be registered:", error);
+    });
+  });
+}
+</script>
 </body>
 </html>

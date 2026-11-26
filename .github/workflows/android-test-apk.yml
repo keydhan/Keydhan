@@ -1,0 +1,120 @@
+name: Build KeyDhan Android Test APK
+
+on:
+  push:
+    branches:
+      - feature/keydhan-android-app
+    paths:
+      - "android-app/**"
+      - ".github/workflows/android-test-apk.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-debug-apk:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: android-app
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Install SVG renderer
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y librsvg2-bin
+
+      - name: Install Capacitor dependencies
+        run: npm install
+
+      - name: Generate Android project
+        run: npx cap add android
+
+      - name: Configure native KeyDhan GPS Camera
+        run: bash scripts/configure-gps-camera.sh
+
+      - name: Apply complete KeyDhan logo to all launcher icon variants
+        run: |
+          RES="android/app/src/main/res"
+          ICON="resources/keydhan-app-icon.svg"
+          mkdir -p "$RES/mipmap-mdpi" "$RES/mipmap-hdpi" "$RES/mipmap-xhdpi" "$RES/mipmap-xxhdpi" "$RES/mipmap-xxxhdpi" "$RES/mipmap-anydpi-v26" "$RES/drawable-nodpi" "$RES/values"
+          rsvg-convert -w 48 -h 48 "$ICON" > "$RES/mipmap-mdpi/ic_launcher.png"
+          rsvg-convert -w 72 -h 72 "$ICON" > "$RES/mipmap-hdpi/ic_launcher.png"
+          rsvg-convert -w 96 -h 96 "$ICON" > "$RES/mipmap-xhdpi/ic_launcher.png"
+          rsvg-convert -w 144 -h 144 "$ICON" > "$RES/mipmap-xxhdpi/ic_launcher.png"
+          rsvg-convert -w 192 -h 192 "$ICON" > "$RES/mipmap-xxxhdpi/ic_launcher.png"
+          for density in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
+            cp "$RES/mipmap-$density/ic_launcher.png" "$RES/mipmap-$density/ic_launcher_round.png"
+          done
+          # Use a unique foreground resource name so Capacitor's default Android robot vector cannot override it.
+          rsvg-convert -w 432 -h 432 resources/keydhan-adaptive-foreground.svg > "$RES/drawable-nodpi/keydhan_launcher_foreground.png"
+          cat > "$RES/values/ic_launcher_background.xml" <<'EOF'
+          <resources><color name="ic_launcher_background">#0A2858</color></resources>
+          EOF
+          cat > "$RES/mipmap-anydpi-v26/ic_launcher.xml" <<'EOF'
+          <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+              <background android:drawable="@color/ic_launcher_background" />
+              <foreground android:drawable="@drawable/keydhan_launcher_foreground" />
+          </adaptive-icon>
+          EOF
+          cp "$RES/mipmap-anydpi-v26/ic_launcher.xml" "$RES/mipmap-anydpi-v26/ic_launcher_round.xml"
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p = Path("android/app/src/main/AndroidManifest.xml")
+          s = p.read_text()
+          start = s.index("<application")
+          end = s.index(">", start)
+          tag = s[start:end]
+          tag = re.sub(r'\s+android:icon="[^"]*"', '', tag)
+          tag = re.sub(r'\s+android:roundIcon="[^"]*"', '', tag)
+          tag += ' android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round"'
+          s = s[:start] + tag + s[end:]
+          p.write_text(s)
+          print(tag)
+          assert 'android:icon="@mipmap/ic_launcher"' in tag
+          assert 'android:roundIcon="@mipmap/ic_launcher_round"' in tag
+          PY
+          test -s "$RES/mipmap-xxxhdpi/ic_launcher.png"
+          test -s "$RES/drawable-nodpi/keydhan_launcher_foreground.png"
+          ! grep -q '@drawable/ic_launcher_foreground' "$RES/mipmap-anydpi-v26/ic_launcher.xml"
+
+      - name: Set Android app version to 0.13
+        run: |
+          sed -i 's/versionCode 1/versionCode 14/' android/app/build.gradle
+          sed -i "s/versionName '1.0'/versionName '0.14'/" android/app/build.gradle
+          grep -E 'versionCode|versionName' android/app/build.gradle
+
+      - name: Build debug APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+          cp app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/keydhan-android-v0.14-test.apk
+
+      - name: Verify APK launcher icon metadata
+        run: |
+          "$ANDROID_HOME/build-tools/$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -1)/aapt" dump badging android/app/build/outputs/apk/debug/keydhan-android-v0.14-test.apk | grep -E "package:|application-icon"
+
+      - name: Upload v0.14 test APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: keydhan-android-v0.14-test-apk
+          path: android-app/android/app/build/outputs/apk/debug/keydhan-android-v0.14-test.apk
+          if-no-files-found: error
+          retention-days: 14
+
