@@ -103,16 +103,18 @@ public class MainActivity extends BridgeActivity {
         systemBars.setAppearanceLightNavigationBars(false);
 
         // Compact WhatsApp-style floating shortcuts: matching navy rounded squares with a subtle gold outline.
-        int fabSize = (int) (64 * getResources().getDisplayMetrics().density);
-        int fabRadius = (int) (19 * getResources().getDisplayMetrics().density);
+        int fabWidth = (int) (132 * getResources().getDisplayMetrics().density);
+        int fabHeight = (int) (56 * getResources().getDisplayMetrics().density);
+        int fabRadius = (int) (18 * getResources().getDisplayMetrics().density);
         int fabStroke = Math.max(1, (int) (1.2f * getResources().getDisplayMetrics().density));
 
         TextView gpsButton = new TextView(this);
-        gpsButton.setText("⌖");
+        gpsButton.setText("⌖  GPS Camera");
         gpsButton.setTextColor(Color.WHITE);
-        gpsButton.setTextSize(30);
+        gpsButton.setTextSize(13);
         gpsButton.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         gpsButton.setGravity(Gravity.CENTER);
+        gpsButton.setPadding(8, 0, 8, 0);
         gpsButton.setContentDescription("GPS Camera");
         GradientDrawable gpsBackground = new GradientDrawable();
         gpsBackground.setColor(Color.rgb(7, 18, 40));
@@ -125,11 +127,12 @@ public class MainActivity extends BridgeActivity {
         );
 
         TextView scannerButton = new TextView(this);
-        scannerButton.setText("▤");
+        scannerButton.setText("▤  Doc Scanner");
         scannerButton.setTextColor(Color.WHITE);
-        scannerButton.setTextSize(27);
+        scannerButton.setTextSize(13);
         scannerButton.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         scannerButton.setGravity(Gravity.CENTER);
+        scannerButton.setPadding(8, 0, 8, 0);
         scannerButton.setContentDescription("Doc Scanner");
         GradientDrawable scannerBackground = new GradientDrawable();
         scannerBackground.setColor(Color.rgb(7, 18, 40));
@@ -142,13 +145,13 @@ public class MainActivity extends BridgeActivity {
         );
 
         FrameLayout.LayoutParams scannerParams = new FrameLayout.LayoutParams(
-            fabSize, fabSize, Gravity.BOTTOM | Gravity.START
+            fabWidth, fabHeight, Gravity.BOTTOM | Gravity.START
         );
         scannerParams.setMargins(16, 0, 0, 96);
         addContentView(scannerButton, scannerParams);
 
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-            fabSize, fabSize, Gravity.BOTTOM | Gravity.END
+            fabWidth, fabHeight, Gravity.BOTTOM | Gravity.END
         );
         params.setMargins(0, 0, 16, 96);
         addContentView(gpsButton, params);
