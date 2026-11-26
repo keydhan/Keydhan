@@ -101,42 +101,55 @@ public class MainActivity extends BridgeActivity {
         systemBars.setAppearanceLightStatusBars(false);
         systemBars.setAppearanceLightNavigationBars(false);
 
+        // Compact WhatsApp-style floating shortcuts: matching navy rounded squares with a subtle gold outline.
+        int fabSize = (int) (64 * getResources().getDisplayMetrics().density);
+        int fabRadius = (int) (19 * getResources().getDisplayMetrics().density);
+        int fabStroke = Math.max(1, (int) (1.2f * getResources().getDisplayMetrics().density));
+
         TextView gpsButton = new TextView(this);
-        gpsButton.setText("⌖  GPS Camera");
+        gpsButton.setText("⌖");
         gpsButton.setTextColor(Color.WHITE);
-        gpsButton.setTextSize(14);
+        gpsButton.setTextSize(30);
         gpsButton.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         gpsButton.setGravity(Gravity.CENTER);
-        gpsButton.setPadding(22, 14, 22, 14);
-        gpsButton.setBackgroundColor(Color.rgb(10, 40, 88));
+        gpsButton.setContentDescription("GPS Camera");
+        GradientDrawable gpsBackground = new GradientDrawable();
+        gpsBackground.setColor(Color.rgb(7, 18, 40));
+        gpsBackground.setCornerRadius(fabRadius);
+        gpsBackground.setStroke(fabStroke, Color.rgb(210, 169, 82));
+        gpsButton.setBackground(gpsBackground);
         gpsButton.setElevation(12f);
         gpsButton.setOnClickListener(v ->
             startActivity(new Intent(MainActivity.this, GpsCameraActivity.class))
         );
+
         TextView scannerButton = new TextView(this);
-        scannerButton.setText("▤  Doc Scanner");
+        scannerButton.setText("▤");
         scannerButton.setTextColor(Color.WHITE);
-        scannerButton.setTextSize(14);
+        scannerButton.setTextSize(27);
         scannerButton.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         scannerButton.setGravity(Gravity.CENTER);
-        scannerButton.setPadding(22, 14, 22, 14);
-        scannerButton.setBackgroundColor(Color.rgb(10, 40, 88));
+        scannerButton.setContentDescription("Doc Scanner");
+        GradientDrawable scannerBackground = new GradientDrawable();
+        scannerBackground.setColor(Color.rgb(7, 18, 40));
+        scannerBackground.setCornerRadius(fabRadius);
+        scannerBackground.setStroke(fabStroke, Color.rgb(210, 169, 82));
+        scannerButton.setBackground(scannerBackground);
         scannerButton.setElevation(12f);
         scannerButton.setOnClickListener(v ->
             startActivity(new Intent(MainActivity.this, DocumentScannerActivity.class))
         );
+
         FrameLayout.LayoutParams scannerParams = new FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT,
-            Gravity.BOTTOM | Gravity.START
+            fabSize, fabSize, Gravity.BOTTOM | Gravity.START
         );
-        scannerParams.setMargins(18, 0, 0, 96);
+        scannerParams.setMargins(16, 0, 0, 96);
         addContentView(scannerButton, scannerParams);
+
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.WRAP_CONTENT,
-            FrameLayout.LayoutParams.WRAP_CONTENT,
-            Gravity.BOTTOM | Gravity.END
+            fabSize, fabSize, Gravity.BOTTOM | Gravity.END
         );
-        params.setMargins(0, 0, 18, 96);
+        params.setMargins(0, 0, 16, 96);
         addContentView(gpsButton, params);
     }
 }
